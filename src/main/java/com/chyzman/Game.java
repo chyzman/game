@@ -32,14 +32,6 @@ public class Game {
         GL11.glEnable(GL43.GL_DEBUG_OUTPUT_SYNCHRONOUS);
 
         System.out.println("The um, the uh game is uh its running yeah.");
-        GL43.glDebugMessageCallback((source, type, id, severity, length, message, userParam) -> {
-            System.out.println("GL CALLBACK: " +
-                    "source = 0x" + Integer.toHexString(source) + ", " +
-                    "type = 0x" + Integer.toHexString(type) + ", " +
-                    "id = " + id + ", " +
-                    "severity = 0x" + Integer.toHexString(severity) + ", " +
-                    "message = " + GLDebugMessageCallback.getMessage(length, message));
-        }, NULL);
 
         renderer = new Renderer();
 

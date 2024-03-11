@@ -78,6 +78,15 @@ public class Window {
             }
         });
 
+        GL43.glDebugMessageCallback((source, type, id, severity, length, message, userParam) -> {
+            System.out.println("GL CALLBACK: " +
+                    "source = 0x" + Integer.toHexString(source) + ", " +
+                    "type = 0x" + Integer.toHexString(type) + ", " +
+                    "id = " + id + ", " +
+                    "severity = 0x" + Integer.toHexString(severity) + ", " +
+                    "message = " + GLDebugMessageCallback.getMessage(length, message));
+        }, NULL);
+
         GL.createCapabilities();
     }
 
