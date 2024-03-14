@@ -7,7 +7,7 @@ public class ShaderTextured extends Shader{
 	private int locationProjection;
 	
 	public ShaderTextured() {
-		super("Textured.vs", "Textured.fs");
+		super("Textured.vert", "Textured.frag");
 	}
 
 	@Override

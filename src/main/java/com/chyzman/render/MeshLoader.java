@@ -12,8 +12,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MeshLoader {
-    private static List<Integer> vaos = new ArrayList<>();
-    private static List<Integer> vbos = new ArrayList<>();
+    private static final List<Integer> vaos = new ArrayList<>();
+    private static final List<Integer> vbos = new ArrayList<>();
 
     private static FloatBuffer createFloatBuffer(float[] data) {
         FloatBuffer buffer = BufferUtils.createFloatBuffer(data.length);

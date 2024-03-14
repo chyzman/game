@@ -1,15 +1,15 @@
 package com.chyzman.object;
 
-import org.joml.Vector2d;
+import org.joml.Vector3d;
 
 public abstract class GameObject {
-    protected Vector2d pos = new Vector2d();
+    protected Vector3d pos = new Vector3d();
 
-    public Vector2d pos() {
+    public Vector3d pos() {
         return pos;
     }
 
-    public GameObject pos(Vector2d pos) {
+    public GameObject pos(Vector3d pos) {
         this.pos = pos;
         return this;
     }
