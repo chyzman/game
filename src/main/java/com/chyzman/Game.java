@@ -23,7 +23,7 @@ public class Game {
     public final Camera camera = new Camera();
 
     public static void main(String[] args) {
-        System.load("/home/alpha/Desktop/renderdoc_1.25/lib/librenderdoc.so");
+//        System.load("/home/alpha/Desktop/renderdoc_1.25/lib/librenderdoc.so");
         GAME.run();
     }
 
@@ -32,8 +32,17 @@ public class Game {
 
         GL11.glEnable(GL43.GL_DEBUG_OUTPUT);
         GL11.glEnable(GL43.GL_DEBUG_OUTPUT_SYNCHRONOUS);
+        GL43.glDebugMessageCallback(GLDebugMessageCallback.create((source, type, id, severity, length, message, userParam) -> {
+            System.out.println("GL CALLBACK: " +
+                    "source = 0x" + Integer.toHexString(source) + ", " +
+                    "type = 0x" + Integer.toHexString(type) + ", " +
+                    "id = " + id + ", " +
+                    "severity = 0x" + Integer.toHexString(severity) + ", " +
+                    "message = " + GLDebugMessageCallback.getMessage(length, message));
+        }), NULL);
+        GL43.glDebugMessageInsert(GL43.GL_DEBUG_SOURCE_OTHER, GL43.GL_DEBUG_TYPE_OTHER, 0, GL43.GL_DEBUG_SEVERITY_HIGH, "bruh");
 
-        System.out.println("The um, the uh game is uh its running yeah.");
+        System.err.println("The um, the uh game is uh its running yeah.");
 
         renderer = new Renderer();
 

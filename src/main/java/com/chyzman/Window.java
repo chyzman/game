@@ -37,6 +37,7 @@ public class Window {
         GLFW.glfwDefaultWindowHints();
         GLFW.glfwWindowHint(GLFW.GLFW_CONTEXT_VERSION_MAJOR, 4);
         GLFW.glfwWindowHint(GLFW.GLFW_CONTEXT_VERSION_MINOR, 6);
+        GLFW.glfwWindowHint(GLFW.GLFW_OPENGL_DEBUG_CONTEXT, GLFW.GLFW_TRUE);
         GLFW.glfwWindowHint(GLFW.GLFW_OPENGL_PROFILE, GLFW.GLFW_OPENGL_CORE_PROFILE);
         GLFW.glfwWindowHint(GLFW.GLFW_VISIBLE, GLFW.GLFW_FALSE);
         GLFW.glfwWindowHint(GLFW.GLFW_RESIZABLE, GLFW.GLFW_TRUE);
@@ -98,15 +99,6 @@ public class Window {
                 GL11.glViewport(0, 0, Game.window.width, Game.window.height);
             }
         });
-
-//        GL43.glDebugMessageCallback((source, type, id, severity, length, message, userParam) -> {
-//            System.out.println("GL CALLBACK: " +
-//                    "source = 0x" + Integer.toHexString(source) + ", " +
-//                    "type = 0x" + Integer.toHexString(type) + ", " +
-//                    "id = " + id + ", " +
-//                    "severity = 0x" + Integer.toHexString(severity) + ", " +
-//                    "message = " + GLDebugMessageCallback.getMessage(length, message));
-//        }, NULL);
 
         GL.createCapabilities();
     }

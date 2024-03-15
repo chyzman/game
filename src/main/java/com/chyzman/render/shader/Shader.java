@@ -27,6 +27,11 @@ public abstract class Shader {
         GL20.glAttachShader(programID, fragmentID);
         bindAttributes();
         GL20.glLinkProgram(programID);
+        if (GL20.glGetProgrami(programID, GL20.GL_LINK_STATUS) == GL11.GL_FALSE) {
+            System.err.println("Couldn't link program:");
+            System.out.println(GL20.glGetProgramInfoLog(programID, 512));
+            System.exit(-1);
+        }
         GL20.glValidateProgram(programID);
         getAllUniformLocations();
     }
