@@ -10,7 +10,7 @@ import com.chyzman.component.*;
 import dev.dominion.ecs.api.Scheduler;
 
 public class Game {
-    public static final int TICK_RATE = 3;
+    public static final int TICK_RATE = 3; //will be 64 in the real game but is 3 so u can see shit happening
     public static final double TERMINAL_VELOCITY = 100d/(double)TICK_RATE;
 
     public static void main(String[] args) {
