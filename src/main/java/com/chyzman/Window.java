@@ -47,6 +47,27 @@ public class Window {
         }
 
         GLFW.glfwSetKeyCallback(window, (window, key, scancode, action, mods) -> {
+            if (window == this.window) {
+                float xa = 0;
+                float ya = 0;
+                float za = 0;
+                if (key == GLFW.GLFW_KEY_W) {
+                    xa = 1.0F;
+                }
+                if (key == GLFW.GLFW_KEY_S) {
+                    xa = -1.0F;
+                }
+
+                float dist = xa * xa + za * za;
+                if (dist < 0.01f) {
+                    return;
+                }
+                dist = (float)Math.sqrt(dist);
+
+                float sin = (float)Math.sin((double)Game.GAME.camera.yaw * Math.PI / 180.0);
+                float cos = (float)Math.cos((double)Game.GAME.camera.yaw * Math.PI / 180.0);
+                Game.GAME.camera.deltaPos.add((xa *= dist) * cos - (za *= dist) * sin, 0, za * cos + xa * sin);
+            }
         });
 
         try (MemoryStack stack = stackPush()) {
@@ -78,14 +99,14 @@ public class Window {
             }
         });
 
-        GL43.glDebugMessageCallback((source, type, id, severity, length, message, userParam) -> {
-            System.out.println("GL CALLBACK: " +
-                    "source = 0x" + Integer.toHexString(source) + ", " +
-                    "type = 0x" + Integer.toHexString(type) + ", " +
-                    "id = " + id + ", " +
-                    "severity = 0x" + Integer.toHexString(severity) + ", " +
-                    "message = " + GLDebugMessageCallback.getMessage(length, message));
-        }, NULL);
+//        GL43.glDebugMessageCallback((source, type, id, severity, length, message, userParam) -> {
+//            System.out.println("GL CALLBACK: " +
+//                    "source = 0x" + Integer.toHexString(source) + ", " +
+//                    "type = 0x" + Integer.toHexString(type) + ", " +
+//                    "id = " + id + ", " +
+//                    "severity = 0x" + Integer.toHexString(severity) + ", " +
+//                    "message = " + GLDebugMessageCallback.getMessage(length, message));
+//        }, NULL);
 
         GL.createCapabilities();
     }

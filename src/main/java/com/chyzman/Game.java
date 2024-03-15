@@ -1,5 +1,6 @@
 package com.chyzman;
 
+import com.chyzman.object.Camera;
 import com.chyzman.object.GameObject;
 import com.chyzman.object.Player;
 import com.chyzman.render.Renderer;
@@ -13,16 +14,17 @@ import java.util.List;
 import static java.sql.Types.NULL;
 
 public class Game {
+    public static final Game GAME = new Game();
 
     public static Window window;
     public static Renderer renderer;
 
-    private List<GameObject> gameObjects = new ArrayList<>();
+    private final List<GameObject> gameObjects = new ArrayList<>();
+    public final Camera camera = new Camera();
 
     public static void main(String[] args) {
-        System.load("C:\\Program Files\\RenderDoc\\renderdoc.dll");
-        var game = new Game();
-        game.run();
+        System.load("/home/alpha/Desktop/renderdoc_1.25/lib/librenderdoc.so");
+        GAME.run();
     }
 
     public void run() {
@@ -36,6 +38,7 @@ public class Game {
         renderer = new Renderer();
 
         var player = addGameObject(new Player());
+        addGameObject(camera);
 
         loop();
         window.terminate();
