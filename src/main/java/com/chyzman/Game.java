@@ -1,76 +1,54 @@
 package com.chyzman;
 
-import com.chyzman.object.Camera;
-import com.chyzman.object.GameObject;
-import com.chyzman.object.Player;
-import com.chyzman.render.Renderer;
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL43;
-import org.lwjgl.opengl.GLDebugMessageCallback;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import static java.sql.Types.NULL;
+import com.chyzman.component.Rotation.AngularVelocity;
+import com.chyzman.component.Rotation.Rotation;
+import com.chyzman.component.position.Gravity;
+import com.chyzman.component.position.Position;
+import com.chyzman.component.position.Velocity;
+import dev.dominion.ecs.api.Dominion;
+import com.chyzman.component.*;
+import dev.dominion.ecs.api.Scheduler;
 
 public class Game {
-    public static final Game GAME = new Game();
-
-    public static Window window;
-    public static Renderer renderer;
-
-    private final List<GameObject> gameObjects = new ArrayList<>();
-    public final Camera camera = new Camera();
+    public static final int TICK_RATE = 3;
+    public static final double TERMINAL_VELOCITY = 100d/(double)TICK_RATE;
 
     public static void main(String[] args) {
-//        System.load("/home/alpha/Desktop/renderdoc_1.25/lib/librenderdoc.so");
-        GAME.run();
-    }
+        Dominion game = Dominion.create();
 
-    public void run() {
-        window = new Window(640, 480);
+        game.createEntity(
+                "player",
+                new Position(0, 0, 0),
+                new Velocity(),
+                new Gravity(0, -9.8/TICK_RATE, 0),
+                new Rotation(),
+                new AngularVelocity(),
+                new Health(100, 100)
+        );
 
-        GL11.glEnable(GL43.GL_DEBUG_OUTPUT);
-        GL11.glEnable(GL43.GL_DEBUG_OUTPUT_SYNCHRONOUS);
-        GL43.glDebugMessageCallback(GLDebugMessageCallback.create((source, type, id, severity, length, message, userParam) -> {
-            System.out.println("GL CALLBACK: " +
-                    "source = 0x" + Integer.toHexString(source) + ", " +
-                    "type = 0x" + Integer.toHexString(type) + ", " +
-                    "id = " + id + ", " +
-                    "severity = 0x" + Integer.toHexString(severity) + ", " +
-                    "message = " + GLDebugMessageCallback.getMessage(length, message));
-        }), NULL);
-        GL43.glDebugMessageInsert(GL43.GL_DEBUG_SOURCE_OTHER, GL43.GL_DEBUG_TYPE_OTHER, 0, GL43.GL_DEBUG_SEVERITY_HIGH, "bruh");
+        Runnable system = () -> {
+            game.findEntitiesWith(Velocity.class, Gravity.class).forEach(result -> {
+                Velocity velocity = result.comp1();
+                Gravity gravity = result.comp2();
+                velocity.add(gravity);
+                if (velocity.lengthSquared() > Math.pow(TERMINAL_VELOCITY, 2)) {
+                    velocity.normalize().mul(TERMINAL_VELOCITY);
+                }
+            });
 
-        System.err.println("The um, the uh game is uh its running yeah.");
+            game.findEntitiesWith(Position.class, Velocity.class).forEach(result -> {
+                Position pos = result.comp1();
+                Velocity velocity = result.comp2();
+                pos.add(velocity);
+                System.out.printf("\r%s: Pos:(%s, %s, %s) Vel:(%s,%s,%s)", result.entity().getName(), pos.x, pos.y, pos.z, velocity.x*(double)TICK_RATE, velocity.y*(double)TICK_RATE, velocity.z*(double)TICK_RATE);
+            });
+        };
 
-        renderer = new Renderer();
+        Scheduler scheduler = game.createScheduler();
 
-        var player = addGameObject(new Player());
-        addGameObject(camera);
+        scheduler.schedule(system);
 
-        loop();
-        window.terminate();
-    }
+        scheduler.tickAtFixedRate(TICK_RATE);
 
-    private void loop() {
-        while(!window.shouldClose()) {
-            renderer.clear();
-
-            for(var gameObject : gameObjects) {
-                gameObject.update();
-            }
-
-            window.update();
-        }
-    }
-
-    public GameObject addGameObject(GameObject gameObject) {
-        gameObjects.add(gameObject);
-        return gameObject;
-    }
-
-    public void removeGameObject(GameObject gameObject) {
-        gameObjects.remove(gameObject);
     }
 }

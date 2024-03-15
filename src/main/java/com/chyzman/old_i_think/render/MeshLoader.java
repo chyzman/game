@@ -1,4 +1,4 @@
-package com.chyzman.render;
+package com.chyzman.old_i_think.render;
 
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;

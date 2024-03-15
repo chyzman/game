@@ -1,7 +1,7 @@
-package com.chyzman.render;
+package com.chyzman.old_i_think.render;
 
-import com.chyzman.Game;
-import com.chyzman.render.shader.ShaderTextured;
+import com.chyzman.old_i_think.Game;
+import com.chyzman.old_i_think.render.shader.ShaderTextured;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL13;
 import org.lwjgl.opengl.GL30;

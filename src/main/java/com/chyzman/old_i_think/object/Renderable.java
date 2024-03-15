@@ -1,8 +1,8 @@
-package com.chyzman.object;
+package com.chyzman.old_i_think.object;
 
-import com.chyzman.Game;
-import com.chyzman.render.Mesh;
-import com.chyzman.render.MeshLoader;
+import com.chyzman.old_i_think.Game;
+import com.chyzman.old_i_think.render.Mesh;
+import com.chyzman.old_i_think.render.MeshLoader;
 
 public abstract class Renderable extends GameObject {
     protected Mesh mesh = MeshLoader.createMesh(

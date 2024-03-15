@@ -1,4 +1,4 @@
-package com.chyzman.object;
+package com.chyzman.old_i_think.object;
 
 import org.joml.Vector3d;
 

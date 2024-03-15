@@ -1,4 +1,4 @@
-package com.chyzman;
+package com.chyzman.old_i_think;
 
 import org.joml.Matrix4f;
 import org.lwjgl.glfw.*;

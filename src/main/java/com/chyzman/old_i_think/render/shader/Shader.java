@@ -1,4 +1,4 @@
-package com.chyzman.render.shader;
+package com.chyzman.old_i_think.render.shader;
 
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
