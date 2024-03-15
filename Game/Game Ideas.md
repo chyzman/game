@@ -1,0 +1,17 @@
+- cubic chunk... chunk system
+- double based rendering cuz float floating point is bad
+	- like make all rendering methods we make take in doubles and then turn into floats if needed so there's no reason people should do what create did for their rendering
+- dynamic coordinate storage system?
+- actually separated fluid and block system?
+- multiparts/subblocks?
+- built in support for having shit like immersive portals actually work "perfectly" 
+	- this a bit of a long shot but like immersive portals for any portals we make would be lit af
+- unified armor/accessories/whatever the fuck else
+- gravity system that supports any direction?
+- generalize way more stuff then minecraft does
+	- a lot of player specific stuff in minecraft doesnt need to be and why the fuck should it be
+- make models like actually use class hierarchy
+	- why the fuck does like every entity in minecraft have its own sepperate head field istg
+- make every entity able to be controlled by a player so like morph mod n stuff is ez
+- anti-aliasing
+- built in cca type system
