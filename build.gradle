@@ -9,6 +9,7 @@ version = '0.0.0'
 repositories {
     mavenCentral()
     maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
+    maven { url "https://oss.sonatype.org/content/repositories/releases/" }
 }
 
 dependencies {
@@ -102,6 +103,8 @@ dependencies {
     runtimeOnly "org.lwjgl:lwjgl-zstd::$project.lwjglNatives"
 
     implementation "org.joml:joml:${jomlVersion}"
+
+    implementation "dev.dominion.ecs:dominion-ecs-engine:${dominionVersion}"
 }
 
 test {
