@@ -42,6 +42,12 @@ public class Camera extends GameObject {
         if (GLFW.glfwGetKey(window, GLFW.GLFW_KEY_D) == GLFW.GLFW_PRESS) {
             pos.add(new Vector3f(cameraFront).cross(cameraUp).normalize().mul(cameraSpeed));
         }
+        if (GLFW.glfwGetKey(window, GLFW.GLFW_KEY_SPACE) == GLFW.GLFW_PRESS) {
+            pos.add(0, cameraSpeed, 0);
+        }
+        if (GLFW.glfwGetKey(window, GLFW.GLFW_KEY_LEFT_SHIFT) == GLFW.GLFW_PRESS) {
+            pos.add(0, -cameraSpeed, 0);
+        }
     }
 
 
