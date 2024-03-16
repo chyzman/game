@@ -1,5 +1,8 @@
 package com.chyzman;
 
+import com.chyzman.component.position.Position;
+import com.chyzman.object.CameraConfiguration;
+import dev.dominion.ecs.api.Dominion;
 import org.joml.Matrix4f;
 import org.lwjgl.glfw.*;
 import org.lwjgl.opengl.*;
@@ -23,8 +26,12 @@ public class Window {
 
     private GLFWWindowSizeCallback windowSize;
 
-    public Window(int width, int height) {
+    private final Dominion dominion;
+
+    public Window(Dominion dominion, int width, int height) {
         init(width, height);
+
+        this.dominion = dominion;
     }
 
     private void init(int width, int height) {
@@ -70,7 +77,7 @@ public class Window {
 
         GLFW.glfwSetCursorPosCallback(this.window, (win, xpos, ypos) -> {
             if (win == this.window)
-                mouseManager.setCursorPos(xpos, ypos);
+                mouseManager.setCursorPos(dominion, xpos, ypos);
         });
 
         try (MemoryStack stack = stackPush()) {
@@ -94,7 +101,11 @@ public class Window {
 
         GLFW.glfwSetScrollCallback(window, (win, xOffset, yOffset) -> {
             if (window == win) {
-                Game.CAMERA.cameraSpeed *= 1 + (yOffset / 10);
+                for (var entityResult : dominion.findCompositionsWith(Position.class, CameraConfiguration.class)) {
+                    CameraConfiguration camera = entityResult.comp2();
+
+                    camera.cameraSpeed *= 1 + (yOffset / 10);
+                }
             }
         });
 
@@ -103,16 +114,24 @@ public class Window {
         GLFW.glfwSetWindowSizeCallback(window, windowSize = new GLFWWindowSizeCallback() {
             @Override
             public void invoke(long window, int width, int height) {
-                Game.window.height = height;
-                Game.window.width = width;
-                Game.window.aspectRatio = width / height;
-                GL11.glViewport(0, 0, Game.window.width, Game.window.height);
+                for (var entityResult : dominion.findCompositionsWith(Position.class, CameraConfiguration.class)) {
+                    CameraConfiguration camera = entityResult.comp2();
+
+                    Game.window.height = height;
+                    Game.window.width = width;
+                    Game.window.aspectRatio = width / height;
+                    GL11.glViewport(0, 0, Game.window.width, Game.window.height);
 //                projectionMatrix.ortho2D(-width/2f, width/2f, -height/2f, height/2f);
-                projectionMatrix.setPerspective((float)Math.toRadians(Game.CAMERA.fov), (float) width / (float) height, 0.1f, 1000f);
+                    projectionMatrix.setPerspective((float)Math.toRadians(camera.fov), (float) width / (float) height, 0.1f, 1000f);
+                }
             }
         });
-//        projectionMatrix.ortho2D(-this.width/2f, this.width/2f, -this.height/2f, this.height/2f);
-        projectionMatrix.perspective((float)Math.toRadians(Game.CAMERA.fov), (float) width / (float) height, 0.1f, 1000f);
+        for (var entityResult : dominion.findCompositionsWith(Position.class, CameraConfiguration.class)) {
+            CameraConfiguration camera = entityResult.comp2();
+
+            //projectionMatrix.ortho2D(-this.width/2f, this.width/2f, -this.height/2f, this.height/2f);
+            projectionMatrix.perspective((float) Math.toRadians(camera.fov), (float) width / (float) height, 0.1f, 1000f);
+        }
 
         GL.createCapabilities();
     }

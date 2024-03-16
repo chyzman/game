@@ -1,6 +1,9 @@
 package com.chyzman;
 
-import com.chyzman.object.Camera;
+import com.chyzman.component.position.Position;
+import com.chyzman.object.CameraConfiguration;
+import dev.dominion.ecs.api.Dominion;
+import dev.dominion.ecs.api.Results;
 import org.lwjgl.glfw.GLFW;
 
 public class MouseManager {
@@ -9,7 +12,7 @@ public class MouseManager {
 
     private double lastX, lastY;
 
-    public void setCursorPos(double mouseX, double mouseY) {
+    public void setCursorPos(Dominion dominion, double mouseX, double mouseY) {
         if (!grabbed)
             return;
         if (firstMouse) {
@@ -17,24 +20,27 @@ public class MouseManager {
             lastY = mouseY;
             firstMouse = false;
         }
-        Camera camera = Game.CAMERA;
 
-        double xOffset = mouseX - lastX;
-        double yOffset = lastY - mouseY;
-        lastX = mouseX;
-        lastY = mouseY;
+        for (var entityResult : dominion.findCompositionsWith(Position.class, CameraConfiguration.class)) {
+            CameraConfiguration camera = entityResult.comp2();
 
-        float sensitivity = 0.1f;
-        xOffset *= sensitivity;
-        yOffset *= sensitivity;
+            double xOffset = mouseX - lastX;
+            double yOffset = lastY - mouseY;
+            lastX = mouseX;
+            lastY = mouseY;
 
-        camera.yaw += xOffset;
-        camera.pitch += yOffset;
+            float sensitivity = 0.1f;
+            xOffset *= sensitivity;
+            yOffset *= sensitivity;
 
-        if (camera.pitch >= 89F)
-            camera.pitch = 89F;
-        if (camera.pitch <= -89F)
-            camera.pitch = -89F;
+            camera.yaw += xOffset;
+            camera.pitch += yOffset;
+
+            if (camera.pitch >= 89F)
+                camera.pitch = 89F;
+            if (camera.pitch <= -89F)
+                camera.pitch = -89F;
+        }
     }
 
     public void toggleGrabbed() {
