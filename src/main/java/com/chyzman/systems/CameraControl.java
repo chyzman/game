@@ -1,7 +1,6 @@
 package com.chyzman.systems;
 
 import com.chyzman.Game;
-import com.chyzman.component.Rotation.Rotation;
 import com.chyzman.component.position.Position;
 import com.chyzman.object.CameraConfiguration;
 import dev.dominion.ecs.api.Dominion;
@@ -9,13 +8,15 @@ import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.lwjgl.glfw.GLFW;
 
+import java.util.function.Supplier;
+
 public class CameraControl {
 
-    public static DomSystem create(Dominion dominion){
-        return DomSystem.create(dominion, "camera_control", CameraControl::update);
+    public static DomSystem create(Dominion dominion, Supplier<Double> deltaTime){
+        return DomSystem.create(dominion, "camera_control", deltaTime, CameraControl::update);
     }
 
-    private static void update(Dominion dominion){
+    private static void update(Dominion dominion, double deltaTime){
         for (var entityResult : dominion.findEntitiesWith(Position.class, CameraConfiguration.class)) {
             var pos = entityResult.comp1();
             var camera = entityResult.comp2();
@@ -34,7 +35,7 @@ public class CameraControl {
 
             long window = Game.window.window;
 
-            float localCameraSpeed = (float) (camera.cameraSpeed * Game.GAME.clientScheduler.deltaTime());
+            float localCameraSpeed = (float) (camera.cameraSpeed * deltaTime);
             if (GLFW.glfwGetKey(window, GLFW.GLFW_KEY_W) == GLFW.GLFW_PRESS) {
                 pos.add(new Vector3f(camera.cameraFront).mul(localCameraSpeed));
             }

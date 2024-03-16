@@ -52,7 +52,7 @@ public class Game {
         addGameObject(new CoolCube());
         addGameObject(new EpiclyRenderedTriangle());
 
-        clientScheduler.schedule(CameraControl.create(dominion));
+        clientScheduler.schedule(CameraControl.create(dominion, clientScheduler::deltaTime));
         logicScheduler.schedule(() -> Physics.update(dominion));
 
         loop();
