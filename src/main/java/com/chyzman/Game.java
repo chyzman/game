@@ -6,6 +6,7 @@ import com.chyzman.object.components.CoolCube;
 import com.chyzman.object.components.EpiclyRenderedTriangle;
 import com.chyzman.render.Renderer;
 import com.chyzman.systems.Font;
+import org.joml.Vector3f;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL43;
@@ -70,6 +71,8 @@ public class Game {
             for(var gameObject : gameObjects) {
                 gameObject.update();
             }
+
+            renderer.textRenderer.renderText("This is sample text", 25.0f, 25.0f, 1.0f, new Vector3f(0.5F, 0.8F, 0.2F));
 
             window.update();
         }

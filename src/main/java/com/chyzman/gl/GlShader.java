@@ -3,6 +3,8 @@ package com.chyzman.gl;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 import static org.lwjgl.opengl.GL45.*;
 
@@ -23,6 +25,14 @@ public class GlShader {
 
     public static GlShader fragment(InputStream source) {
         return loadAndCompile(source, glCreateShader(GL_FRAGMENT_SHADER));
+    }
+
+    public static GlShader vertex(String path) throws IOException {
+        return loadAndCompile(Files.newInputStream(Path.of("src/main/resources/shaders/" + path)), glCreateShader(GL_VERTEX_SHADER));
+    }
+
+    public static GlShader fragment(String path) throws IOException {
+        return loadAndCompile(Files.newInputStream(Path.of("src/main/resources/shaders/" + path)), glCreateShader(GL_FRAGMENT_SHADER));
     }
 
     private static GlShader loadAndCompile(InputStream source, int id) {
