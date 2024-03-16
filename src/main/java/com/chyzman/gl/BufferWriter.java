@@ -20,6 +20,10 @@ public class BufferWriter {
         this(64);
     }
 
+    public void rewind() {
+        this.data.rewind();
+    }
+
     public void float2(float a, float b) {
         this.ensureCapacity(FLOAT32_SIZE * 2);
         this.data.putFloat(a).putFloat(b);
@@ -48,7 +52,7 @@ public class BufferWriter {
     }
 
     private void ensureCapacity(int bytes) {
-        if (this.data.remaining() <= bytes) return;
+        if (this.data.remaining() >= bytes) return;
 
         var newBuffer = ByteBuffer.allocateDirect(data.capacity() * 2);
         newBuffer.put(this.data);

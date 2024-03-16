@@ -3,6 +3,7 @@ package com.chyzman.old_i_think;
 import com.chyzman.old_i_think.object.Camera;
 import com.chyzman.old_i_think.object.GameObject;
 import com.chyzman.old_i_think.object.Player;
+import com.chyzman.old_i_think.object.components.EpiclyRenderedTriangle;
 import com.chyzman.old_i_think.render.Renderer;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL11;
@@ -51,6 +52,7 @@ public class Game {
 
         var player = addGameObject(new Player());
         addGameObject(camera);
+        addGameObject(new EpiclyRenderedTriangle());
 
         loop();
         window.terminate();
