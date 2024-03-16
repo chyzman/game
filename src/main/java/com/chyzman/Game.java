@@ -52,8 +52,9 @@ public class Game {
 
 //        var player = addGameObject(new Player());
         addGameObject(camera);
-        addGameObject(new EpiclyRenderedTriangle());
         addGameObject(new CoolCube());
+        addGameObject(new EpiclyRenderedTriangle());
+
 
         loop();
         window.terminate();

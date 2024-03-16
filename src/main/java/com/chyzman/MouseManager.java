@@ -7,7 +7,7 @@ public class MouseManager {
     private boolean firstMouse = true;
     private boolean grabbed = false;
 
-    private double lastX = 400, lastY = 300;
+    private double lastX, lastY;
 
     public void setCursorPos(double mouseX, double mouseY) {
         if (!grabbed)
@@ -30,13 +30,23 @@ public class MouseManager {
 
         camera.yaw += xOffset;
         camera.pitch += yOffset;
+
+        if (camera.pitch >= 89F)
+            camera.pitch = 89F;
+        if (camera.pitch <= -89F)
+            camera.pitch = -89F;
     }
 
     public void toggleGrabbed() {
         grabbed = !grabbed;
-        if (grabbed)
+        lastX = (double) Game.window.width / 2; lastY = (double) Game.window.height / 2;
+        if (grabbed) {
+            GLFW.glfwSetCursorPos(Game.window.window, (double) Game.window.width / 2, (double) Game.window.height / 2);
             GLFW.glfwSetInputMode(Game.window.window, GLFW.GLFW_CURSOR, GLFW.GLFW_CURSOR_DISABLED);
-        else
+        } else {
+            GLFW.glfwSetCursorPos(Game.window.window, (double) Game.window.width / 2, (double) Game.window.height / 2);
             GLFW.glfwSetInputMode(Game.window.window, GLFW.GLFW_CURSOR, GLFW.GLFW_CURSOR_NORMAL);
+        }
+
     }
 }
