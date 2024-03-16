@@ -29,9 +29,9 @@ public class Window {
     private final Dominion dominion;
 
     public Window(Dominion dominion, int width, int height) {
-        init(width, height);
-
         this.dominion = dominion;
+
+        init(width, height);
     }
 
     private void init(int width, int height) {
