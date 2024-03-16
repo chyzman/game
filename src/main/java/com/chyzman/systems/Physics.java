@@ -1,6 +1,7 @@
 package com.chyzman.systems;
 
-import com.chyzman.Game;
+import com.chyzman.component.Rotation.AngularVelocity;
+import com.chyzman.component.Rotation.Rotation;
 import com.chyzman.component.position.Gravity;
 import com.chyzman.component.position.Position;
 import com.chyzman.component.position.Velocity;
@@ -12,7 +13,7 @@ public class Physics {
     public static final double TERMINAL_VELOCITY = 100d/(double) LOGIC_TICK_RATE;
 
     public static void update(Dominion dom) {
-        // update velocity of things with gravity
+        // update velocity of entities with gravity
         dom.findEntitiesWith(Velocity.class, Gravity.class).forEach(result -> {
             Velocity velocity = result.comp1();
             Gravity gravity = result.comp2();
@@ -22,7 +23,14 @@ public class Physics {
             }
         });
 
-        // update position of things with velocity
+        // update rotation of entities with angular velocity
+        dom.findEntitiesWith(Rotation.class, AngularVelocity.class).forEach(result -> {
+            Rotation rotation = result.comp1();
+            AngularVelocity angularVelocity = result.comp2();
+            rotation.add(angularVelocity);
+        });
+
+        // update position of entities with velocity
         dom.findEntitiesWith(Position.class, Velocity.class).forEach(result -> {
             Position pos = result.comp1();
             Velocity velocity = result.comp2();
