@@ -2,9 +2,13 @@ package com.chyzman.render;
 
 import com.chyzman.Game;
 import com.chyzman.systems.TextRenderer;
+import org.joml.Vector3d;
 import org.joml.Vector3f;
 import org.lwjgl.glfw.GLFW;
+import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GL11;
+
+import static org.lwjgl.opengl.GL45.*;
 
 public class Renderer {
     public double deltaTime = 0.0f;	// Time between current frame and last frame
@@ -12,6 +16,7 @@ public class Renderer {
     public double lastTime = 0.0f;
     private double framesPerSecond = 0.0f;
     public int fps;
+    public static Vector3d cameraPosition = new Vector3d(0.0f, 0.0f, 0.0f);
     public TextRenderer textRenderer = new TextRenderer();
 
     public void clear() {
@@ -39,7 +44,15 @@ public class Renderer {
     }
 
     public void renderDebug() {
-        textRenderer.renderText("FPS: " + fps, 25.0f, 25.0f, 1.0f, new Vector3f(0.5F, 0.8F, 0.2F));
+        var polygonMode = glGetInteger(GL_POLYGON_MODE);
+        if (polygonMode == GL_LINE) {
+            glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+        }
+        textRenderer.renderText("FPS: " + fps, 2.0f, 3.0f, 0.25f, new Vector3f(1f, 1f, 1f));
+        textRenderer.renderText("Pos:(" + cameraPosition.x + ", " + cameraPosition.y + ", " + cameraPosition.z + ")", 2.0f, 26.0f, 0.25f, new Vector3f(1f, 1f, 1f));
+        if (polygonMode == GL_LINE) {
+            glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+        }
     }
 
 }

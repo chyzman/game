@@ -3,6 +3,7 @@ package com.chyzman.systems;
 import com.chyzman.Game;
 import com.chyzman.component.position.Position;
 import com.chyzman.object.CameraConfiguration;
+import com.chyzman.render.Renderer;
 import dev.dominion.ecs.api.Dominion;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
@@ -19,6 +20,7 @@ public class CameraControl {
     private static void update(Dominion dominion, double deltaTime){
         for (var entityResult : dominion.findEntitiesWith(Position.class, CameraConfiguration.class)) {
             var pos = entityResult.comp1();
+            Renderer.cameraPosition = pos;
             var camera = entityResult.comp2();
 
             var yaw = camera.yaw;
