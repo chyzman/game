@@ -54,10 +54,9 @@ public class BufferWriter {
     private void ensureCapacity(int bytes) {
         if (this.data.remaining() >= bytes) return;
 
-        var newBuffer = ByteBuffer.allocateDirect(data.capacity() * 2);
+        var newBuffer = MemoryUtil.memRealloc(this.data, this.data.capacity() * 2);
         newBuffer.put(this.data);
 
-        MemoryUtil.memFree(this.data);
         this.data = newBuffer;
     }
 }
