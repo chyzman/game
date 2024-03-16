@@ -5,6 +5,7 @@ import com.chyzman.object.GameObject;
 import com.chyzman.object.components.CoolCube;
 import com.chyzman.object.components.EpiclyRenderedTriangle;
 import com.chyzman.render.Renderer;
+import com.chyzman.systems.Font;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL43;
@@ -54,7 +55,6 @@ public class Game {
         addGameObject(camera);
         addGameObject(new CoolCube());
         addGameObject(new EpiclyRenderedTriangle());
-
 
         loop();
         window.terminate();

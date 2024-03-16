@@ -3,7 +3,7 @@ package com.chyzman.systems;
 import com.chyzman.util.NibbleArray;
 
 public class Chunk {
-    public static final int CHUNK_SIZE = 32;
+    public static final int CHUNK_SIZE = 16;
     public final int x, y, z;
     private final NibbleArray blocks = new NibbleArray(16, CHUNK_SIZE * 3); // TODO: use nibble array for now
 
@@ -11,5 +11,9 @@ public class Chunk {
         this.x = x;
         this.y = y;
         this.z = z;
+    }
+
+    public void setBlock(int x, int y, int z) {
+
     }
 }
