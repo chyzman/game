@@ -1,5 +1,6 @@
 package com.chyzman;
 
+import com.chyzman.component.position.Position;
 import com.chyzman.gl.GlDebug;
 import com.chyzman.object.Camera;
 import com.chyzman.object.GameObject;
@@ -47,7 +48,7 @@ public class Game {
 
 //        var player = addGameObject(new Player());
 
-        cameraEntity = dominion.createEntity("camera", new Vector3f());
+        cameraEntity = dominion.createEntity("camera", new Position());
         addGameObject(new CoolCube());
         addGameObject(new EpiclyRenderedTriangle());
 

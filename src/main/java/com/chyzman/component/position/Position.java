@@ -2,7 +2,7 @@ package com.chyzman.component.position;
 
 import org.joml.Vector3d;
 
-public class Position extends Vector3d{
+public class Position extends Vector3d {
     public Position() {
     }
 

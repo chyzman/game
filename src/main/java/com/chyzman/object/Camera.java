@@ -1,6 +1,7 @@
 package com.chyzman.object;
 
 import com.chyzman.Game;
+import com.chyzman.component.position.Position;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.lwjgl.glfw.GLFW;
@@ -15,7 +16,7 @@ public class Camera {
     public void update() {
         Matrix4f transform = Game.window.getViewMatrix();
 
-        Vector3f pos = Game.GAME.cameraEntity.get(Vector3f.class);
+        Position pos = Game.GAME.cameraEntity.get(Position.class);
 
         Vector3f front = new Vector3f();
         front.x = (float) (Math.cos(Math.toRadians(yaw)) * Math.cos(Math.toRadians(pitch)));
@@ -50,8 +51,8 @@ public class Camera {
 
 
 
-    public Matrix4f getViewMatrix(Vector3f pos) {
-        var cameraPos = new Vector3f(pos.x, pos.y, pos.z);
+    public Matrix4f getViewMatrix(Position pos) {
+        var cameraPos = new Vector3f((float) pos.x, (float) pos.y, (float) pos.z);
         return new Matrix4f().lookAt(cameraPos, new Vector3f(cameraPos).add(cameraFront), cameraUp);
     }
 }
