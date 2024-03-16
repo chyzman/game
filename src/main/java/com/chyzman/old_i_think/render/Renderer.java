@@ -35,7 +35,7 @@ public class Renderer {
         program.use();
         program.uniformMat4("projection", window.getProjectionMatrix());
         program.uniformMat4("view", window.getViewMatrix());
-        program.uniformMat4("model", new Matrix4f());
+        program.uniformMat4("model", window.getModelMatrix());
         GL11.glEnable(GL11.GL_DEPTH_TEST);
         GL30.glBindVertexArray(mesh.getVaoID());
         GL13.glActiveTexture(GL13.GL_TEXTURE0);
@@ -43,10 +43,9 @@ public class Renderer {
         GL11.glDrawArrays(GL11.GL_TRIANGLES, 0, 12 * 3);
         GL30.glBindVertexArray(0);
 
-        window.getViewMatrix().translate(3, 0, 0);
+        window.getModelMatrix().translate(3, 0, 0);
 
-        program.uniformMat4("projection", window.getProjectionMatrix());
-        program.uniformMat4("view", window.getViewMatrix());
+        program.uniformMat4("model", window.getModelMatrix());
         GL30.glBindVertexArray(mesh.getVaoID());
         GL13.glActiveTexture(GL13.GL_TEXTURE0);
         GL11.glBindTexture(GL11.GL_TEXTURE_2D, mesh.getTexture());

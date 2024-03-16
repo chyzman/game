@@ -21,6 +21,7 @@ public class Window {
     private final MouseManager mouseManager = new MouseManager();
     private final Matrix4f projectionMatrix = new Matrix4f();
     private final Matrix4f transformMatrix = new Matrix4f();
+    private final Matrix4f modelMatrix = new Matrix4f();
 
     private GLFWWindowSizeCallback windowSize;
 
@@ -151,6 +152,10 @@ public class Window {
     }
 
     public Matrix4f getViewMatrix() {
+        return transformMatrix;
+    }
+
+    public Matrix4f getModelMatrix() {
         return transformMatrix;
     }
 }
