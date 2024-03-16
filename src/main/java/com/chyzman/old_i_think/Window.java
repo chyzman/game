@@ -1,6 +1,7 @@
 package com.chyzman.old_i_think;
 
 import org.joml.Matrix4f;
+import org.joml.Vector3f;
 import org.lwjgl.glfw.*;
 import org.lwjgl.opengl.*;
 import org.lwjgl.system.MemoryStack;
@@ -16,6 +17,10 @@ public class Window {
     public int width;
     public int height;
     public int aspectRatio;
+    private boolean wireframe = false;
+    private final MouseManager mouseManager = new MouseManager();
+    private final Matrix4f projectionMatrix = new Matrix4f();
+    private final Matrix4f transformMatrix = new Matrix4f();
 
     private GLFWWindowSizeCallback windowSize;
 
@@ -48,27 +53,45 @@ public class Window {
         }
 
         GLFW.glfwSetKeyCallback(window, (window, key, scancode, action, mods) -> {
-            if (window == this.window) {
+            if (window == this.window && (action == GLFW.GLFW_PRESS || action == GLFW.GLFW_REPEAT)) {
                 float xa = 0;
                 float ya = 0;
                 float za = 0;
+                var camera = Game.GAME.camera;
+                var cameraPos = camera.pos();
+
+
+                float cameraSpeed = 2.5f * Game.GAME.deltaTime;
                 if (key == GLFW.GLFW_KEY_W) {
-                    xa = 1.0F;
+                    cameraPos.add(new Vector3f(camera.cameraFront).mul(cameraSpeed));
                 }
                 if (key == GLFW.GLFW_KEY_S) {
-                    xa = -1.0F;
+                    cameraPos.sub(new Vector3f(camera.cameraFront).mul(cameraSpeed));
+                }
+                if (key == GLFW.GLFW_KEY_A) {
+                    cameraPos.sub(new Vector3f(camera.cameraFront).cross(camera.cameraUp).normalize().mul(cameraSpeed));
+                }
+                if (key == GLFW.GLFW_KEY_D) {
+                    cameraPos.add(new Vector3f(camera.cameraFront).cross(camera.cameraUp).normalize().mul(cameraSpeed));
                 }
 
-                float dist = xa * xa + za * za;
-                if (dist < 0.01f) {
-                    return;
+                if (key == GLFW.GLFW_KEY_T) {
+                    mouseManager.toggleGrabbed();
                 }
-                dist = (float)Math.sqrt(dist);
 
-                float sin = (float)Math.sin((double)Game.GAME.camera.yaw * Math.PI / 180.0);
-                float cos = (float)Math.cos((double)Game.GAME.camera.yaw * Math.PI / 180.0);
-                Game.GAME.camera.deltaPos.add((xa *= dist) * cos - (za *= dist) * sin, 0, za * cos + xa * sin);
+                if (key == GLFW.GLFW_KEY_B) {
+                    if (wireframe)
+                        GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, GL11.GL_LINE);
+                    else
+                        GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, GL11.GL_FILL);
+                    wireframe = !wireframe;
+                }
             }
+        });
+
+        GLFW.glfwSetCursorPosCallback(this.window, (win, xpos, ypos) -> {
+            if (win == this.window)
+                mouseManager.setCursorPos(xpos, ypos);
         });
 
         try (MemoryStack stack = stackPush()) {
@@ -97,8 +120,11 @@ public class Window {
                 Game.window.width = width;
                 Game.window.aspectRatio = width / height;
                 GL11.glViewport(0, 0, Game.window.width, Game.window.height);
+//                projectionMatrix.ortho2D(-width/2f, width/2f, -height/2f, height/2f);
             }
         });
+//        projectionMatrix.ortho2D(-this.width/2f, this.width/2f, -this.height/2f, this.height/2f);
+        projectionMatrix.perspective((float)Math.toRadians(45), (float) width / (float) height, 0.1f, 100f);
 
         GL.createCapabilities();
     }
@@ -121,6 +147,10 @@ public class Window {
     }
 
     public Matrix4f getProjectionMatrix() {
-        return new Matrix4f().ortho2D(-this.width/2f, this.width/2f, -this.height/2f, this.height/2f);
+        return projectionMatrix;
+    }
+
+    public Matrix4f getViewMatrix() {
+        return transformMatrix;
     }
 }

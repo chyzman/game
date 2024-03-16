@@ -4,6 +4,7 @@ import com.chyzman.old_i_think.object.Camera;
 import com.chyzman.old_i_think.object.GameObject;
 import com.chyzman.old_i_think.object.Player;
 import com.chyzman.old_i_think.render.Renderer;
+import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL43;
 import org.lwjgl.opengl.GLDebugMessageCallback;
@@ -18,6 +19,8 @@ public class Game {
 
     public static Window window;
     public static Renderer renderer;
+    public float deltaTime = 0.0f;	// Time between current frame and last frame
+    public float lastFrame = 0.0f; // Time of last frame
 
     private final List<GameObject> gameObjects = new ArrayList<>();
     public final Camera camera = new Camera();
@@ -55,6 +58,9 @@ public class Game {
 
     private void loop() {
         while(!window.shouldClose()) {
+            float currentFrame = (float) GLFW.glfwGetTime();
+            deltaTime = currentFrame - lastFrame;
+            lastFrame = currentFrame;
             renderer.clear();
 
             for(var gameObject : gameObjects) {

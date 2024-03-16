@@ -1,8 +1,13 @@
 package com.chyzman.old_i_think.object;
 
+import com.chyzman.old_i_think.object.components.Component;
 import org.joml.Vector3d;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public abstract class GameObject {
+    protected final List<Component> components = new ArrayList<>();
     protected Vector3d pos = new Vector3d();
 
     public Vector3d pos() {
