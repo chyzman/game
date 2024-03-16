@@ -71,5 +71,9 @@ public class GlProgram {
     private int uniformLocation(String uniform) {
         return this.uniformCache.computeIfAbsent(uniform, uniformName -> glGetUniformLocation(this.id, uniformName));
     }
+
+    public int getAttributeLocation(String attribute) {
+        return glGetAttribLocation(this.id, attribute);
+    }
 }
 

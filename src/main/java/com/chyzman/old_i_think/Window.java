@@ -61,7 +61,6 @@ public class Window {
                 var camera = Game.GAME.camera;
                 var cameraPos = camera.pos();
 
-
                 float cameraSpeed = 2.5f * Game.GAME.deltaTime;
                 if (key == GLFW.GLFW_KEY_W) {
                     cameraPos.add(new Vector3f(camera.cameraFront).mul(cameraSpeed));
