@@ -10,6 +10,8 @@ public class Camera extends GameObject {
     public Vector3d deltaPos = new Vector3d();
     public Vector3f cameraFront = new Vector3f(0.0f, 0.0f, -1.0f);
     public Vector3f cameraUp    = new Vector3f(0.0f, 1.0f,  0.0f);
+    public float fov = 90;
+    public float cameraSpeed = 2.5f;
     public float pitch, yaw;
 
     @Override
@@ -28,25 +30,26 @@ public class Camera extends GameObject {
         transform.set(getViewMatrix());
 
         long window = Game.window.window;
-        float cameraSpeed = 2.5f * Game.GAME.deltaTime;
 
+
+        float localCameraSpeed = cameraSpeed * Game.GAME.deltaTime;
         if (GLFW.glfwGetKey(window, GLFW.GLFW_KEY_W) == GLFW.GLFW_PRESS) {
-            pos.add(new Vector3f(cameraFront).mul(cameraSpeed));
+            pos.add(new Vector3f(cameraFront).mul(localCameraSpeed));
         }
         if (GLFW.glfwGetKey(window, GLFW.GLFW_KEY_S) == GLFW.GLFW_PRESS) {
-            pos.sub(new Vector3f(cameraFront).mul(cameraSpeed));
+            pos.sub(new Vector3f(cameraFront).mul(localCameraSpeed));
         }
         if (GLFW.glfwGetKey(window, GLFW.GLFW_KEY_A) == GLFW.GLFW_PRESS) {
-            pos.sub(new Vector3f(cameraFront).cross(cameraUp).normalize().mul(cameraSpeed));
+            pos.sub(new Vector3f(cameraFront).cross(cameraUp).normalize().mul(localCameraSpeed));
         }
         if (GLFW.glfwGetKey(window, GLFW.GLFW_KEY_D) == GLFW.GLFW_PRESS) {
-            pos.add(new Vector3f(cameraFront).cross(cameraUp).normalize().mul(cameraSpeed));
+            pos.add(new Vector3f(cameraFront).cross(cameraUp).normalize().mul(localCameraSpeed));
         }
         if (GLFW.glfwGetKey(window, GLFW.GLFW_KEY_SPACE) == GLFW.GLFW_PRESS) {
-            pos.add(0, cameraSpeed, 0);
+            pos.add(0, localCameraSpeed, 0);
         }
         if (GLFW.glfwGetKey(window, GLFW.GLFW_KEY_LEFT_SHIFT) == GLFW.GLFW_PRESS) {
-            pos.add(0, -cameraSpeed, 0);
+            pos.add(0, -localCameraSpeed, 0);
         }
     }
 

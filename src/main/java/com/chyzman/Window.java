@@ -13,7 +13,6 @@ import static org.lwjgl.system.MemoryStack.stackPush;
 
 public class Window {
     public long window;
-
     public int width;
     public int height;
     public int aspectRatio;
@@ -94,6 +93,12 @@ public class Window {
             GLFW.glfwShowWindow(window);
         }
 
+        GLFW.glfwSetScrollCallback(window, (win, xOffset, yOffset) -> {
+            if (window == win) {
+                Game.GAME.camera.cameraSpeed *= 1 + (yOffset / 10);
+            }
+        });
+
         GLFW.glfwSetWindowSizeCallback(window, windowSize = new GLFWWindowSizeCallback() {
             @Override
             public void invoke(long window, int width, int height) {
@@ -102,10 +107,11 @@ public class Window {
                 Game.window.aspectRatio = width / height;
                 GL11.glViewport(0, 0, Game.window.width, Game.window.height);
 //                projectionMatrix.ortho2D(-width/2f, width/2f, -height/2f, height/2f);
+                projectionMatrix.setPerspective((float)Math.toRadians(Game.GAME.camera.fov), (float) width / (float) height, 0.1f, 1000f);
             }
         });
 //        projectionMatrix.ortho2D(-this.width/2f, this.width/2f, -this.height/2f, this.height/2f);
-        projectionMatrix.perspective((float)Math.toRadians(45), (float) width / (float) height, 0.1f, 100f);
+        projectionMatrix.perspective((float)Math.toRadians(Game.GAME.camera.fov), (float) width / (float) height, 0.1f, 1000f);
 
         GL.createCapabilities();
     }
