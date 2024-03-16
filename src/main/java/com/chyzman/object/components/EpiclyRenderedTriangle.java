@@ -7,6 +7,7 @@ import com.chyzman.gl.VertexDescriptors;
 import com.chyzman.Game;
 import com.chyzman.object.GameObject;
 import org.joml.Matrix4f;
+import org.lwjgl.system.Library;
 
 import java.io.IOException;
 import java.nio.file.Files;

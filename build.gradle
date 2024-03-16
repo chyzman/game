@@ -11,6 +11,7 @@ repositories {
     mavenLocal()
     maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
     maven { url "https://oss.sonatype.org/content/repositories/releases/" }
+    maven { url "https://maven.wispforest.io/releases/" }
 }
 
 dependencies {
@@ -106,6 +107,10 @@ dependencies {
     implementation "org.joml:joml:${jomlVersion}"
 
     implementation "dev.dominion.ecs:dominion-ecs-engine:${dominionVersion}"
+
+    implementation "io.wispforest:endec:0.1.0-pre.1"
+    implementation "io.wispforest.endec:gson:0.1.0-pre.1"
+    implementation "io.wispforest.endec:netty:0.1.0-pre.1"
 }
 
 test {
