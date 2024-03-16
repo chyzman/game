@@ -21,7 +21,7 @@ public class MouseManager {
             firstMouse = false;
         }
 
-        for (var entityResult : dominion.findCompositionsWith(Position.class, CameraConfiguration.class)) {
+        for (var entityResult : dominion.findEntitiesWith(Position.class, CameraConfiguration.class)) {
             CameraConfiguration camera = entityResult.comp2();
 
             double xOffset = mouseX - lastX;

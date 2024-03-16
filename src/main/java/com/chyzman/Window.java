@@ -101,7 +101,7 @@ public class Window {
 
         GLFW.glfwSetScrollCallback(window, (win, xOffset, yOffset) -> {
             if (window == win) {
-                for (var entityResult : dominion.findCompositionsWith(Position.class, CameraConfiguration.class)) {
+                for (var entityResult : dominion.findEntitiesWith(Position.class, CameraConfiguration.class)) {
                     CameraConfiguration camera = entityResult.comp2();
 
                     camera.cameraSpeed *= 1 + (yOffset / 10);
@@ -114,7 +114,7 @@ public class Window {
         GLFW.glfwSetWindowSizeCallback(window, windowSize = new GLFWWindowSizeCallback() {
             @Override
             public void invoke(long window, int width, int height) {
-                for (var entityResult : dominion.findCompositionsWith(Position.class, CameraConfiguration.class)) {
+                for (var entityResult : dominion.findEntitiesWith(Position.class, CameraConfiguration.class)) {
                     CameraConfiguration camera = entityResult.comp2();
 
                     Game.window.height = height;
@@ -126,7 +126,7 @@ public class Window {
                 }
             }
         });
-        for (var entityResult : dominion.findCompositionsWith(Position.class, CameraConfiguration.class)) {
+        for (var entityResult : dominion.findEntitiesWith(Position.class, CameraConfiguration.class)) {
             CameraConfiguration camera = entityResult.comp2();
 
             //projectionMatrix.ortho2D(-this.width/2f, this.width/2f, -this.height/2f, this.height/2f);
