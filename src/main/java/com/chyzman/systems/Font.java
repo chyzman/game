@@ -11,7 +11,7 @@ public class Font {
                 throw new RuntimeException("ERROR::FREETYPE: Could not init FreeType Library");
             }
 
-            if (FreeType.FT_New_Face(freeType.get(), font, 0, stack.callocPointer(1)) != 0) {
+            if (FreeType.FT_New_Face(freeType.get(), "src/main/resources/fonts/" + font, 0, stack.callocPointer(1)) != 0) {
                 throw new RuntimeException("ERROR::FREETYPE: Failed to load font");
             }
         }

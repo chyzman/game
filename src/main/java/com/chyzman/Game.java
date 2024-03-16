@@ -55,7 +55,6 @@ public class Game {
         addGameObject(camera);
         addGameObject(new CoolCube());
         addGameObject(new EpiclyRenderedTriangle());
-//        new Font("fonts/arial.ttf");
 
         loop();
         window.terminate();
