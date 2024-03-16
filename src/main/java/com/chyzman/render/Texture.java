@@ -1,4 +1,4 @@
-package com.chyzman.old_i_think.render;
+package com.chyzman.render;
 
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL30;
@@ -12,7 +12,7 @@ import java.util.HashMap;
 
 public class Texture {
 
-    private static HashMap<String, Integer> idMap = new HashMap<>();
+    private static final HashMap<String, Integer> idMap = new HashMap<>();
 
     public static int loadTexture(String texture) {
         if (idMap.containsKey(texture)) {

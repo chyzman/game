@@ -1,11 +1,11 @@
-package com.chyzman.old_i_think.object.components;
+package com.chyzman.object.components;
 
 import com.chyzman.gl.GlProgram;
 import com.chyzman.gl.GlShader;
 import com.chyzman.gl.MeshBuffer;
 import com.chyzman.gl.VertexDescriptors;
-import com.chyzman.old_i_think.Game;
-import com.chyzman.old_i_think.object.GameObject;
+import com.chyzman.Game;
+import com.chyzman.object.GameObject;
 import org.joml.Matrix4f;
 
 import java.io.IOException;

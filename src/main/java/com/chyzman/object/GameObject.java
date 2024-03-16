@@ -1,6 +1,6 @@
-package com.chyzman.old_i_think.object;
+package com.chyzman.object;
 
-import com.chyzman.old_i_think.object.components.Component;
+import com.chyzman.object.components.Component;
 import org.joml.Vector3d;
 
 import java.util.ArrayList;

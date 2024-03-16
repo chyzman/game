@@ -1,6 +1,6 @@
-package com.chyzman.old_i_think.object;
+package com.chyzman.object;
 
-import com.chyzman.old_i_think.Game;
+import com.chyzman.Game;
 import org.joml.Matrix4f;
 import org.joml.Vector3d;
 import org.joml.Vector3f;

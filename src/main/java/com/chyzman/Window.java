@@ -1,4 +1,4 @@
-package com.chyzman.old_i_think;
+package com.chyzman;
 
 import org.joml.Matrix4f;
 import org.joml.Vector3f;

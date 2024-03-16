@@ -1,4 +1,4 @@
-package com.chyzman.old_i_think.util;
+package com.chyzman.util;
 
 public class Identifier implements Comparable<Identifier> {
     // TODO: Endec

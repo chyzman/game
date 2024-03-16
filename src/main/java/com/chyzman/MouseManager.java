@@ -1,6 +1,6 @@
-package com.chyzman.old_i_think;
+package com.chyzman;
 
-import com.chyzman.old_i_think.object.Camera;
+import com.chyzman.object.Camera;
 import org.lwjgl.glfw.GLFW;
 
 public class MouseManager {

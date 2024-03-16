@@ -1,54 +1,85 @@
 package com.chyzman;
 
-import com.chyzman.component.Rotation.AngularVelocity;
-import com.chyzman.component.Rotation.Rotation;
-import com.chyzman.component.position.Gravity;
-import com.chyzman.component.position.Position;
-import com.chyzman.component.position.Velocity;
-import dev.dominion.ecs.api.Dominion;
-import com.chyzman.component.*;
-import dev.dominion.ecs.api.Scheduler;
+import com.chyzman.object.Camera;
+import com.chyzman.object.GameObject;
+import com.chyzman.object.components.CoolCube;
+import com.chyzman.object.components.EpiclyRenderedTriangle;
+import com.chyzman.render.Renderer;
+import org.lwjgl.glfw.GLFW;
+import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL43;
+import org.lwjgl.opengl.GLDebugMessageCallback;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static java.sql.Types.NULL;
 
 public class Game {
-    public static final int TICK_RATE = 3; //will be 64 in the real game but is 3 so u can see shit happening
-    public static final double TERMINAL_VELOCITY = 100d/(double)TICK_RATE;
+    public static final Game GAME = new Game();
+
+    public static Window window;
+    public static Renderer renderer;
+    public float deltaTime = 0.0f;	// Time between current frame and last frame
+    public float lastFrame = 0.0f; // Time of last frame
+
+    private final List<GameObject> gameObjects = new ArrayList<>();
+    public final Camera camera = new Camera();
 
     public static void main(String[] args) {
-        Dominion game = Dominion.create();
+//        System.load("/home/alpha/Desktop/renderdoc_1.25/lib/librenderdoc.so");
+        GAME.run();
+    }
 
-        game.createEntity(
-                "player",
-                new Position(0, 0, 0),
-                new Velocity(),
-                new Gravity(0, -9.8/TICK_RATE, 0),
-                new Rotation(),
-                new AngularVelocity(),
-                new Health(100, 100)
-        );
+    public void run() {
+        window = new Window(640, 480);
 
-        Runnable system = () -> {
-            game.findEntitiesWith(Velocity.class, Gravity.class).forEach(result -> {
-                Velocity velocity = result.comp1();
-                Gravity gravity = result.comp2();
-                velocity.add(gravity);
-                if (velocity.lengthSquared() > Math.pow(TERMINAL_VELOCITY, 2)) {
-                    velocity.normalize().mul(TERMINAL_VELOCITY);
-                }
-            });
+        GL11.glEnable(GL43.GL_DEBUG_OUTPUT);
+        GL11.glEnable(GL43.GL_DEBUG_OUTPUT_SYNCHRONOUS);
+        GL43.glDebugMessageCallback(GLDebugMessageCallback.create((source, type, id, severity, length, message, userParam) -> {
+            System.out.println("GL CALLBACK: " +
+                    "source = 0x" + Integer.toHexString(source) + ", " +
+                    "type = 0x" + Integer.toHexString(type) + ", " +
+                    "id = " + id + ", " +
+                    "severity = 0x" + Integer.toHexString(severity) + ", " +
+                    "message = " + GLDebugMessageCallback.getMessage(length, message));
+        }), NULL);
+        GL43.glDebugMessageInsert(GL43.GL_DEBUG_SOURCE_OTHER, GL43.GL_DEBUG_TYPE_OTHER, 0, GL43.GL_DEBUG_SEVERITY_HIGH, "bruh");
 
-            game.findEntitiesWith(Position.class, Velocity.class).forEach(result -> {
-                Position pos = result.comp1();
-                Velocity velocity = result.comp2();
-                pos.add(velocity);
-                System.out.printf("\r%s: Pos:(%s, %s, %s) Vel:(%s,%s,%s)", result.entity().getName(), pos.x, pos.y, pos.z, velocity.x*(double)TICK_RATE, velocity.y*(double)TICK_RATE, velocity.z*(double)TICK_RATE);
-            });
-        };
+        System.err.println("The um, the uh game is uh its running yeah.");
 
-        Scheduler scheduler = game.createScheduler();
+        renderer = new Renderer();
 
-        scheduler.schedule(system);
+//        var player = addGameObject(new Player());
+        addGameObject(camera);
+        addGameObject(new EpiclyRenderedTriangle());
+        addGameObject(new CoolCube());
 
-        scheduler.tickAtFixedRate(TICK_RATE);
+        loop();
+        window.terminate();
+    }
 
+    private void loop() {
+        while(!window.shouldClose()) {
+            float currentFrame = (float) GLFW.glfwGetTime();
+            deltaTime = currentFrame - lastFrame;
+            lastFrame = currentFrame;
+            renderer.clear();
+
+            for(var gameObject : gameObjects) {
+                gameObject.update();
+            }
+
+            window.update();
+        }
+    }
+
+    public GameObject addGameObject(GameObject gameObject) {
+        gameObjects.add(gameObject);
+        return gameObject;
+    }
+
+    public void removeGameObject(GameObject gameObject) {
+        gameObjects.remove(gameObject);
     }
 }
