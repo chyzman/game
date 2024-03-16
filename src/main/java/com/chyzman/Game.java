@@ -22,10 +22,8 @@ public class Game {
 
     public static Window window;
     public static Renderer renderer;
-    public float deltaTime = 0.0f;	// Time between current frame and last frame
-    public float lastFrame = 0.0f; // Time of last frame
 
-    private final List<GameObject> gameObjects = new ArrayList<>();
+    public final List<GameObject> gameObjects = new ArrayList<>();
     public final Camera camera = new Camera();
 
     public static void main(String[] args) {
@@ -64,15 +62,9 @@ public class Game {
     private void loop() {
         while(!window.shouldClose()) {
             float currentFrame = (float) GLFW.glfwGetTime();
-            deltaTime = currentFrame - lastFrame;
-            lastFrame = currentFrame;
             renderer.clear();
 
-            for(var gameObject : gameObjects) {
-                gameObject.update();
-            }
-
-            renderer.textRenderer.renderText("This is sample text", 25.0f, 25.0f, 1.0f, new Vector3f(0.5F, 0.8F, 0.2F));
+            renderer.update();
 
             window.update();
         }

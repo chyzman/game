@@ -2,12 +2,10 @@ package com.chyzman.object;
 
 import com.chyzman.Game;
 import org.joml.Matrix4f;
-import org.joml.Vector3d;
 import org.joml.Vector3f;
 import org.lwjgl.glfw.GLFW;
 
 public class Camera extends GameObject {
-    public Vector3d deltaPos = new Vector3d();
     public Vector3f cameraFront = new Vector3f(0.0f, 0.0f, -1.0f);
     public Vector3f cameraUp    = new Vector3f(0.0f, 1.0f,  0.0f);
     public float fov = 90;
@@ -32,7 +30,7 @@ public class Camera extends GameObject {
         long window = Game.window.window;
 
 
-        float localCameraSpeed = cameraSpeed * Game.GAME.deltaTime;
+        float localCameraSpeed = (float) (cameraSpeed * Game.renderer.deltaTime);
         if (GLFW.glfwGetKey(window, GLFW.GLFW_KEY_W) == GLFW.GLFW_PRESS) {
             pos.add(new Vector3f(cameraFront).mul(localCameraSpeed));
         }
