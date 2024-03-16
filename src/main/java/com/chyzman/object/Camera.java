@@ -5,14 +5,13 @@ import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.lwjgl.glfw.GLFW;
 
-public class Camera extends GameObject {
+public class Camera {
     public Vector3f cameraFront = new Vector3f(0.0f, 0.0f, -1.0f);
     public Vector3f cameraUp    = new Vector3f(0.0f, 1.0f,  0.0f);
     public float fov = 90;
     public float cameraSpeed = 2.5f;
     public float pitch, yaw;
 
-    @Override
     public void update() {
         Matrix4f transform = Game.window.getViewMatrix();
 

@@ -48,7 +48,6 @@ public class Game {
 //        var player = addGameObject(new Player());
 
         cameraEntity = dominion.createEntity("camera", new Vector3f());
-//        addGameObject(CAMERA);
         addGameObject(new CoolCube());
         addGameObject(new EpiclyRenderedTriangle());
 
