@@ -7,16 +7,18 @@ import com.chyzman.object.GameObject;
 import com.chyzman.object.components.CoolCube;
 import com.chyzman.object.components.EpiclyRenderedTriangle;
 import com.chyzman.render.Renderer;
+import com.chyzman.systems.Physics;
 import dev.dominion.ecs.api.Dominion;
 import dev.dominion.ecs.api.Entity;
 import dev.dominion.ecs.api.Scheduler;
-import org.joml.Vector3f;
 import org.lwjgl.opengl.GL45;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class Game {
+    public static final int LOGIC_TICK_RATE = 64;
+
     public static final Game GAME = new Game();
     public static final Camera CAMERA = new Camera();
 
@@ -53,10 +55,11 @@ public class Game {
         addGameObject(new EpiclyRenderedTriangle());
 
         clientScheduler.schedule(CAMERA::update);
+        logicScheduler.schedule(() -> Physics.update(dominion));
 
         loop();
 
-        logicScheduler.tickAtFixedRate(20);
+        logicScheduler.tickAtFixedRate(LOGIC_TICK_RATE);
         window.terminate();
     }
 
