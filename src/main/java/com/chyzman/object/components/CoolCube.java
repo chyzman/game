@@ -28,42 +28,42 @@ public class CoolCube extends GameObject {
         }
 
         this.mesh = new MeshBuffer<>(VertexDescriptors.POSITION, program);
-        mesh.builder.vertex(-1.0f,-1.0f,-1.0f); // triangle 1 : begin
-        mesh.builder.vertex(-1.0f,-1.0f, 1.0f);
-        mesh.builder.vertex(-1.0f, 1.0f, 1.0f); // triangle 1 : end
-        mesh.builder.vertex(1.0f, 1.0f,-1.0f); // triangle 2 : begin
-        mesh.builder.vertex(-1.0f,-1.0f,-1.0f);
-        mesh.builder.vertex(-1.0f, 1.0f,-1.0f); // triangle 2 : end
-        mesh.builder.vertex(1.0f,-1.0f, 1.0f);
-        mesh.builder.vertex(-1.0f,-1.0f,-1.0f);
-        mesh.builder.vertex(1.0f,-1.0f,-1.0f);
-        mesh.builder.vertex(1.0f, 1.0f,-1.0f);
-        mesh.builder.vertex(1.0f,-1.0f,-1.0f);
-        mesh.builder.vertex(-1.0f,-1.0f,-1.0f);
-        mesh.builder.vertex(-1.0f,-1.0f,-1.0f);
-        mesh.builder.vertex(-1.0f, 1.0f, 1.0f);
-        mesh.builder.vertex(-1.0f, 1.0f,-1.0f);
-        mesh.builder.vertex(1.0f,-1.0f, 1.0f);
-        mesh.builder.vertex(-1.0f,-1.0f, 1.0f);
-        mesh.builder.vertex(-1.0f,-1.0f,-1.0f);
-        mesh.builder.vertex(-1.0f, 1.0f, 1.0f);
-        mesh.builder.vertex(-1.0f,-1.0f, 1.0f);
-        mesh.builder.vertex(1.0f,-1.0f, 1.0f);
+        mesh.builder.vertex(0.0f,0.0f,0.0f); // triangle 1 : begin
+        mesh.builder.vertex(0.0f,0.0f, 1.0f);
+        mesh.builder.vertex(0.0f, 1.0f, 1.0f); // triangle 1 : end
+        mesh.builder.vertex(1.0f, 1.0f,0.0f); // triangle 2 : begin
+        mesh.builder.vertex(0.0f,0.0f,0.0f);
+        mesh.builder.vertex(0.0f, 1.0f,0.0f); // triangle 2 : end
+        mesh.builder.vertex(1.0f,0.0f, 1.0f);
+        mesh.builder.vertex(0.0f,0.0f,0.0f);
+        mesh.builder.vertex(1.0f,0.0f,0.0f);
+        mesh.builder.vertex(1.0f, 1.0f,0.0f);
+        mesh.builder.vertex(1.0f,0.0f,0.0f);
+        mesh.builder.vertex(0.0f,0.0f,0.0f);
+        mesh.builder.vertex(0.0f,0.0f,0.0f);
+        mesh.builder.vertex(0.0f, 1.0f, 1.0f);
+        mesh.builder.vertex(0.0f, 1.0f,0.0f);
+        mesh.builder.vertex(1.0f,0.0f, 1.0f);
+        mesh.builder.vertex(0.0f,0.0f, 1.0f);
+        mesh.builder.vertex(0.0f,0.0f,0.0f);
+        mesh.builder.vertex(0.0f, 1.0f, 1.0f);
+        mesh.builder.vertex(0.0f,0.0f, 1.0f);
+        mesh.builder.vertex(1.0f,0.0f, 1.0f);
         mesh.builder.vertex(1.0f, 1.0f, 1.0f);
-        mesh.builder.vertex(1.0f,-1.0f,-1.0f);
-        mesh.builder.vertex(1.0f, 1.0f,-1.0f);
-        mesh.builder.vertex(1.0f,-1.0f,-1.0f);
+        mesh.builder.vertex(1.0f,0.0f,0.0f);
+        mesh.builder.vertex(1.0f, 1.0f,0.0f);
+        mesh.builder.vertex(1.0f,0.0f,0.0f);
         mesh.builder.vertex(1.0f, 1.0f, 1.0f);
-        mesh.builder.vertex(1.0f,-1.0f, 1.0f);
+        mesh.builder.vertex(1.0f,0.0f, 1.0f);
         mesh.builder.vertex(1.0f, 1.0f, 1.0f);
-        mesh.builder.vertex(1.0f, 1.0f,-1.0f);
-        mesh.builder.vertex(-1.0f, 1.0f,-1.0f);
+        mesh.builder.vertex(1.0f, 1.0f,0.0f);
+        mesh.builder.vertex(0.0f, 1.0f,0.0f);
         mesh.builder.vertex(1.0f, 1.0f, 1.0f);
-        mesh.builder.vertex(-1.0f, 1.0f,-1.0f);
-        mesh.builder.vertex(-1.0f, 1.0f, 1.0f);
+        mesh.builder.vertex(0.0f, 1.0f,0.0f);
+        mesh.builder.vertex(0.0f, 1.0f, 1.0f);
         mesh.builder.vertex(1.0f, 1.0f, 1.0f);
-        mesh.builder.vertex(-1.0f, 1.0f, 1.0f);
-        mesh.builder.vertex(1.0f,-1.0f, 1.0f);
+        mesh.builder.vertex(0.0f, 1.0f, 1.0f);
+        mesh.builder.vertex(1.0f,0.0f, 1.0f);
         mesh.upload(false);
     }
 
