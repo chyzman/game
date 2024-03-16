@@ -6,10 +6,10 @@ import com.chyzman.object.GameObject;
 import com.chyzman.object.components.CoolCube;
 import com.chyzman.object.components.EpiclyRenderedTriangle;
 import com.chyzman.render.Renderer;
-import com.chyzman.systems.Font;
 import dev.dominion.ecs.api.Dominion;
+import dev.dominion.ecs.api.Entity;
+import dev.dominion.ecs.api.Scheduler;
 import org.joml.Vector3f;
-import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL45;
 
 import java.util.ArrayList;
@@ -17,12 +17,16 @@ import java.util.List;
 
 public class Game {
     public static final Game GAME = new Game();
+    public static final Camera CAMERA = new Camera();
 
     public static Window window;
     public static Renderer renderer;
 
+    public Dominion dominion;
+    public Scheduler clientScheduler;
+    public Scheduler logicScheduler;
     public final List<GameObject> gameObjects = new ArrayList<>();
-    public final Camera camera = new Camera();
+    public Entity cameraEntity;
 
     public static void main(String[] args) {
 //        System.load("/home/alpha/Desktop/renderdoc_1.25/lib/librenderdoc.so");
@@ -31,7 +35,9 @@ public class Game {
 
     public void run() {
         System.setProperty("dominion.show-banner", "false");
-        Dominion game = Dominion.create();
+        dominion = Dominion.create();
+        clientScheduler = dominion.createScheduler();
+        logicScheduler = dominion.createScheduler();
 
         window = new Window(640, 480);
         GlDebug.attachDebugCallback();
@@ -40,19 +46,24 @@ public class Game {
         renderer = new Renderer();
 
 //        var player = addGameObject(new Player());
-        addGameObject(camera);
+
+        cameraEntity = dominion.createEntity("camera", new Vector3f());
+//        addGameObject(CAMERA);
         addGameObject(new CoolCube());
         addGameObject(new EpiclyRenderedTriangle());
 
+        clientScheduler.schedule(CAMERA::update);
+
         loop();
+
+        logicScheduler.tickAtFixedRate(20);
         window.terminate();
     }
 
     private void loop() {
         while(!window.shouldClose()) {
-            float currentFrame = (float) GLFW.glfwGetTime();
             renderer.clear();
-
+            clientScheduler.tick();
             renderer.update();
 
             window.update();

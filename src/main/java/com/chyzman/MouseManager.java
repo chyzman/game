@@ -17,7 +17,7 @@ public class MouseManager {
             lastY = mouseY;
             firstMouse = false;
         }
-        Camera camera = Game.GAME.camera;
+        Camera camera = Game.CAMERA;
 
         double xOffset = mouseX - lastX;
         double yOffset = lastY - mouseY;

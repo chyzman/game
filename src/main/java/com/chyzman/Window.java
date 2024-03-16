@@ -1,7 +1,6 @@
 package com.chyzman;
 
 import org.joml.Matrix4f;
-import org.joml.Vector3f;
 import org.lwjgl.glfw.*;
 import org.lwjgl.opengl.*;
 import org.lwjgl.system.MemoryStack;
@@ -95,7 +94,7 @@ public class Window {
 
         GLFW.glfwSetScrollCallback(window, (win, xOffset, yOffset) -> {
             if (window == win) {
-                Game.GAME.camera.cameraSpeed *= 1 + (yOffset / 10);
+                Game.CAMERA.cameraSpeed *= 1 + (yOffset / 10);
             }
         });
 
@@ -109,11 +108,11 @@ public class Window {
                 Game.window.aspectRatio = width / height;
                 GL11.glViewport(0, 0, Game.window.width, Game.window.height);
 //                projectionMatrix.ortho2D(-width/2f, width/2f, -height/2f, height/2f);
-                projectionMatrix.setPerspective((float)Math.toRadians(Game.GAME.camera.fov), (float) width / (float) height, 0.1f, 1000f);
+                projectionMatrix.setPerspective((float)Math.toRadians(Game.CAMERA.fov), (float) width / (float) height, 0.1f, 1000f);
             }
         });
 //        projectionMatrix.ortho2D(-this.width/2f, this.width/2f, -this.height/2f, this.height/2f);
-        projectionMatrix.perspective((float)Math.toRadians(Game.GAME.camera.fov), (float) width / (float) height, 0.1f, 1000f);
+        projectionMatrix.perspective((float)Math.toRadians(Game.CAMERA.fov), (float) width / (float) height, 0.1f, 1000f);
 
         GL.createCapabilities();
     }

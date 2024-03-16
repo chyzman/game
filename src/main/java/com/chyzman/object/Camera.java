@@ -15,22 +15,20 @@ public class Camera extends GameObject {
     @Override
     public void update() {
         Matrix4f transform = Game.window.getViewMatrix();
-//        pos(pos.add(deltaPos));
-        var cameraPos = new Vector3f((float) pos.x, (float) pos.y, (float) pos.z);
 
-        var view = new Matrix4f();
+        Vector3f pos = Game.GAME.cameraEntity.get(Vector3f.class);
 
         Vector3f front = new Vector3f();
         front.x = (float) (Math.cos(Math.toRadians(yaw)) * Math.cos(Math.toRadians(pitch)));
         front.y = (float) Math.sin(Math.toRadians(pitch));
         front.z = (float) (Math.sin(Math.toRadians(yaw)) * Math.cos(Math.toRadians(pitch)));
         cameraFront = front.normalize();
-        transform.set(getViewMatrix());
+        transform.set(getViewMatrix(pos));
 
         long window = Game.window.window;
 
 
-        float localCameraSpeed = (float) (cameraSpeed * Game.renderer.deltaTime);
+        float localCameraSpeed = (float) (cameraSpeed * Game.GAME.clientScheduler.deltaTime());
         if (GLFW.glfwGetKey(window, GLFW.GLFW_KEY_W) == GLFW.GLFW_PRESS) {
             pos.add(new Vector3f(cameraFront).mul(localCameraSpeed));
         }
@@ -53,8 +51,8 @@ public class Camera extends GameObject {
 
 
 
-    public Matrix4f getViewMatrix() {
-        var cameraPos = new Vector3f((float) pos.x, (float) pos.y, (float) pos.z);
+    public Matrix4f getViewMatrix(Vector3f pos) {
+        var cameraPos = new Vector3f(pos.x, pos.y, pos.z);
         return new Matrix4f().lookAt(cameraPos, new Vector3f(cameraPos).add(cameraFront), cameraUp);
     }
 }
