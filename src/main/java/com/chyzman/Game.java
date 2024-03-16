@@ -1,21 +1,17 @@
 package com.chyzman;
 
+import com.chyzman.gl.GlDebug;
 import com.chyzman.object.Camera;
 import com.chyzman.object.GameObject;
 import com.chyzman.object.components.CoolCube;
 import com.chyzman.object.components.EpiclyRenderedTriangle;
 import com.chyzman.render.Renderer;
-import com.chyzman.systems.Font;
 import org.joml.Vector3f;
 import org.lwjgl.glfw.GLFW;
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL43;
-import org.lwjgl.opengl.GLDebugMessageCallback;
+import org.lwjgl.opengl.GL45;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static java.sql.Types.NULL;
 
 public class Game {
     public static final Game GAME = new Game();
@@ -33,20 +29,8 @@ public class Game {
 
     public void run() {
         window = new Window(640, 480);
-
-        GL11.glEnable(GL43.GL_DEBUG_OUTPUT);
-        GL11.glEnable(GL43.GL_DEBUG_OUTPUT_SYNCHRONOUS);
-        GL43.glDebugMessageCallback(GLDebugMessageCallback.create((source, type, id, severity, length, message, userParam) -> {
-            System.out.println("GL CALLBACK: " +
-                    "source = 0x" + Integer.toHexString(source) + ", " +
-                    "type = 0x" + Integer.toHexString(type) + ", " +
-                    "id = " + id + ", " +
-                    "severity = 0x" + Integer.toHexString(severity) + ", " +
-                    "message = " + GLDebugMessageCallback.getMessage(length, message));
-        }), NULL);
-        GL43.glDebugMessageInsert(GL43.GL_DEBUG_SOURCE_OTHER, GL43.GL_DEBUG_TYPE_OTHER, 0, GL43.GL_DEBUG_SEVERITY_HIGH, "bruh");
-
-        System.err.println("The um, the uh game is uh its running yeah.");
+        GlDebug.attachDebugCallback();
+        GlDebug.minSeverity(GL45.GL_DEBUG_SEVERITY_LOW);
 
         renderer = new Renderer();
 
