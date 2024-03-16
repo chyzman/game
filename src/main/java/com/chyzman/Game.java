@@ -6,6 +6,8 @@ import com.chyzman.object.GameObject;
 import com.chyzman.object.components.CoolCube;
 import com.chyzman.object.components.EpiclyRenderedTriangle;
 import com.chyzman.render.Renderer;
+import com.chyzman.systems.Font;
+import dev.dominion.ecs.api.Dominion;
 import org.joml.Vector3f;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL45;
@@ -28,6 +30,9 @@ public class Game {
     }
 
     public void run() {
+        System.setProperty("dominion.show-banner", "false");
+        Dominion game = Dominion.create();
+
         window = new Window(640, 480);
         GlDebug.attachDebugCallback();
         GlDebug.minSeverity(GL45.GL_DEBUG_SEVERITY_LOW);

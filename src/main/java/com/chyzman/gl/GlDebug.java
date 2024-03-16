@@ -1,6 +1,5 @@
 package com.chyzman.gl;
 
-import com.google.common.base.Utf8;
 import org.lwjgl.opengl.GL43;
 import org.lwjgl.opengl.GLDebugMessageCallback;
 

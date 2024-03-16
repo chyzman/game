@@ -99,6 +99,8 @@ public class Window {
             }
         });
 
+        GLFW.glfwSwapInterval(0);
+
         GLFW.glfwSetWindowSizeCallback(window, windowSize = new GLFWWindowSizeCallback() {
             @Override
             public void invoke(long window, int width, int height) {
