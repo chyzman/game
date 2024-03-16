@@ -4,6 +4,7 @@ import com.chyzman.Game;
 import org.joml.Matrix4f;
 import org.joml.Vector3d;
 import org.joml.Vector3f;
+import org.lwjgl.glfw.GLFW;
 
 public class Camera extends GameObject {
     public Vector3d deltaPos = new Vector3d();
@@ -25,9 +26,22 @@ public class Camera extends GameObject {
         front.z = (float) (Math.sin(Math.toRadians(yaw)) * Math.cos(Math.toRadians(pitch)));
         cameraFront = front.normalize();
         transform.set(getViewMatrix());
-//         also re-calculate the Right and Up vector
-//        Right = glm::normalize(glm::cross(Front, WorldUp));  // normalize the vectors, because their length gets closer to 0 the more you look up or down which results in slower movement.
-//        Up    = glm::normalize(glm::cross(Right, Front));
+
+        long window = Game.window.window;
+        float cameraSpeed = 2.5f * Game.GAME.deltaTime;
+
+        if (GLFW.glfwGetKey(window, GLFW.GLFW_KEY_W) == GLFW.GLFW_PRESS) {
+            pos.add(new Vector3f(cameraFront).mul(cameraSpeed));
+        }
+        if (GLFW.glfwGetKey(window, GLFW.GLFW_KEY_S) == GLFW.GLFW_PRESS) {
+            pos.sub(new Vector3f(cameraFront).mul(cameraSpeed));
+        }
+        if (GLFW.glfwGetKey(window, GLFW.GLFW_KEY_A) == GLFW.GLFW_PRESS) {
+            pos.sub(new Vector3f(cameraFront).cross(cameraUp).normalize().mul(cameraSpeed));
+        }
+        if (GLFW.glfwGetKey(window, GLFW.GLFW_KEY_D) == GLFW.GLFW_PRESS) {
+            pos.add(new Vector3f(cameraFront).cross(cameraUp).normalize().mul(cameraSpeed));
+        }
     }
 
 

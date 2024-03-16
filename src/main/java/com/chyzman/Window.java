@@ -55,26 +55,6 @@ public class Window {
 
         GLFW.glfwSetKeyCallback(window, (window, key, scancode, action, mods) -> {
             if (window == this.window && (action == GLFW.GLFW_PRESS || action == GLFW.GLFW_REPEAT)) {
-                float xa = 0;
-                float ya = 0;
-                float za = 0;
-                var camera = Game.GAME.camera;
-                var cameraPos = camera.pos();
-
-                float cameraSpeed = 2.5f * Game.GAME.deltaTime;
-                if (key == GLFW.GLFW_KEY_W) {
-                    cameraPos.add(new Vector3f(camera.cameraFront).mul(cameraSpeed));
-                }
-                if (key == GLFW.GLFW_KEY_S) {
-                    cameraPos.sub(new Vector3f(camera.cameraFront).mul(cameraSpeed));
-                }
-                if (key == GLFW.GLFW_KEY_A) {
-                    cameraPos.sub(new Vector3f(camera.cameraFront).cross(camera.cameraUp).normalize().mul(cameraSpeed));
-                }
-                if (key == GLFW.GLFW_KEY_D) {
-                    cameraPos.add(new Vector3f(camera.cameraFront).cross(camera.cameraUp).normalize().mul(cameraSpeed));
-                }
-
                 if (key == GLFW.GLFW_KEY_T) {
                     mouseManager.toggleGrabbed();
                 }
@@ -155,6 +135,6 @@ public class Window {
     }
 
     public Matrix4f getModelMatrix() {
-        return transformMatrix;
+        return modelMatrix;
     }
 }
