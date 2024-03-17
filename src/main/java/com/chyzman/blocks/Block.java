@@ -1,9 +1,9 @@
 package com.chyzman.blocks;
 
-import com.chyzman.util.Identifier;
+import com.chyzman.util.Id;
 
 public class Block {
-    public Identifier id;
+    public Id id;
 
 
 }

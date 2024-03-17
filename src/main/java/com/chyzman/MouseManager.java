@@ -47,11 +47,11 @@ public class MouseManager {
         grabbed = !grabbed;
         lastX = (double) Game.window.width / 2; lastY = (double) Game.window.height / 2;
         if (grabbed) {
-            GLFW.glfwSetCursorPos(Game.window.window, (double) Game.window.width / 2, (double) Game.window.height / 2);
-            GLFW.glfwSetInputMode(Game.window.window, GLFW.GLFW_CURSOR, GLFW.GLFW_CURSOR_DISABLED);
+            GLFW.glfwSetCursorPos(Game.window.handle, (double) Game.window.width / 2, (double) Game.window.height / 2);
+            GLFW.glfwSetInputMode(Game.window.handle, GLFW.GLFW_CURSOR, GLFW.GLFW_CURSOR_DISABLED);
         } else {
-            GLFW.glfwSetCursorPos(Game.window.window, (double) Game.window.width / 2, (double) Game.window.height / 2);
-            GLFW.glfwSetInputMode(Game.window.window, GLFW.GLFW_CURSOR, GLFW.GLFW_CURSOR_NORMAL);
+            GLFW.glfwSetCursorPos(Game.window.handle, (double) Game.window.width / 2, (double) Game.window.height / 2);
+            GLFW.glfwSetInputMode(Game.window.handle, GLFW.GLFW_CURSOR, GLFW.GLFW_CURSOR_NORMAL);
         }
 
     }

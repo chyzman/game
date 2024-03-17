@@ -20,6 +20,7 @@ public class GlVertexBuffer {
 
         if (writer.data.position() > this.vboSize) {
             glBufferData(GL_ARRAY_BUFFER, writer.data.slice(0, writer.data.position()), dynamic ? GL_DYNAMIC_DRAW : GL_STATIC_DRAW);
+            this.vboSize = writer.data.position();
         } else {
             glBufferSubData(GL_ARRAY_BUFFER, 0, writer.data.slice(0, writer.data.position()));
         }

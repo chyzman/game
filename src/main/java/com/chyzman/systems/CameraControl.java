@@ -35,7 +35,7 @@ public class CameraControl {
             camera.cameraFront = front.normalize();
             transform.set(camera.getViewMatrix(pos));
 
-            long window = Game.window.window;
+            long window = Game.window.handle;
 
             float localCameraSpeed = (float) (camera.cameraSpeed * deltaTime);
             if (GLFW.glfwGetKey(window, GLFW.GLFW_KEY_W) == GLFW.GLFW_PRESS) {
