@@ -59,10 +59,8 @@ public class BufferWriter {
 
     private void ensureCapacity(int bytes) {
         if (this.data.remaining() >= bytes) return;
+        this.data = MemoryUtil.memRealloc(this.data, this.data.capacity() * 2);
 
-        var newBuffer = MemoryUtil.memRealloc(this.data, this.data.capacity() * 2);
-        newBuffer.put(this.data);
-
-        this.data = newBuffer;
+        System.out.println("Resizing buffer from " + this.data.capacity() + " bytes to " + this.data.capacity() * 2);
     }
 }

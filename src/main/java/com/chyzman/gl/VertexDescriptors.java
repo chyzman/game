@@ -30,7 +30,7 @@ public final class VertexDescriptors {
             },
             writer -> (x, y, z, a, r, g, b, u, v) -> {
                 writer.float3(x, y, z);
-                writer.float4(a, r, g, b);
+                writer.float4(r, g, b, a);
                 writer.float2(u, v);
             }
     );
