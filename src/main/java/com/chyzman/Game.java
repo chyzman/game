@@ -70,7 +70,7 @@ public class Game {
             }
         }
 
-        renderer = new Renderer();
+        renderer = new Renderer(window, dominion);
 
         dominion.createEntity("cube", new Position(), new CoolCube(), new Floatly());
 

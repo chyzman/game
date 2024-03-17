@@ -21,9 +21,6 @@ public class Window {
     public int aspectRatio;
     private boolean wireframe = false;
     private final MouseManager mouseManager = new MouseManager();
-    private final MatrixStack projectionMatrix = new MatrixStack();
-    private final MatrixStack transformMatrix = new MatrixStack();
-    private final MatrixStack modelMatrix = new MatrixStack();
 
     private GLFWWindowSizeCallback windowSize;
 
@@ -122,17 +119,11 @@ public class Window {
                     Game.window.width = width;
                     Game.window.aspectRatio = width / height;
                     GL11.glViewport(0, 0, Game.window.width, Game.window.height);
-//                projectionMatrix.ortho2D(-width/2f, width/2f, -height/2f, height/2f);
-                    projectionMatrix.peek().setPerspective((float)Math.toRadians(camera.fov), (float) width / (float) height, 0.1f, 1000f);
+//                Game.renderer.getProjectionMatrix().ortho2D(-width/2f, width/2f, -height/2f, height/2f);
+                    Game.renderer.getProjectionMatrix().peek().setPerspective((float)Math.toRadians(camera.fov), (float) width / (float) height, 0.1f, 1000f);
                 }
             }
         });
-        for (var entityResult : dominion.findEntitiesWith(Position.class, CameraConfiguration.class)) {
-            CameraConfiguration camera = entityResult.comp2();
-
-            //projectionMatrix.ortho2D(-this.width/2f, this.width/2f, -this.height/2f, this.height/2f);
-            projectionMatrix.peek().perspective((float) Math.toRadians(camera.fov), (float) width / (float) height, 0.1f, 1000f);
-        }
 
         GL.createCapabilities();
     }
@@ -152,17 +143,5 @@ public class Window {
 
         GLFW.glfwTerminate();
         GLFW.glfwSetErrorCallback(null).free();
-    }
-
-    public MatrixStack getProjectionMatrix() {
-        return projectionMatrix;
-    }
-
-    public MatrixStack getViewMatrix() {
-        return transformMatrix;
-    }
-
-    public MatrixStack getModelMatrix() {
-        return modelMatrix;
     }
 }

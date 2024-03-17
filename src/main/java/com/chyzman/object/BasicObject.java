@@ -30,15 +30,15 @@ public class BasicObject {
     }
 
     public void draw(Position pos) {
-        var window = Game.window;
+        var renderer = Game.renderer;
         GL11.glEnable(GL11.GL_DEPTH_TEST);
         GL11.glBindTexture(GL11.GL_TEXTURE_2D, chyz);
         mesh.program.use();
-        mesh.program.uniformMat4("projection", window.getProjectionMatrix().peek());
-        mesh.program.uniformMat4("view", window.getViewMatrix().peek());
+        mesh.program.uniformMat4("projection", renderer.getProjectionMatrix().peek());
+        mesh.program.uniformMat4("view", renderer.getViewMatrix().peek());
 
 
-        mesh.program.uniformMat4("model", new Matrix4f(window.getModelMatrix().peek()).translate((float) pos.x, (float) pos.y, (float) pos.z));
+        mesh.program.uniformMat4("model", new Matrix4f(renderer.getModelMatrix().peek()).translate((float) pos.x, (float) pos.y, (float) pos.z));
         mesh.draw();
         GL11.glDisable(GL11.GL_DEPTH_TEST);
     }

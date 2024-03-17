@@ -1,12 +1,15 @@
 package com.chyzman.render;
 
 import com.chyzman.Game;
+import com.chyzman.Window;
 import com.chyzman.component.RenderComponent;
 import com.chyzman.component.position.Position;
 import com.chyzman.component.position.Position;
 import com.chyzman.component.position.Position;
 import com.chyzman.gl.GlProgram;
 import com.chyzman.gl.GlShader;
+import com.chyzman.gl.MatrixStack;
+import com.chyzman.object.CameraConfiguration;
 import com.chyzman.object.components.CoolCube;
 import com.chyzman.object.BasicObject;
 import com.chyzman.object.BasicObject;
@@ -31,6 +34,9 @@ public class Renderer {
     public static final GlProgram POS_COLOR_TEXTURE_NORMAL_PROGRAM = null;
     public static final GlProgram FONT_PROGRAM;
     private final RenderChunk chunk = new RenderChunk(Game.GAME.chunk);
+    private final MatrixStack projectionMatrix = new MatrixStack();
+    private final MatrixStack transformMatrix = new MatrixStack();
+    private final MatrixStack modelMatrix = new MatrixStack();
     public double deltaTime = 0.0f;	// Time between current frame and last frame
     public double lastFrame = 0.0f; // Time of last frame
     public double lastTime = 0.0f;
@@ -38,6 +44,15 @@ public class Renderer {
     public int fps;
     public static Vector3d cameraPosition = new Vector3d(0.0f, 0.0f, 0.0f);
     public TextRenderer textRenderer = new TextRenderer();
+
+    public Renderer(Window window, Dominion dominion) {
+        for (var entityResult : dominion.findEntitiesWith(Position.class, CameraConfiguration.class)) {
+            CameraConfiguration camera = entityResult.comp2();
+
+            //Game.renderer.getProjectionMatrix().ortho2D(-this.width/2f, this.width/2f, -this.height/2f, this.height/2f);
+            getProjectionMatrix().peek().perspective((float) Math.toRadians(camera.fov), (float) window.width / (float) window.height, 0.1f, 1000f);
+        }
+    }
 
     public void clear() {
         GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
@@ -61,10 +76,10 @@ public class Renderer {
             GL11.glEnable(GL11.GL_DEPTH_TEST);
             GL11.glBindTexture(GL11.GL_TEXTURE_2D, cube.chyz);
             cube.mesh.program.use();
-            cube.mesh.program.uniformMat4("projection", window.getProjectionMatrix().peek());
-            cube.mesh.program.uniformMat4("view", window.getViewMatrix().peek());
+            cube.mesh.program.uniformMat4("projection", getProjectionMatrix().peek());
+            cube.mesh.program.uniformMat4("view", getViewMatrix().peek());
 
-            cube.mesh.program.uniformMat4("model", new Matrix4f(window.getModelMatrix().peek()).translate((float) pos.x, (float) pos.y, (float) pos.z));
+            cube.mesh.program.uniformMat4("model", new Matrix4f(getModelMatrix().peek()).translate((float) pos.x, (float) pos.y, (float) pos.z));
             cube.mesh.draw();
             GL11.glDisable(GL11.GL_DEPTH_TEST);
         }
@@ -124,5 +139,17 @@ public class Renderer {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public MatrixStack getProjectionMatrix() {
+        return projectionMatrix;
+    }
+
+    public MatrixStack getViewMatrix() {
+        return transformMatrix;
+    }
+
+    public MatrixStack getModelMatrix() {
+        return modelMatrix;
     }
 }

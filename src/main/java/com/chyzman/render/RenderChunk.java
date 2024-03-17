@@ -24,7 +24,7 @@ public class RenderChunk {
 
     public void compile() {
         mesh.clear();
-        MatrixStack modelMatrix = Game.window.getModelMatrix();
+        MatrixStack modelMatrix = Game.renderer.getModelMatrix();
         for (int x = 0; x < Chunk.CHUNK_SIZE; x++) {
             for (int y = 0; y < Chunk.CHUNK_SIZE; y++) {
                 for (int z = 0; z < Chunk.CHUNK_SIZE; z++) {
@@ -83,14 +83,14 @@ public class RenderChunk {
     }
 
     public void draw() {
-        var window = Game.window;
+        var renderer = Game.renderer;
         mesh.program.use();
         GL11.glBindTexture(GL11.GL_TEXTURE_2D, texture);
         if (!compiled)
             compile();
-        mesh.program.uniformMat4("projection", window.getProjectionMatrix().peek());
-        mesh.program.uniformMat4("view", window.getViewMatrix().peek());
-        mesh.program.uniformMat4("model", window.getModelMatrix().peek());
+        mesh.program.uniformMat4("projection", renderer.getProjectionMatrix().peek());
+        mesh.program.uniformMat4("view", renderer.getViewMatrix().peek());
+        mesh.program.uniformMat4("model", renderer.getModelMatrix().peek());
         GL11.glEnable(GL11.GL_DEPTH_TEST);
         mesh.draw();
         GL11.glDisable(GL11.GL_DEPTH_TEST);
