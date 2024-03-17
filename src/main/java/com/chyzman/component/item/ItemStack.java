@@ -1,4 +1,4 @@
-package com.chyzman.component.Item;
+package com.chyzman.component.item;
 
 public class ItemStack {
     public long count;

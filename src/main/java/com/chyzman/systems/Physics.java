@@ -8,6 +8,7 @@ import com.chyzman.component.position.Position;
 import com.chyzman.component.position.Velocity;
 import dev.dominion.ecs.api.Dominion;
 
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 import static com.chyzman.Game.LOGIC_TICK_RATE;
@@ -43,6 +44,14 @@ public class Physics {
             Velocity velocity = result.comp2();
             pos.add(velocity);
 //            System.out.printf("\r%s: Pos:(%s, %s, %s) Vel:(%s,%s,%s)", result.entity().getName(), pos.x, pos.y, pos.z, velocity.x*(double)LOGIC_TICK_RATE, velocity.y*(double)LOGIC_TICK_RATE, velocity.z*(double)LOGIC_TICK_RATE);
+        });
+
+        dom.findEntitiesWith(Position.class).forEach(result -> {
+            Position pos = result.comp();
+            if (pos.queue != null) {
+                pos.set(pos.queue.stream().reduce(Function.identity(), Function::andThen).apply(pos));
+                pos.queue.clear();
+            }
         });
     }
 }

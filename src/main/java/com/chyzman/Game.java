@@ -72,9 +72,9 @@ public class Game {
 
         renderer = new Renderer();
 
-        for (var result : dominion.findEntitiesWith(Position.class)) {
-            dominion.deleteEntity(result.entity());
-        }
+//        for (var result : dominion.findEntitiesWith(Position.class)) {
+//            dominion.deleteEntity(result.entity());
+//        }
 
         dominion.createEntity("cube", new Position(), new CoolCube(), new Floatly());
 
