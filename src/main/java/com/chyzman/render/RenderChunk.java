@@ -89,9 +89,13 @@ public class RenderChunk {
         GL11.glBindTexture(GL11.GL_TEXTURE_2D, texture);
         if (!compiled)
             compile();
+        MatrixStack modelMatrix = renderer.getModelMatrix();
+        modelMatrix.push();
+        modelMatrix.translate(chunk.x * Chunk.CHUNK_SIZE, chunk.y * Chunk.CHUNK_SIZE, chunk.z * Chunk.CHUNK_SIZE);
         mesh.program.uniformMat4("projection", renderer.getProjectionMatrix().peek());
         mesh.program.uniformMat4("view", renderer.getViewMatrix().peek());
-        mesh.program.uniformMat4("model", renderer.getModelMatrix().peek());
+        mesh.program.uniformMat4("model", modelMatrix.peek());
+        modelMatrix.pop();
         GL11.glEnable(GL11.GL_DEPTH_TEST);
         mesh.draw();
         GL11.glDisable(GL11.GL_DEPTH_TEST);

@@ -9,6 +9,10 @@ public class ChunkManager {
         return chunks.computeIfAbsent(new ChunkPos(x, y, z), chunkPos -> new Chunk(x, y, z));
     }
 
+    public Object2ObjectMap<ChunkPos, Chunk> getChunks() {
+        return chunks;
+    }
+
     public int getLoadedChunks() {
         return chunks.size();
     }

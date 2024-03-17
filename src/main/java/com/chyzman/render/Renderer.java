@@ -20,6 +20,8 @@ import org.lwjgl.opengl.GL11;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.lwjgl.opengl.GL45.*;
 
@@ -27,7 +29,7 @@ public class Renderer {
     public static final GlProgram POS_COLOR_TEXTURE_PROGRAM;
     public static final GlProgram POS_COLOR_TEXTURE_NORMAL_PROGRAM = null;
     public static final GlProgram FONT_PROGRAM;
-    private final RenderChunk chunk = new RenderChunk(Game.GAME.chunk);
+    private final List<RenderChunk> chunks = new ArrayList<>();
     private final MatrixStack projectionMatrix = new MatrixStack();
     private final MatrixStack transformMatrix = new MatrixStack();
     private final MatrixStack modelMatrix = new MatrixStack();
@@ -46,6 +48,9 @@ public class Renderer {
             //Game.renderer.getProjectionMatrix().ortho2D(-this.width/2f, this.width/2f, -this.height/2f, this.height/2f);
             getProjectionMatrix().peek().perspective((float) Math.toRadians(camera.fov), (float) window.width / (float) window.height, 0.1f, 1000f);
         }
+        Game.GAME.world.getChunkManager().getChunks().forEach((chunkPos, chunk) -> {
+            chunks.add(new RenderChunk(chunk));
+        });
     }
 
     public void clear() {
@@ -57,7 +62,8 @@ public class Renderer {
         deltaTime = currentFrame - lastFrame;
         lastFrame = currentFrame;
 
-        chunk.draw();
+        for (RenderChunk chunk : chunks)
+            chunk.draw();
 
         for(var gameObject : Game.GAME.gameObjects) {
             gameObject.update();
