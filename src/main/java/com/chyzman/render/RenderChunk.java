@@ -3,7 +3,10 @@ package com.chyzman.render;
 import com.chyzman.Game;
 import com.chyzman.gl.*;
 import com.chyzman.systems.Chunk;
-import org.joml.Matrix4f;
+import com.chyzman.ui.core.Color;
+import com.chyzman.util.Id;
+import org.joml.Vector3f;
+import org.joml.Vector3fc;
 import org.joml.Vector4f;
 import org.lwjgl.opengl.GL11;
 
@@ -14,10 +17,9 @@ public class RenderChunk {
     private boolean compiled = false;
 
     public RenderChunk(Chunk chunk) {
-        this.mesh = new MeshBuffer<>(VertexDescriptors.POSITION_COLOR_TEX, Renderer.POS_COLOR_TEXTURE_PROGRAM);
+        this.mesh = new MeshBuffer<>(VertexDescriptors.POSITION_COLOR_TEXTURE, Renderer.POS_COLOR_TEXTURE_PROGRAM);
         this.chunk = chunk;
-        this.texture = Texture.loadTexture("grass_block.png");
-
+        this.texture = Texture.load(new Id("game", "grass_block.png"));
     }
 
     public void compile() {
@@ -29,42 +31,42 @@ public class RenderChunk {
                     if (chunk.getBlock(x, y, z)) {
                         modelMatrix.push();
                         modelMatrix.translate(chunk.x + x, chunk.y + y, chunk.z + z);
-                        mesh.builder.vertex(modelMatrix.peek().transform(new Vector4f(0.0f,0.0f,0.0f, 1.0f)), 1.0f, 0.0f, 0.0f, 0.0f, 1.0f); // triangle 1 : begin
-                        mesh.builder.vertex(modelMatrix.peek().transform(new Vector4f(0.0f,0.0f, 1.0f, 1.0f)), 1.0f, 0.0f, 0.0f, 0.0f, 0.0f);
-                        mesh.builder.vertex(modelMatrix.peek().transform(new Vector4f(0.0f, 1.0f, 1.0f, 1.0f)), 1.0f, 0.0f, 0.0f, 1.0f, 0.0f); // triangle 1 : end
-                        mesh.builder.vertex(modelMatrix.peek().transform(new Vector4f(1.0f, 1.0f,0.0f, 1.0f)), 1.0f, 0.0f, 0.0f, 1.0f, 1.0f); // triangle 2 : begin
-                        mesh.builder.vertex(modelMatrix.peek().transform(new Vector4f(0.0f,0.0f,0.0f, 1.0f)), 1.0f, 0.0f, 0.0f, 0.0f, 1.0f);
-                        mesh.builder.vertex(modelMatrix.peek().transform(new Vector4f(0.0f, 1.0f,0.0f, 1.0f)), 1.0f, 0.0f, 0.0f, 0.0f, 0.0f); // triangle 2 : end
-                        mesh.builder.vertex(modelMatrix.peek().transform(new Vector4f(1.0f,0.0f, 1.0f, 1.0f)), 1.0f, 0.0f, 0.0f, 1.0f, 0.0f);
-                        mesh.builder.vertex(modelMatrix.peek().transform(new Vector4f(0.0f,0.0f,0.0f, 1.0f)), 1.0f, 0.0f, 0.0f, 1.0f, 1.0f);
-                        mesh.builder.vertex(modelMatrix.peek().transform(new Vector4f(1.0f,0.0f,0.0f, 1.0f)), 1.0f, 0.0f, 0.0f, 0.0f, 1.0f);
-                        mesh.builder.vertex(modelMatrix.peek().transform(new Vector4f(1.0f, 1.0f,0.0f, 1.0f)), 1.0f, 0.0f, 0.0f, 0.0f, 0.0f);
-                        mesh.builder.vertex(modelMatrix.peek().transform(new Vector4f(1.0f,0.0f,0.0f, 1.0f)), 1.0f, 0.0f, 0.0f, 1.0f, 0.0f);
-                        mesh.builder.vertex(modelMatrix.peek().transform(new Vector4f(0.0f,0.0f,0.0f, 1.0f)), 1.0f, 0.0f, 0.0f, 0.0f, 1.0f);
-                        mesh.builder.vertex(modelMatrix.peek().transform(new Vector4f(0.0f,0.0f,0.0f, 1.0f)), 1.0f, 0.0f, 0.0f, 0.0f, 0.0f);
-                        mesh.builder.vertex(modelMatrix.peek().transform(new Vector4f(0.0f, 1.0f, 1.0f, 1.0f)), 1.0f, 0.0f, 0.0f, 1.0f, 0.0f);
-                        mesh.builder.vertex(modelMatrix.peek().transform(new Vector4f(0.0f, 1.0f,0.0f, 1.0f)), 1.0f, 0.0f, 0.0f, 1.0f, 1.0f);
-                        mesh.builder.vertex(modelMatrix.peek().transform(new Vector4f(1.0f,0.0f, 1.0f, 1.0f)), 1.0f, 0.0f, 0.0f, 0.0f, 1.0f);
-                        mesh.builder.vertex(modelMatrix.peek().transform(new Vector4f(0.0f,0.0f, 1.0f, 1.0f)), 1.0f, 0.0f, 0.0f, 0.0f, 0.0f);
-                        mesh.builder.vertex(modelMatrix.peek().transform(new Vector4f(0.0f,0.0f,0.0f, 1.0f)), 1.0f, 0.0f, 0.0f, 1.0f, 0.0f);
-                        mesh.builder.vertex(modelMatrix.peek().transform(new Vector4f(0.0f, 1.0f, 1.0f, 1.0f)), 1.0f, 0.0f, 0.0f, 1.0f, 1.0f);
-                        mesh.builder.vertex(modelMatrix.peek().transform(new Vector4f(0.0f,0.0f, 1.0f, 1.0f)), 1.0f, 0.0f, 0.0f, 0.0f, 1.0f);
-                        mesh.builder.vertex(modelMatrix.peek().transform(new Vector4f(1.0f,0.0f, 1.0f, 1.0f)), 1.0f, 0.0f, 0.0f, 0.0f, 0.0f);
-                        mesh.builder.vertex(modelMatrix.peek().transform(new Vector4f(1.0f, 1.0f, 1.0f, 1.0f)), 1.0f, 0.0f, 0.0f, 1.0f, 0.0f);
-                        mesh.builder.vertex(modelMatrix.peek().transform(new Vector4f(1.0f,0.0f,0.0f, 1.0f)), 1.0f, 0.0f, 0.0f, 1.0f, 1.0f);
-                        mesh.builder.vertex(modelMatrix.peek().transform(new Vector4f(1.0f, 1.0f,0.0f, 1.0f)), 1.0f, 0.0f, 0.0f, 0.0f, 1.0f);
-                        mesh.builder.vertex(modelMatrix.peek().transform(new Vector4f(1.0f,0.0f,0.0f, 1.0f)), 1.0f, 0.0f, 0.0f, 0.0f, 0.0f);
-                        mesh.builder.vertex(modelMatrix.peek().transform(new Vector4f(1.0f, 1.0f, 1.0f, 1.0f)), 1.0f, 0.0f, 0.0f, 1.0f, 0.0f);
-                        mesh.builder.vertex(modelMatrix.peek().transform(new Vector4f(1.0f,0.0f, 1.0f, 1.0f)), 1.0f, 0.0f, 0.0f, 1.0f, 1.0f);
-                        mesh.builder.vertex(modelMatrix.peek().transform(new Vector4f(1.0f, 1.0f, 1.0f, 1.0f)), 1.0f, 0.0f, 0.0f, 0.0f, 1.0f);
-                        mesh.builder.vertex(modelMatrix.peek().transform(new Vector4f(1.0f, 1.0f,0.0f, 1.0f)), 1.0f, 0.0f, 0.0f, 0.0f, 0.0f);
-                        mesh.builder.vertex(modelMatrix.peek().transform(new Vector4f(0.0f, 1.0f,0.0f, 1.0f)), 1.0f, 0.0f, 0.0f, 1.0f, 0.0f);
-                        mesh.builder.vertex(modelMatrix.peek().transform(new Vector4f(1.0f, 1.0f, 1.0f, 1.0f)), 1.0f, 0.0f, 0.0f, 1.0f, 1.0f);
-                        mesh.builder.vertex(modelMatrix.peek().transform(new Vector4f(0.0f, 1.0f,0.0f, 1.0f)), 1.0f, 0.0f, 0.0f, 0.0f, 1.0f);
-                        mesh.builder.vertex(modelMatrix.peek().transform(new Vector4f(0.0f, 1.0f, 1.0f, 1.0f)), 1.0f, 0.0f, 0.0f, 0.0f, 0.0f);
-                        mesh.builder.vertex(modelMatrix.peek().transform(new Vector4f(1.0f, 1.0f, 1.0f, 1.0f)), 1.0f, 0.0f, 0.0f, 1.0f, 0.0f);
-                        mesh.builder.vertex(modelMatrix.peek().transform(new Vector4f(0.0f, 1.0f, 1.0f, 1.0f)), 1.0f, 0.0f, 0.0f, 0.0f, 1.0f);
-                        mesh.builder.vertex(modelMatrix.peek().transform(new Vector4f(1.0f,0.0f, 1.0f, 1.0f)), 1.0f, 0.0f, 0.0f, 0.0f, 0.0f);
+                        mesh.builder.vertex(this.transform(modelMatrix, 0.0f,0.0f,0.0f), Color.RED, 0.0f, 1.0f); // triangle 1 : begin
+                        mesh.builder.vertex(this.transform(modelMatrix, 0.0f,0.0f, 1.0f), Color.RED, 0.0f, 0.0f);
+                        mesh.builder.vertex(this.transform(modelMatrix, 0.0f, 1.0f, 1.0f), Color.RED, 1.0f, 0.0f); // triangle 1 : end
+                        mesh.builder.vertex(this.transform(modelMatrix, 1.0f, 1.0f,0.0f), Color.RED, 1.0f, 1.0f); // triangle 2 : begin
+                        mesh.builder.vertex(this.transform(modelMatrix, 0.0f,0.0f,0.0f), Color.RED, 0.0f, 1.0f);
+                        mesh.builder.vertex(this.transform(modelMatrix, 0.0f, 1.0f,0.0f), Color.RED, 0.0f, 0.0f); // triangle 2 : end
+                        mesh.builder.vertex(this.transform(modelMatrix, 1.0f,0.0f, 1.0f), Color.RED, 1.0f, 0.0f);
+                        mesh.builder.vertex(this.transform(modelMatrix, 0.0f,0.0f,0.0f), Color.RED, 1.0f, 1.0f);
+                        mesh.builder.vertex(this.transform(modelMatrix, 1.0f,0.0f,0.0f), Color.RED, 0.0f, 1.0f);
+                        mesh.builder.vertex(this.transform(modelMatrix, 1.0f, 1.0f,0.0f), Color.RED, 0.0f, 0.0f);
+                        mesh.builder.vertex(this.transform(modelMatrix, 1.0f,0.0f,0.0f), Color.RED, 1.0f, 0.0f);
+                        mesh.builder.vertex(this.transform(modelMatrix, 0.0f,0.0f,0.0f), Color.RED, 0.0f, 1.0f);
+                        mesh.builder.vertex(this.transform(modelMatrix, 0.0f,0.0f,0.0f), Color.RED, 0.0f, 0.0f);
+                        mesh.builder.vertex(this.transform(modelMatrix, 0.0f, 1.0f, 1.0f), Color.RED, 1.0f, 0.0f);
+                        mesh.builder.vertex(this.transform(modelMatrix, 0.0f, 1.0f,0.0f), Color.RED, 1.0f, 1.0f);
+                        mesh.builder.vertex(this.transform(modelMatrix, 1.0f,0.0f, 1.0f), Color.RED, 0.0f, 1.0f);
+                        mesh.builder.vertex(this.transform(modelMatrix, 0.0f,0.0f, 1.0f), Color.RED, 0.0f, 0.0f);
+                        mesh.builder.vertex(this.transform(modelMatrix, 0.0f,0.0f,0.0f), Color.RED, 1.0f, 0.0f);
+                        mesh.builder.vertex(this.transform(modelMatrix, 0.0f, 1.0f, 1.0f), Color.RED, 1.0f, 1.0f);
+                        mesh.builder.vertex(this.transform(modelMatrix, 0.0f,0.0f, 1.0f), Color.RED, 0.0f, 1.0f);
+                        mesh.builder.vertex(this.transform(modelMatrix, 1.0f,0.0f, 1.0f), Color.RED, 0.0f, 0.0f);
+                        mesh.builder.vertex(this.transform(modelMatrix, 1.0f, 1.0f, 1.0f), Color.RED, 1.0f, 0.0f);
+                        mesh.builder.vertex(this.transform(modelMatrix, 1.0f,0.0f,0.0f), Color.RED, 1.0f, 1.0f);
+                        mesh.builder.vertex(this.transform(modelMatrix, 1.0f, 1.0f,0.0f), Color.RED, 0.0f, 1.0f);
+                        mesh.builder.vertex(this.transform(modelMatrix, 1.0f,0.0f,0.0f), Color.RED, 0.0f, 0.0f);
+                        mesh.builder.vertex(this.transform(modelMatrix, 1.0f, 1.0f, 1.0f), Color.RED, 1.0f, 0.0f);
+                        mesh.builder.vertex(this.transform(modelMatrix, 1.0f,0.0f, 1.0f), Color.RED, 1.0f, 1.0f);
+                        mesh.builder.vertex(this.transform(modelMatrix, 1.0f, 1.0f, 1.0f), Color.RED, 0.0f, 1.0f);
+                        mesh.builder.vertex(this.transform(modelMatrix, 1.0f, 1.0f,0.0f), Color.RED, 0.0f, 0.0f);
+                        mesh.builder.vertex(this.transform(modelMatrix, 0.0f, 1.0f,0.0f), Color.RED, 1.0f, 0.0f);
+                        mesh.builder.vertex(this.transform(modelMatrix, 1.0f, 1.0f, 1.0f), Color.RED, 1.0f, 1.0f);
+                        mesh.builder.vertex(this.transform(modelMatrix, 0.0f, 1.0f,0.0f), Color.RED, 0.0f, 1.0f);
+                        mesh.builder.vertex(this.transform(modelMatrix, 0.0f, 1.0f, 1.0f), Color.RED, 0.0f, 0.0f);
+                        mesh.builder.vertex(this.transform(modelMatrix, 1.0f, 1.0f, 1.0f), Color.RED, 1.0f, 0.0f);
+                        mesh.builder.vertex(this.transform(modelMatrix, 0.0f, 1.0f, 1.0f), Color.RED, 0.0f, 1.0f);
+                        mesh.builder.vertex(this.transform(modelMatrix, 1.0f,0.0f, 1.0f), Color.RED, 0.0f, 0.0f);
                         modelMatrix.pop();
                     }
                 }
@@ -73,6 +75,11 @@ public class RenderChunk {
 
         mesh.upload(true);
         compiled = true;
+    }
+
+    private Vector3fc transform(MatrixStack matrices, float x, float y, float z) {
+        var vec4 = new Vector4f(x, y, z, 1f).mul(matrices.peek());
+        return new Vector3f(vec4.x, vec4.y, vec4.z);
     }
 
     public void draw() {

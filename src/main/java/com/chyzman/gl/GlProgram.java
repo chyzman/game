@@ -68,6 +68,13 @@ public class GlProgram {
         glUniform3f(this.uniformLocation(uniform), a, b, c);
     }
 
+    public void uniformSampler(String uniform, int textureName, int textureUnit) {
+        glUniform1i(this.uniformLocation(uniform), textureUnit);
+
+        glActiveTexture(GL_TEXTURE0 + textureUnit);
+        glBindTexture(GL_TEXTURE_2D, textureName);
+    }
+
     private int uniformLocation(String uniform) {
         return this.uniformCache.computeIfAbsent(uniform, uniformName -> glGetUniformLocation(this.id, uniformName));
     }

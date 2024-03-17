@@ -7,6 +7,7 @@ import com.chyzman.gl.ElementMeshBuffer;
 import com.chyzman.gl.VertexDescriptors;
 import com.chyzman.render.Renderer;
 import com.chyzman.render.Texture;
+import com.chyzman.util.Id;
 import org.joml.Matrix4f;
 import org.lwjgl.opengl.GL11;
 
@@ -15,13 +16,13 @@ public class BasicObject {
     private final ElementMeshBuffer<VertexDescriptors.PosColorTexVertexFunction> mesh;
 
     public BasicObject() {
-        this.chyz = Texture.loadTexture("grass_block.png");
+        this.chyz = Texture.load(new Id("game", "grass_block.png"));
 
-        this.mesh = new ElementMeshBuffer<>(VertexDescriptors.POSITION_COLOR_TEX, Renderer.POS_COLOR_TEXTURE_PROGRAM);
-        mesh.builder.vertex(0.5f, 0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f); // top right
-        mesh.builder.vertex(0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f); // bottom right
-        mesh.builder.vertex(-0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f); // bottom left
-        mesh.builder.vertex(-0.5f, 0.5f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f);  // top left
+        this.mesh = new ElementMeshBuffer<>(VertexDescriptors.POSITION_COLOR_TEXTURE, Renderer.POS_COLOR_TEXTURE_PROGRAM);
+        mesh.builder.vertex(.5f, .5f, .0f, 1f, 1f, .0f, .0f, 1f, 1f); // top right
+        mesh.builder.vertex(.5f, -.5f, .0f, 1f, .0f, 1f, .0f, 1f, .0f); // bottom right
+        mesh.builder.vertex(-.5f, -.5f, .0f, 1f, .0f, .0f, 1f, .0f, .0f); // bottom left
+        mesh.builder.vertex(-.5f, .5f, .0f, 1f, 1f, 1f, .0f, .0f, 1f);  // top left
         BufferWriter indices = mesh.getIndicesBuffer();
         indices.int3(0, 1, 3);
         indices.int3(3, 1, 2);
