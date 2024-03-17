@@ -26,7 +26,7 @@ public class CameraControl {
             var yaw = camera.yaw;
             var pitch = camera.pitch;
 
-            Matrix4f transform = Game.window.getViewMatrix();
+            Matrix4f transform = Game.window.getViewMatrix().peek();
 
             Vector3f front = new Vector3f();
             front.x = (float) (Math.cos(Math.toRadians(yaw)) * Math.cos(Math.toRadians(pitch)));

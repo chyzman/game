@@ -1,6 +1,7 @@
 package com.chyzman;
 
 import com.chyzman.component.position.Position;
+import com.chyzman.gl.MatrixStack;
 import com.chyzman.object.CameraConfiguration;
 import dev.dominion.ecs.api.Dominion;
 import org.joml.Matrix4f;
@@ -20,9 +21,9 @@ public class Window {
     public int aspectRatio;
     private boolean wireframe = false;
     private final MouseManager mouseManager = new MouseManager();
-    private final Matrix4f projectionMatrix = new Matrix4f();
-    private final Matrix4f transformMatrix = new Matrix4f();
-    private final Matrix4f modelMatrix = new Matrix4f();
+    private final MatrixStack projectionMatrix = new MatrixStack();
+    private final MatrixStack transformMatrix = new MatrixStack();
+    private final MatrixStack modelMatrix = new MatrixStack();
 
     private GLFWWindowSizeCallback windowSize;
 
@@ -122,7 +123,7 @@ public class Window {
                     Game.window.aspectRatio = width / height;
                     GL11.glViewport(0, 0, Game.window.width, Game.window.height);
 //                projectionMatrix.ortho2D(-width/2f, width/2f, -height/2f, height/2f);
-                    projectionMatrix.setPerspective((float)Math.toRadians(camera.fov), (float) width / (float) height, 0.1f, 1000f);
+                    projectionMatrix.peek().setPerspective((float)Math.toRadians(camera.fov), (float) width / (float) height, 0.1f, 1000f);
                 }
             }
         });
@@ -130,7 +131,7 @@ public class Window {
             CameraConfiguration camera = entityResult.comp2();
 
             //projectionMatrix.ortho2D(-this.width/2f, this.width/2f, -this.height/2f, this.height/2f);
-            projectionMatrix.perspective((float) Math.toRadians(camera.fov), (float) width / (float) height, 0.1f, 1000f);
+            projectionMatrix.peek().perspective((float) Math.toRadians(camera.fov), (float) width / (float) height, 0.1f, 1000f);
         }
 
         GL.createCapabilities();
@@ -153,15 +154,15 @@ public class Window {
         GLFW.glfwSetErrorCallback(null).free();
     }
 
-    public Matrix4f getProjectionMatrix() {
+    public MatrixStack getProjectionMatrix() {
         return projectionMatrix;
     }
 
-    public Matrix4f getViewMatrix() {
+    public MatrixStack getViewMatrix() {
         return transformMatrix;
     }
 
-    public Matrix4f getModelMatrix() {
+    public MatrixStack getModelMatrix() {
         return modelMatrix;
     }
 }

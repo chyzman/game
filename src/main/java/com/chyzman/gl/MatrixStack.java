@@ -1,6 +1,7 @@
 package com.chyzman.gl;
 
 import org.joml.Matrix4f;
+import org.joml.Vector3fc;
 
 import java.util.Deque;
 import java.util.LinkedList;
@@ -15,6 +16,21 @@ public class MatrixStack {
 
     public MatrixStack push() {
         this.matrices.push(new Matrix4f(this.peek()));
+        return this;
+    }
+
+    public MatrixStack translate(float x, float y, float z) {
+        peek().translate(x, y, z);
+        return this;
+    }
+
+    public MatrixStack scale(float x, float y, float z) {
+        peek().scale(x, y, z);
+        return this;
+    }
+
+    public MatrixStack rotate(float angle, Vector3fc axis) {
+        peek().rotate(angle, axis);
         return this;
     }
 

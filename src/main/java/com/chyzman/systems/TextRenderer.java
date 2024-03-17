@@ -1,33 +1,24 @@
 package com.chyzman.systems;
 
-import com.chyzman.gl.*;
+import com.chyzman.gl.GlProgram;
+import com.chyzman.gl.MeshBuffer;
+import com.chyzman.gl.VertexDescriptors;
+import com.chyzman.render.Renderer;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL30;
 
-import java.io.IOException;
-
 public class TextRenderer {
     private final MeshBuffer<VertexDescriptors.TextVertexFunction> mesh;
     private final Font font = new Font("arial.ttf");
-    private final GlProgram defaultProgram;
 
     public TextRenderer() {
-        try {
-            this.defaultProgram = new GlProgram(
-                    "font",
-                    GlShader.vertex("font.vert"),
-                    GlShader.fragment("font.frag")
-            );
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        mesh = new MeshBuffer<>(VertexDescriptors.FONT, defaultProgram);
+        mesh = new MeshBuffer<>(VertexDescriptors.FONT, Renderer.FONT_PROGRAM);
     }
 
     public void renderText(String text, float x, float y, float scale, Vector3f color) {
-        renderText(defaultProgram, text, x, y, scale, color);
+        renderText(Renderer.FONT_PROGRAM, text, x, y, scale, color);
     }
 
     void renderText(GlProgram program, String text, float x, float y, float scale, Vector3f color) {

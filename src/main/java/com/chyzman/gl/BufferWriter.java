@@ -9,6 +9,7 @@ import java.nio.ByteBuffer;
 public class BufferWriter {
 
     private static final int FLOAT32_SIZE = 4;
+    private static final int INT32_SIZE = 4;
 
     ByteBuffer data;
 
@@ -45,6 +46,11 @@ public class BufferWriter {
     public void float4(float a, float b, float c, float d) {
         this.ensureCapacity(FLOAT32_SIZE * 4);
         this.data.putFloat(a).putFloat(b).putFloat(c).putFloat(d);
+    }
+
+    public void int3(int a, int b, int c) {
+        this.ensureCapacity(INT32_SIZE * 3);
+        this.data.putInt(a).putInt(b).putInt(c);
     }
 
     public void free() {

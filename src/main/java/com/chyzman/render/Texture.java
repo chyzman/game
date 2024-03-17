@@ -36,6 +36,7 @@ public class Texture {
             width = w.get();
             height = h.get();
 
+            GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_NEAREST);
             int id = GL11.glGenTextures();
             idMap.put(texture, id);
             GL11.glBindTexture(GL11.GL_TEXTURE_2D, id);
