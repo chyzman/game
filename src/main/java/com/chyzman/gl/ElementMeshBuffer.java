@@ -5,7 +5,7 @@ import static org.lwjgl.opengl.GL11.*;
 public class ElementMeshBuffer<VF> {
     private final GlVertexBuffer vbo = new GlVertexBuffer();
     private final GlVertexArray vao = new GlVertexArray();
-    private final GlElementBuffer ebo = new GlElementBuffer();
+    private final GlElementArrayBuffer ebo = new GlElementArrayBuffer();
 
     private final BufferWriter buffer;
     private final BufferWriter indicesBuffer;
