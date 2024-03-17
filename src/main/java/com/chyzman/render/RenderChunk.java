@@ -6,9 +6,11 @@ import com.chyzman.world.block.Blocks;
 import com.chyzman.world.chunk.Chunk;
 import com.chyzman.ui.core.Color;
 import com.chyzman.util.Id;
+import org.joml.Vector3d;
 import org.joml.Vector3f;
 import org.joml.Vector3fc;
 import org.joml.Vector4f;
+import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL11;
 
 public class RenderChunk {
@@ -20,7 +22,7 @@ public class RenderChunk {
     public RenderChunk(Chunk chunk) {
         this.mesh = new MeshBuffer<>(VertexDescriptors.POSITION_COLOR_TEXTURE, Renderer.POS_COLOR_TEXTURE_PROGRAM);
         this.chunk = chunk;
-        this.texture = Texture.load(new Id("game", "grass_block.png"));
+        this.texture = Texture.load(new Id("game", "test.png"));
     }
 
     public void compile() {
@@ -32,42 +34,54 @@ public class RenderChunk {
                     if (Game.GAME.world.getBlock(x, y, z) == Blocks.GRASS) {
                         modelMatrix.push();
                         modelMatrix.translate(chunk.x + x, chunk.y + y, chunk.z + z);
-                        mesh.builder.vertex(this.transform(modelMatrix, 0.0f,0.0f,0.0f), Color.RED, 0.0f, 1.0f); // triangle 1 : begin
-                        mesh.builder.vertex(this.transform(modelMatrix, 0.0f,0.0f, 1.0f), Color.RED, 0.0f, 0.0f);
-                        mesh.builder.vertex(this.transform(modelMatrix, 0.0f, 1.0f, 1.0f), Color.RED, 1.0f, 0.0f); // triangle 1 : end
-                        mesh.builder.vertex(this.transform(modelMatrix, 1.0f, 1.0f,0.0f), Color.RED, 1.0f, 1.0f); // triangle 2 : begin
-                        mesh.builder.vertex(this.transform(modelMatrix, 0.0f,0.0f,0.0f), Color.RED, 0.0f, 1.0f);
-                        mesh.builder.vertex(this.transform(modelMatrix, 0.0f, 1.0f,0.0f), Color.RED, 0.0f, 0.0f); // triangle 2 : end
-                        mesh.builder.vertex(this.transform(modelMatrix, 1.0f,0.0f, 1.0f), Color.RED, 1.0f, 0.0f);
-                        mesh.builder.vertex(this.transform(modelMatrix, 0.0f,0.0f,0.0f), Color.RED, 1.0f, 1.0f);
-                        mesh.builder.vertex(this.transform(modelMatrix, 1.0f,0.0f,0.0f), Color.RED, 0.0f, 1.0f);
-                        mesh.builder.vertex(this.transform(modelMatrix, 1.0f, 1.0f,0.0f), Color.RED, 0.0f, 0.0f);
-                        mesh.builder.vertex(this.transform(modelMatrix, 1.0f,0.0f,0.0f), Color.RED, 1.0f, 0.0f);
-                        mesh.builder.vertex(this.transform(modelMatrix, 0.0f,0.0f,0.0f), Color.RED, 0.0f, 1.0f);
-                        mesh.builder.vertex(this.transform(modelMatrix, 0.0f,0.0f,0.0f), Color.RED, 0.0f, 0.0f);
-                        mesh.builder.vertex(this.transform(modelMatrix, 0.0f, 1.0f, 1.0f), Color.RED, 1.0f, 0.0f);
-                        mesh.builder.vertex(this.transform(modelMatrix, 0.0f, 1.0f,0.0f), Color.RED, 1.0f, 1.0f);
-                        mesh.builder.vertex(this.transform(modelMatrix, 1.0f,0.0f, 1.0f), Color.RED, 0.0f, 1.0f);
-                        mesh.builder.vertex(this.transform(modelMatrix, 0.0f,0.0f, 1.0f), Color.RED, 0.0f, 0.0f);
-                        mesh.builder.vertex(this.transform(modelMatrix, 0.0f,0.0f,0.0f), Color.RED, 1.0f, 0.0f);
-                        mesh.builder.vertex(this.transform(modelMatrix, 0.0f, 1.0f, 1.0f), Color.RED, 1.0f, 1.0f);
-                        mesh.builder.vertex(this.transform(modelMatrix, 0.0f,0.0f, 1.0f), Color.RED, 0.0f, 1.0f);
-                        mesh.builder.vertex(this.transform(modelMatrix, 1.0f,0.0f, 1.0f), Color.RED, 0.0f, 0.0f);
-                        mesh.builder.vertex(this.transform(modelMatrix, 1.0f, 1.0f, 1.0f), Color.RED, 1.0f, 0.0f);
-                        mesh.builder.vertex(this.transform(modelMatrix, 1.0f,0.0f,0.0f), Color.RED, 1.0f, 1.0f);
-                        mesh.builder.vertex(this.transform(modelMatrix, 1.0f, 1.0f,0.0f), Color.RED, 0.0f, 1.0f);
-                        mesh.builder.vertex(this.transform(modelMatrix, 1.0f,0.0f,0.0f), Color.RED, 0.0f, 0.0f);
-                        mesh.builder.vertex(this.transform(modelMatrix, 1.0f, 1.0f, 1.0f), Color.RED, 1.0f, 0.0f);
-                        mesh.builder.vertex(this.transform(modelMatrix, 1.0f,0.0f, 1.0f), Color.RED, 1.0f, 1.0f);
-                        mesh.builder.vertex(this.transform(modelMatrix, 1.0f, 1.0f, 1.0f), Color.RED, 0.0f, 1.0f);
-                        mesh.builder.vertex(this.transform(modelMatrix, 1.0f, 1.0f,0.0f), Color.RED, 0.0f, 0.0f);
-                        mesh.builder.vertex(this.transform(modelMatrix, 0.0f, 1.0f,0.0f), Color.RED, 1.0f, 0.0f);
-                        mesh.builder.vertex(this.transform(modelMatrix, 1.0f, 1.0f, 1.0f), Color.RED, 1.0f, 1.0f);
-                        mesh.builder.vertex(this.transform(modelMatrix, 0.0f, 1.0f,0.0f), Color.RED, 0.0f, 1.0f);
-                        mesh.builder.vertex(this.transform(modelMatrix, 0.0f, 1.0f, 1.0f), Color.RED, 0.0f, 0.0f);
-                        mesh.builder.vertex(this.transform(modelMatrix, 1.0f, 1.0f, 1.0f), Color.RED, 1.0f, 0.0f);
-                        mesh.builder.vertex(this.transform(modelMatrix, 0.0f, 1.0f, 1.0f), Color.RED, 0.0f, 1.0f);
-                        mesh.builder.vertex(this.transform(modelMatrix, 1.0f,0.0f, 1.0f), Color.RED, 0.0f, 0.0f);
+                        //Bottom
+                        quad(new Vector3d(0, 0, 0), new Vector3d(1, 0, 1), modelMatrix, Color.WHITE);
+                        //Top
+                        quad(new Vector3d(1, 1, 1), new Vector3d(0, 1, 0), modelMatrix, Color.WHITE);
+                        //North
+                        quad(new Vector3d(0, 0, 0), new Vector3d(1, 1, 0), modelMatrix, Color.WHITE);
+                        //South
+                        quad(new Vector3d(1, 0, 1), new Vector3d(0, 1, 1), modelMatrix, Color.WHITE);
+                        //East
+                        quad(new Vector3d(0, 0, 0), new Vector3d(0, 1, 1), modelMatrix, Color.WHITE);
+
+
+//                        mesh.builder.vertex(this.transform(modelMatrix, 0.0f,0.0f,0.0f), Color.RED, 0.0f, 1.0f); // triangle 1 : begin
+//                        mesh.builder.vertex(this.transform(modelMatrix, 0.0f,0.0f, 1.0f), Color.RED, 0.0f, 0.0f);
+//                        mesh.builder.vertex(this.transform(modelMatrix, 0.0f, 1.0f, 1.0f), Color.RED, 1.0f, 0.0f); // triangle 1 : end
+//                        mesh.builder.vertex(this.transform(modelMatrix, 1.0f, 1.0f,0.0f), Color.RED, 1.0f, 1.0f); // triangle 2 : begin
+//                        mesh.builder.vertex(this.transform(modelMatrix, 0.0f,0.0f,0.0f), Color.RED, 0.0f, 1.0f);
+//                        mesh.builder.vertex(this.transform(modelMatrix, 0.0f, 1.0f,0.0f), Color.RED, 0.0f, 0.0f); // triangle 2 : end
+//                        mesh.builder.vertex(this.transform(modelMatrix, 1.0f,0.0f, 1.0f), Color.RED, 1.0f, 0.0f);
+//                        mesh.builder.vertex(this.transform(modelMatrix, 0.0f,0.0f,0.0f), Color.RED, 1.0f, 1.0f);
+//                        mesh.builder.vertex(this.transform(modelMatrix, 1.0f,0.0f,0.0f), Color.RED, 0.0f, 1.0f);
+//                        mesh.builder.vertex(this.transform(modelMatrix, 1.0f, 1.0f,0.0f), Color.RED, 0.0f, 0.0f);
+//                        mesh.builder.vertex(this.transform(modelMatrix, 1.0f,0.0f,0.0f), Color.RED, 1.0f, 0.0f);
+//                        mesh.builder.vertex(this.transform(modelMatrix, 0.0f,0.0f,0.0f), Color.RED, 0.0f, 1.0f);
+//                        mesh.builder.vertex(this.transform(modelMatrix, 0.0f,0.0f,0.0f), Color.RED, 0.0f, 0.0f);
+//                        mesh.builder.vertex(this.transform(modelMatrix, 0.0f, 1.0f, 1.0f), Color.RED, 1.0f, 0.0f);
+//                        mesh.builder.vertex(this.transform(modelMatrix, 0.0f, 1.0f,0.0f), Color.RED, 1.0f, 1.0f);
+//                        mesh.builder.vertex(this.transform(modelMatrix, 1.0f,0.0f, 1.0f), Color.RED, 0.0f, 1.0f);
+//                        mesh.builder.vertex(this.transform(modelMatrix, 0.0f,0.0f, 1.0f), Color.RED, 0.0f, 0.0f);
+//                        mesh.builder.vertex(this.transform(modelMatrix, 0.0f,0.0f,0.0f), Color.RED, 1.0f, 0.0f);
+//                        mesh.builder.vertex(this.transform(modelMatrix, 0.0f, 1.0f, 1.0f), Color.RED, 1.0f, 1.0f);
+//                        mesh.builder.vertex(this.transform(modelMatrix, 0.0f,0.0f, 1.0f), Color.RED, 0.0f, 1.0f);
+//                        mesh.builder.vertex(this.transform(modelMatrix, 1.0f,0.0f, 1.0f), Color.RED, 0.0f, 0.0f);
+//                        mesh.builder.vertex(this.transform(modelMatrix, 1.0f, 1.0f, 1.0f), Color.RED, 1.0f, 0.0f);
+//                        mesh.builder.vertex(this.transform(modelMatrix, 1.0f,0.0f,0.0f), Color.RED, 1.0f, 1.0f);
+//                        mesh.builder.vertex(this.transform(modelMatrix, 1.0f, 1.0f,0.0f), Color.RED, 0.0f, 1.0f);
+//                        mesh.builder.vertex(this.transform(modelMatrix, 1.0f,0.0f,0.0f), Color.RED, 0.0f, 0.0f);
+//                        mesh.builder.vertex(this.transform(modelMatrix, 1.0f, 1.0f, 1.0f), Color.RED, 1.0f, 0.0f);
+//                        mesh.builder.vertex(this.transform(modelMatrix, 1.0f,0.0f, 1.0f), Color.RED, 1.0f, 1.0f);
+//                        mesh.builder.vertex(this.transform(modelMatrix, 1.0f, 1.0f, 1.0f), Color.RED, 0.0f, 1.0f);
+//                        mesh.builder.vertex(this.transform(modelMatrix, 1.0f, 1.0f,0.0f), Color.RED, 0.0f, 0.0f);
+//                        mesh.builder.vertex(this.transform(modelMatrix, 0.0f, 1.0f,0.0f), Color.RED, 1.0f, 0.0f);
+//                        mesh.builder.vertex(this.transform(modelMatrix, 1.0f, 1.0f, 1.0f), Color.RED, 1.0f, 1.0f);
+//                        mesh.builder.vertex(this.transform(modelMatrix, 0.0f, 1.0f,0.0f), Color.RED, 0.0f, 1.0f);
+//                        mesh.builder.vertex(this.transform(modelMatrix, 0.0f, 1.0f, 1.0f), Color.RED, 0.0f, 0.0f);
+//                        mesh.builder.vertex(this.transform(modelMatrix, 1.0f, 1.0f, 1.0f), Color.RED, 1.0f, 0.0f);
+//                        mesh.builder.vertex(this.transform(modelMatrix, 0.0f, 1.0f, 1.0f), Color.RED, 0.0f, 1.0f);
+//                        mesh.builder.vertex(this.transform(modelMatrix, 1.0f,0.0f, 1.0f), Color.RED, 0.0f, 0.0f);
                         modelMatrix.pop();
                     }
                 }
@@ -76,6 +90,17 @@ public class RenderChunk {
 
         mesh.upload(true);
         compiled = true;
+    }
+
+    private void quad(Vector3d from, Vector3d to, MatrixStack matrices, Color color) {
+        //Triangle 1
+        mesh.builder.vertex(this.transform(matrices, (float) from.x, (float) from.y, (float) from.z), color, 1.0f, 1.0f);
+        mesh.builder.vertex(this.transform(matrices, (float) from.x, (float) to.y, (float) to.z), color, 1.0f, 0.0f);
+        mesh.builder.vertex(this.transform(matrices, (float) to.x, (float) to.y, (float) to.z), color, 0.0f, 0.0f);
+        //Triangle 2
+        mesh.builder.vertex(this.transform(matrices, (float) to.x, (float) to.y, (float) to.z), color, 0.0f, 0.0f);
+        mesh.builder.vertex(this.transform(matrices, (float) to.x, (float) from.y, (float) from.z), color, 0.0f, 1.0f);
+        mesh.builder.vertex(this.transform(matrices, (float) from.x, (float) from.y, (float) from.z), color, 1.0f, 1.0f);
     }
 
     private Vector3fc transform(MatrixStack matrices, float x, float y, float z) {
@@ -87,7 +112,8 @@ public class RenderChunk {
         var renderer = Game.renderer;
         mesh.program.use();
         GL11.glBindTexture(GL11.GL_TEXTURE_2D, texture);
-        if (!compiled)
+        if (!compiled || GLFW.glfwGetKey(Game.window.handle, GLFW.GLFW_KEY_R) == GLFW.GLFW_PRESS)
+            System.out.println("Recompiling chunk");
             compile();
         mesh.program.uniformMat4("projection", renderer.getProjectionMatrix().peek());
         mesh.program.uniformMat4("view", renderer.getViewMatrix().peek());
