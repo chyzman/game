@@ -2,7 +2,8 @@ package com.chyzman.render;
 
 import com.chyzman.Game;
 import com.chyzman.gl.*;
-import com.chyzman.systems.Chunk;
+import com.chyzman.world.block.Blocks;
+import com.chyzman.world.chunk.Chunk;
 import com.chyzman.ui.core.Color;
 import com.chyzman.util.Id;
 import org.joml.Vector3f;
@@ -28,7 +29,7 @@ public class RenderChunk {
         for (int x = 0; x < Chunk.CHUNK_SIZE; x++) {
             for (int y = 0; y < Chunk.CHUNK_SIZE; y++) {
                 for (int z = 0; z < Chunk.CHUNK_SIZE; z++) {
-                    if (chunk.getBlock(x, y, z)) {
+                    if (Game.GAME.world.getBlock(x, y, z) == Blocks.GRASS) {
                         modelMatrix.push();
                         modelMatrix.translate(chunk.x + x, chunk.y + y, chunk.z + z);
                         mesh.builder.vertex(this.transform(modelMatrix, 0.0f,0.0f,0.0f), Color.RED, 0.0f, 1.0f); // triangle 1 : begin

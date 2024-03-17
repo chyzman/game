@@ -12,9 +12,11 @@ import com.chyzman.object.components.CoolCube;
 import com.chyzman.object.components.EpiclyRenderedTriangle;
 import com.chyzman.render.Renderer;
 import com.chyzman.systems.CameraControl;
-import com.chyzman.systems.Chunk;
+import com.chyzman.world.World;
+import com.chyzman.world.chunk.Chunk;
 import com.chyzman.systems.DomSystem;
 import com.chyzman.systems.Physics;
+import com.chyzman.world.block.Blocks;
 import de.articdive.jnoise.core.api.functions.Interpolation;
 import de.articdive.jnoise.generators.noise_parameters.fade_functions.FadeFunction;
 import de.articdive.jnoise.pipeline.JNoise;
@@ -38,6 +40,7 @@ public class Game {
     public Scheduler clientScheduler;
     public Scheduler logicScheduler;
     public final List<GameObject> gameObjects = new ArrayList<>();
+    public World world;
     public final Chunk chunk = new Chunk(0, 0, 0);
 
     public static void main(String[] args) {
@@ -61,11 +64,13 @@ public class Game {
                 .clamp(0.0, 1.0)
                 .build();
 
+        world = new World();
+
         for (int x = 0; x < Chunk.CHUNK_SIZE; x++) {
             for (int y = 0; y < Chunk.CHUNK_SIZE; y++) {
                 for (int z = 0; z < Chunk.CHUNK_SIZE; z++) {
                     if (noise.evaluateNoise(x, y, z) > .5)
-                        chunk.setBlock(x, y, z, (byte) 1);
+                        world.setBlock(x, y, z, Blocks.GRASS);
                 }
             }
         }

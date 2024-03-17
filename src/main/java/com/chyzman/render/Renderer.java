@@ -2,9 +2,6 @@ package com.chyzman.render;
 
 import com.chyzman.Game;
 import com.chyzman.Window;
-import com.chyzman.component.RenderComponent;
-import com.chyzman.component.position.Position;
-import com.chyzman.component.position.Position;
 import com.chyzman.component.position.Position;
 import com.chyzman.gl.GlProgram;
 import com.chyzman.gl.GlShader;
@@ -12,12 +9,9 @@ import com.chyzman.gl.MatrixStack;
 import com.chyzman.object.CameraConfiguration;
 import com.chyzman.object.components.CoolCube;
 import com.chyzman.object.BasicObject;
-import com.chyzman.object.BasicObject;
-import com.chyzman.systems.Chunk;
 import com.chyzman.systems.TextRenderer;
 import dev.dominion.ecs.api.Dominion;
 import org.joml.Matrix4f;
-import dev.dominion.ecs.api.Dominion;
 import org.joml.Vector3d;
 import org.joml.Vector3f;
 import org.lwjgl.glfw.GLFW;
@@ -105,7 +99,8 @@ public class Renderer {
             glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
         }
         textRenderer.renderText("FPS: " + fps, 2.0f, 3.0f, 0.25f, new Vector3f(1f, 1f, 1f));
-        textRenderer.renderText("Pos:(" + cameraPosition.x + ", " + cameraPosition.y + ", " + cameraPosition.z + ")", 2.0f, 26.0f, 0.25f, new Vector3f(1f, 1f, 1f));
+        textRenderer.renderText("Pos: (" + cameraPosition.x + ", " + cameraPosition.y + ", " + cameraPosition.z + ")", 2.0f, 26.0f, 0.25f, new Vector3f(1f, 1f, 1f));
+        textRenderer.renderText("Loaded Chunks: " + Game.GAME.world.getChunkManager().getLoadedChunks(), 2.0f, 49.0f, 0.25f, new Vector3f(1f, 1f, 1f));
         if (polygonMode == GL_LINE) {
             glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
         }
