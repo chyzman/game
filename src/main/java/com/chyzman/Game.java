@@ -1,6 +1,9 @@
 package com.chyzman;
 
+import com.chyzman.component.position.Floatly;
+import com.chyzman.component.position.Gravity;
 import com.chyzman.component.position.Position;
+import com.chyzman.component.position.Velocity;
 import com.chyzman.gl.GlDebug;
 import com.chyzman.object.CameraConfiguration;
 import com.chyzman.object.GameObject;
@@ -8,10 +11,12 @@ import com.chyzman.object.components.CoolCube;
 import com.chyzman.object.components.EpiclyRenderedTriangle;
 import com.chyzman.render.Renderer;
 import com.chyzman.systems.Chunk;
+import com.chyzman.systems.DomSystem;
 import com.chyzman.systems.Physics;
 import com.chyzman.systems.CameraControl;
 import dev.dominion.ecs.api.Dominion;
 import dev.dominion.ecs.api.Scheduler;
+import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL45;
 
 import java.util.ArrayList;
@@ -55,6 +60,8 @@ public class Game {
 
         renderer = new Renderer();
 
+        dominion.createEntity("cube", new Position(), new CoolCube(), new Floatly());
+
 //        var player = addGameObject(new Player());
 
 
@@ -62,7 +69,16 @@ public class Game {
         addGameObject(new EpiclyRenderedTriangle());
 
         clientScheduler.schedule(CameraControl.create(dominion, clientScheduler::deltaTime));
-        logicScheduler.schedule(() -> Physics.update(dominion));
+        logicScheduler.schedule(DomSystem.create(dominion, "float", (dominion) -> {
+            dominion.findEntitiesWith(Position.class, Floatly.class).forEach(result -> {
+                Position pos = result.comp1();
+                Floatly floatly = result.comp2();
+                pos.set(Math.sin(GLFW.glfwGetTime()), Math.cos(GLFW.glfwGetTime()), pos.z);
+                floatly.ticks++;
+//            System.out.printf("\r%s: Pos:(%s, %s, %s) Vel:(%s,%s,%s)", result.entity().getName(), pos.x, pos.y, pos.z, velocity.x*(double)LOGIC_TICK_RATE, velocity.y*(double)LOGIC_TICK_RATE, velocity.z*(double)LOGIC_TICK_RATE);
+            });
+        }));
+        logicScheduler.schedule(Physics.create(dominion, logicScheduler::deltaTime));
 
         loop();
 
@@ -74,7 +90,8 @@ public class Game {
         while(!window.shouldClose()) {
             renderer.clear();
             clientScheduler.tick();
-            renderer.update();
+            logicScheduler.tick();
+            renderer.update(dominion);
 
             window.update();
         }

@@ -2,17 +2,24 @@ package com.chyzman.systems;
 
 import com.chyzman.component.Rotation.AngularVelocity;
 import com.chyzman.component.Rotation.Rotation;
+import com.chyzman.component.position.Floatly;
 import com.chyzman.component.position.Gravity;
 import com.chyzman.component.position.Position;
 import com.chyzman.component.position.Velocity;
 import dev.dominion.ecs.api.Dominion;
+
+import java.util.function.Supplier;
 
 import static com.chyzman.Game.LOGIC_TICK_RATE;
 
 public class Physics {
     public static final double TERMINAL_VELOCITY = 100d/(double) LOGIC_TICK_RATE;
 
-    public static void update(Dominion dom) {
+    public static DomSystem create(Dominion dominion, Supplier<Double> deltaTime){
+        return DomSystem.create(dominion, "physics", deltaTime, Physics::update);
+    }
+
+    public static void update(Dominion dom, double deltaTime) {
         // update velocity of entities with gravity
         dom.findEntitiesWith(Velocity.class, Gravity.class).forEach(result -> {
             Velocity velocity = result.comp1();

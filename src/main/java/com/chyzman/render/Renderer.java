@@ -1,10 +1,15 @@
 package com.chyzman.render;
 
 import com.chyzman.Game;
+import com.chyzman.component.RenderComponent;
+import com.chyzman.component.position.Position;
 import com.chyzman.gl.GlProgram;
 import com.chyzman.gl.GlShader;
+import com.chyzman.object.components.CoolCube;
 import com.chyzman.systems.Chunk;
 import com.chyzman.systems.TextRenderer;
+import dev.dominion.ecs.api.Dominion;
+import org.joml.Matrix4f;
 import org.joml.Vector3d;
 import org.joml.Vector3f;
 import org.lwjgl.glfw.GLFW;
@@ -33,7 +38,7 @@ public class Renderer {
         GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
     }
 
-    public void update() {
+    public void update(Dominion dominion) {
         double currentFrame = GLFW.glfwGetTime();
         deltaTime = currentFrame - lastFrame;
         lastFrame = currentFrame;
@@ -42,6 +47,21 @@ public class Renderer {
 
         for(var gameObject : Game.GAME.gameObjects) {
             gameObject.update();
+        }
+
+        for (var entity : dominion.findEntitiesWith(CoolCube.class, Position.class)) {
+            var cube = entity.comp1();
+            var pos = entity.comp2();
+            var window = Game.window;
+            GL11.glEnable(GL11.GL_DEPTH_TEST);
+            GL11.glBindTexture(GL11.GL_TEXTURE_2D, cube.chyz);
+            cube.mesh.program.use();
+            cube.mesh.program.uniformMat4("projection", window.getProjectionMatrix().peek());
+            cube.mesh.program.uniformMat4("view", window.getViewMatrix().peek());
+
+            cube.mesh.program.uniformMat4("model", new Matrix4f(window.getModelMatrix().peek()).translate((float) pos.x, (float) pos.y, (float) pos.z));
+            cube.mesh.draw();
+            GL11.glDisable(GL11.GL_DEPTH_TEST);
         }
 
         ++framesPerSecond;
