@@ -5,25 +5,19 @@ import com.chyzman.component.position.Gravity;
 import com.chyzman.component.position.Position;
 import com.chyzman.component.position.Velocity;
 import com.chyzman.gl.GlDebug;
+import com.chyzman.object.BasicObject;
 import com.chyzman.object.CameraConfiguration;
 import com.chyzman.object.GameObject;
 import com.chyzman.object.components.CoolCube;
 import com.chyzman.object.components.EpiclyRenderedTriangle;
 import com.chyzman.render.Renderer;
+import com.chyzman.systems.CameraControl;
 import com.chyzman.systems.Chunk;
 import com.chyzman.systems.DomSystem;
 import com.chyzman.systems.Physics;
-import com.chyzman.systems.CameraControl;
-import com.chyzman.util.Mth;
 import de.articdive.jnoise.core.api.functions.Interpolation;
-import de.articdive.jnoise.core.util.vectors.Vector;
 import de.articdive.jnoise.generators.noise_parameters.fade_functions.FadeFunction;
-import de.articdive.jnoise.generators.noisegen.perlin.PerlinNoiseGenerator;
-import de.articdive.jnoise.generators.noisegen.worley.WorleyNoiseGenerator;
-import de.articdive.jnoise.generators.noisegen.worley.WorleyNoiseResult;
-import de.articdive.jnoise.modules.octavation.fractal_functions.FractalFunction;
 import de.articdive.jnoise.pipeline.JNoise;
-import de.articdive.jnoise.pipeline.JNoiseDetailed;
 import dev.dominion.ecs.api.Dominion;
 import dev.dominion.ecs.api.Scheduler;
 import org.lwjgl.glfw.GLFW;
@@ -47,7 +41,6 @@ public class Game {
     public final Chunk chunk = new Chunk(0, 0, 0);
 
     public static void main(String[] args) {
-//        System.load("/home/alpha/Desktop/renderdoc_1.25/lib/librenderdoc.so");
         GAME.run();
     }
 
@@ -79,15 +72,18 @@ public class Game {
 
         renderer = new Renderer();
 
+        for (var result : dominion.findEntitiesWith(Position.class)) {
+            dominion.deleteEntity(result.entity());
+        }
+
         dominion.createEntity("cube", new Position(), new CoolCube(), new Floatly());
 
-//        var player = addGameObject(new Player());
-
-
-//        addGameObject(new CoolCube());
         addGameObject(new EpiclyRenderedTriangle());
 
+        dominion.createEntity("test_grass", new Position(0), new Velocity(), new Gravity(0.00001), new BasicObject());
+
         clientScheduler.schedule(CameraControl.create(dominion, clientScheduler::deltaTime));
+
         logicScheduler.schedule(DomSystem.create(dominion, "float", (dominion) -> {
             dominion.findEntitiesWith(Position.class, Floatly.class).forEach(result -> {
                 Position pos = result.comp1();
@@ -97,20 +93,21 @@ public class Game {
 //            System.out.printf("\r%s: Pos:(%s, %s, %s) Vel:(%s,%s,%s)", result.entity().getName(), pos.x, pos.y, pos.z, velocity.x*(double)LOGIC_TICK_RATE, velocity.y*(double)LOGIC_TICK_RATE, velocity.z*(double)LOGIC_TICK_RATE);
             });
         }));
+
         logicScheduler.schedule(Physics.create(dominion, logicScheduler::deltaTime));
 
-        loop();
-
         logicScheduler.tickAtFixedRate(LOGIC_TICK_RATE);
+
+        loop(dominion);
+
         window.terminate();
     }
 
-    private void loop() {
+    private void loop(Dominion dom) {
         while(!window.shouldClose()) {
             renderer.clear();
             clientScheduler.tick();
-            logicScheduler.tick();
-            renderer.update(dominion);
+            renderer.update(dom);
 
             window.update();
         }

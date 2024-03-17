@@ -3,13 +3,18 @@ package com.chyzman.render;
 import com.chyzman.Game;
 import com.chyzman.component.RenderComponent;
 import com.chyzman.component.position.Position;
+import com.chyzman.component.position.Position;
+import com.chyzman.component.position.Position;
 import com.chyzman.gl.GlProgram;
 import com.chyzman.gl.GlShader;
 import com.chyzman.object.components.CoolCube;
+import com.chyzman.object.BasicObject;
+import com.chyzman.object.BasicObject;
 import com.chyzman.systems.Chunk;
 import com.chyzman.systems.TextRenderer;
 import dev.dominion.ecs.api.Dominion;
 import org.joml.Matrix4f;
+import dev.dominion.ecs.api.Dominion;
 import org.joml.Vector3d;
 import org.joml.Vector3f;
 import org.lwjgl.glfw.GLFW;
@@ -62,6 +67,10 @@ public class Renderer {
             cube.mesh.program.uniformMat4("model", new Matrix4f(window.getModelMatrix().peek()).translate((float) pos.x, (float) pos.y, (float) pos.z));
             cube.mesh.draw();
             GL11.glDisable(GL11.GL_DEPTH_TEST);
+        }
+
+        for (var resultEntity : dominion.findEntitiesWith(Position.class, BasicObject.class)) {
+            resultEntity.comp2().draw(resultEntity.comp1());
         }
 
         ++framesPerSecond;
