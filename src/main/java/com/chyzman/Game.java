@@ -14,6 +14,16 @@ import com.chyzman.systems.Chunk;
 import com.chyzman.systems.DomSystem;
 import com.chyzman.systems.Physics;
 import com.chyzman.systems.CameraControl;
+import com.chyzman.util.Mth;
+import de.articdive.jnoise.core.api.functions.Interpolation;
+import de.articdive.jnoise.core.util.vectors.Vector;
+import de.articdive.jnoise.generators.noise_parameters.fade_functions.FadeFunction;
+import de.articdive.jnoise.generators.noisegen.perlin.PerlinNoiseGenerator;
+import de.articdive.jnoise.generators.noisegen.worley.WorleyNoiseGenerator;
+import de.articdive.jnoise.generators.noisegen.worley.WorleyNoiseResult;
+import de.articdive.jnoise.modules.octavation.fractal_functions.FractalFunction;
+import de.articdive.jnoise.pipeline.JNoise;
+import de.articdive.jnoise.pipeline.JNoiseDetailed;
 import dev.dominion.ecs.api.Dominion;
 import dev.dominion.ecs.api.Scheduler;
 import org.lwjgl.glfw.GLFW;
@@ -52,9 +62,18 @@ public class Game {
         GlDebug.minSeverity(GL45.GL_DEBUG_SEVERITY_LOW);
 
         Random random = new Random();
+        var noise = JNoise.newBuilder().perlin(63610, Interpolation.LINEAR, FadeFunction.IMPROVED_PERLIN_NOISE)
+                .scale(1 / 16.0)
+                .addModifier(v -> (v + 1) / 2.0)
+                .clamp(0.0, 1.0)
+                .build();
+
         for (int x = 0; x < Chunk.CHUNK_SIZE; x++) {
-            for (int z = 0; z < Chunk.CHUNK_SIZE; z++) {
-                chunk.setBlock(x, random.nextInt(5), z, (byte) 1);
+            for (int y = 0; y < Chunk.CHUNK_SIZE; y++) {
+                for (int z = 0; z < Chunk.CHUNK_SIZE; z++) {
+                    if (noise.evaluateNoise(x, y, z) > .5)
+                        chunk.setBlock(x, y, z, (byte) 1);
+                }
             }
         }
 

@@ -122,6 +122,8 @@ dependencies {
     implementation("io.wispforest:endec:0.1.0-pre.1")
     implementation("io.wispforest.endec:gson:0.1.0-pre.1")
     implementation("io.wispforest.endec:netty:0.1.0-pre.1")
+
+    implementation("de.articdive:jnoise-pipeline:4.1.0")
 }
 
 tasks.test {
