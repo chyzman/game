@@ -18,6 +18,7 @@ import static org.lwjgl.opengl.GL45.*;
 
 public class Renderer {
     public static final GlProgram POS_COLOR_TEXTURE_PROGRAM;
+    public static final GlProgram POS_COLOR_TEXTURE_NORMAL_PROGRAM = null;
     public static final GlProgram FONT_PROGRAM;
     private final RenderChunk chunk = new RenderChunk(Game.GAME.chunk);
     public double deltaTime = 0.0f;	// Time between current frame and last frame
@@ -77,6 +78,15 @@ public class Renderer {
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
+//            try {
+//                POS_COLOR_TEXTURE_NORMAL_PROGRAM = new GlProgram(
+//                        "position",
+//                        GlShader.vertex(Files.newInputStream(Path.of("src/main/resources/shaders/Textured.vert"))),
+//                        GlShader.fragment(Files.newInputStream(Path.of("src/main/resources/shaders/Textured.frag")))
+//                );
+//            } catch (IOException e) {
+//                throw new RuntimeException(e);
+//            }
             FONT_PROGRAM = new GlProgram(
                     "font",
                     GlShader.vertex("font.vert"),
