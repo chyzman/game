@@ -44,6 +44,8 @@ public class RenderChunk {
                         quad(new Vector3d(1, 0, 1), new Vector3d(0, 1, 1), modelMatrix, Color.WHITE);
                         //East
                         quad(new Vector3d(0, 0, 0), new Vector3d(0, 1, 1), modelMatrix, Color.WHITE);
+                        //West
+                        quad(new Vector3d(1, 0, 1), new Vector3d(1, 1, 0), modelMatrix, Color.WHITE);
 
 
 //                        mesh.builder.vertex(this.transform(modelMatrix, 0.0f,0.0f,0.0f), Color.RED, 0.0f, 1.0f); // triangle 1 : begin
