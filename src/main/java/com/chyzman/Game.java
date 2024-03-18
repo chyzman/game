@@ -20,6 +20,7 @@ import com.chyzman.world.block.Blocks;
 import de.articdive.jnoise.core.api.functions.Interpolation;
 import de.articdive.jnoise.generators.noise_parameters.fade_functions.FadeFunction;
 import de.articdive.jnoise.pipeline.JNoise;
+import dev.dominion.ecs.api.Composition;
 import dev.dominion.ecs.api.Dominion;
 import dev.dominion.ecs.api.Scheduler;
 import org.lwjgl.glfw.GLFW;
@@ -80,6 +81,15 @@ public class Game {
 //                }
 //            }
 //        }
+
+        var comp = dominion.composition();
+        var cow = comp.of(
+                Position.class,
+                Velocity.class,
+                Gravity.class,
+                BasicObject.class);
+
+        dominion.createPreparedEntity(cow.withValue(new Position(), new Velocity(), new Gravity(), new BasicObject()));
 
 
         renderer = new Renderer(window, dominion);
