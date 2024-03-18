@@ -1,5 +1,6 @@
 package com.chyzman.systems;
 
+import com.chyzman.Game;
 import com.chyzman.gl.GlProgram;
 import com.chyzman.gl.MeshBuffer;
 import com.chyzman.gl.VertexDescriptors;
@@ -26,7 +27,7 @@ public class TextRenderer {
         GL11.glEnable(GL11.GL_BLEND);
         GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
         program.use();
-        program.uniformMat4("uProjection", new Matrix4f().setOrtho2D(0.0f, 800.0f, 0.0f, 600.0f));
+        program.uniformMat4("uProjection", new Matrix4f().setOrtho2D(0.0f, Game.window.width, 0.0f, Game.window.height));
         program.uniform3f("uTextColor", color.x, color.y, color.z);
         GL30.glActiveTexture(GL30.GL_TEXTURE0);
 

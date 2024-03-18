@@ -29,7 +29,7 @@ public class RenderChunk {
 
     static {
         try {
-            CUBE = ObjUtils.convertToRenderable(ObjReader.read(Files.newInputStream(Path.of("src/main/resources/models/cube.obj"))));
+            CUBE = ObjUtils.convertToRenderable(ObjReader.read(Files.newInputStream(Path.of("src/main/resources/models/moneky.obj"))));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -76,14 +76,23 @@ public class RenderChunk {
                         float[] texCoords = ObjData.getTexCoordsArray(CUBE, 2);
                         float[] normals = ObjData.getNormalsArray(CUBE);
 
-                        for (int i = 0; i < vertices.length; i += 3) {
-                            mesh.builder.vertex(transform(modelMatrix, vertices[i], vertices[i + 1], vertices[i + 2]), block.color, texCoords[i / 3], texCoords[i / 3 + 1], new Vector3f(normals[i], normals[i + 1], normals[i + 2]));
+                        for (int vtx = 0; vtx < vertices.length / 3; vtx++) {
+                            mesh.builder.vertex(
+                                    transform(modelMatrix, vertices[vtx * 3], vertices[vtx * 3 + 1], vertices[vtx * 3 + 2]),
+                                    Color.WHITE,
+                                    texCoords[vtx * 2],
+                                    texCoords[vtx * 2 + 1],
+                                    new Vector3f(normals[vtx * 3], normals[vtx * 3 + 1], normals[vtx * 3 + 2])
+                            );
                         }
 
-                        BufferWriter in = mesh.getIndicesBuffer();
-
-                        for (int i = 0; i < indices.length; i += 3) {
-                            in.int3((cubes * vertices.length) + indices[i], (cubes * vertices.length) + indices[i + 1], (cubes * vertices.length) + indices[i + 2]);
+                        var indexBuffer = mesh.getIndicesBuffer();
+                        for (int idx = 0; idx < indices.length / 3; idx++) {
+                            indexBuffer.int3(
+                                    (cubes * vertices.length) + indices[idx * 3],
+                                    (cubes * vertices.length) + indices[idx * 3 + 1],
+                                    (cubes * vertices.length) + indices[idx * 3 + 2]
+                            );
                         }
 
 //                        quad(modelMatrix, Direction.WEST, block.color, -1.0f,-1.0f,-1.0f, -1.0f,-1.0f, 1.0f, -1.0f, 1.0f, 1.0f);  // Left Side

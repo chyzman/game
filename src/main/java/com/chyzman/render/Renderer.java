@@ -116,19 +116,19 @@ public class Renderer {
     static {
         try {
             POS_COLOR_PROGRAM = new GlProgram(
-                    "position_color",
-                    GlShader.vertex(Files.newInputStream(Path.of("src/main/resources/shaders/pos_color.vert"))),
-                    GlShader.fragment(Files.newInputStream(Path.of("src/main/resources/shaders/pos_color.frag")))
+                    "pos_color",
+                    GlShader.vertex("pos_color.vert"),
+                    GlShader.fragment("pos_color.frag")
             );
             POS_COLOR_TEXTURE_PROGRAM = new GlProgram(
                     "position",
-                    GlShader.vertex(Files.newInputStream(Path.of("src/main/resources/shaders/Textured.vert"))),
-                    GlShader.fragment(Files.newInputStream(Path.of("src/main/resources/shaders/Textured.frag")))
+                    GlShader.vertex("Textured.vert"),
+                    GlShader.fragment("Textured.frag")
             );
             POS_COLOR_TEXTURE_NORMAL_PROGRAM = new GlProgram(
-                    "position_color_tex_normal",
-                    GlShader.vertex(Files.newInputStream(Path.of("src/main/resources/shaders/pos_color_texture_normal.vert"))),
-                    GlShader.fragment(Files.newInputStream(Path.of("src/main/resources/shaders/pos_color_texture_normal.frag")))
+                    "pos_color_texture_normal",
+                    GlShader.vertex("pos_color_texture_normal.vert"),
+                    GlShader.fragment("pos_color_texture_normal.frag")
             );
             FONT_PROGRAM = new GlProgram(
                     "font",

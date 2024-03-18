@@ -108,6 +108,8 @@ public class Game {
 
         loop(dominion);
 
+        logicScheduler.shutDown();
+        clientScheduler.shutDown();
         window.terminate();
     }
 

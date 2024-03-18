@@ -1,19 +1,20 @@
 #version 330 core
-out vec4 fragColor;
-
-in vec3 vPos;
-in vec4 vColor;
-in vec2 vTexCoords;
-in vec3 vNormal;
 
 uniform sampler2D uTexture;
 uniform vec3 lightPos;
 uniform vec3 viewPos;
 uniform bool blinn;
 
+in vec3 vPos;
+in vec4 vColor;
+in vec2 vTexCoord;
+in vec3 vNormal;
+
+out vec4 fragColor;
+
 void main()
 {
-    vec3 color = texture(uTexture, vTexCoords).rgb;
+    vec3 color = texture(uTexture, vTexCoord).rgb;
     // ambient
     vec3 ambient = 0.05 * color;
     // diffuse
@@ -36,5 +37,5 @@ void main()
         spec = pow(max(dot(viewDir, reflectDir), 0.0), 8.0);
     }
     vec3 specular = vec3(0.3) * spec; // assuming bright white light color
-    fragColor = texture(uTexture, vTexCoords);//vec4(ambient + diffuse + specular, 1.0);
+    fragColor = vColor * vec4(ambient + diffuse + specular, 1.0);
 }
