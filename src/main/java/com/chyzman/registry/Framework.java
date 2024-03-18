@@ -41,7 +41,9 @@ public class Framework {
 
         for (var component : components) mainMap.put(component.getClass(), component);
 
-        mainMap.forEach(mainMap::putIfAbsent);
+        this.componentConstructors.forEach((aClass, supplier) -> {
+            if(!mainMap.containsKey(aClass)) mainMap.put(aClass, supplier.get());
+        });
 
         dominion.createEntity(mainMap.values().toArray());
     }

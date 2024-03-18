@@ -117,6 +117,26 @@ public class Game {
 
         logicScheduler.schedule(Physics.create(dominion, logicScheduler::deltaTime));
 
+        logicScheduler.schedule(DomSystem.create(dominion, "test_grav", dom -> {
+            for (var result : dom.findEntitiesWith(Named.class, Gravity.class)) {
+                var named = result.comp1();
+
+                if(!named.hasName() || !named.name().equals("test_grass")) return;
+
+                var gravity = result.comp2();
+
+                long window = Game.window.handle;
+
+                if (GLFW.glfwGetKey(window, GLFW.GLFW_KEY_UP) == GLFW.GLFW_PRESS) {
+                    gravity.y += 0.00001;
+                }
+
+                if (GLFW.glfwGetKey(window, GLFW.GLFW_KEY_DOWN) == GLFW.GLFW_PRESS) {
+                    gravity.y -= 0.00001;
+                }
+            }
+        }));
+
         logicScheduler.tickAtFixedRate(LOGIC_TICK_RATE);
 
         loop(dominion);

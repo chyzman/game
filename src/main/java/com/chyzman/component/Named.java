@@ -7,6 +7,6 @@ public record Named(String name) {
     }
 
     public boolean hasName(){
-        return this.name().isEmpty();
+        return !this.name().isEmpty();
     }
 }
