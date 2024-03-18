@@ -11,6 +11,10 @@ public class Position extends Vector3d {
     public Position() {
     }
 
+    public static Position zeroPos() {
+        return new Position(0);
+    }
+
     public Position(Number n) {
         super(n.doubleValue(), n.doubleValue(), n.doubleValue());
     }

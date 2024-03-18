@@ -2,8 +2,12 @@ package com.chyzman.component.position;
 
 import org.joml.Vector3d;
 
-public class Gravity extends Vector3d{
+public class Gravity extends Vector3d {
     public Gravity() {
+    }
+
+    public static Gravity zeroGrav() {
+        return new Gravity(0);
     }
 
     public Gravity(Number n) {

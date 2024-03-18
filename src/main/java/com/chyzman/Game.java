@@ -1,15 +1,15 @@
 package com.chyzman;
 
+import com.chyzman.component.Named;
 import com.chyzman.component.position.Floatly;
-import com.chyzman.component.position.Gravity;
 import com.chyzman.component.position.Position;
-import com.chyzman.component.position.Velocity;
 import com.chyzman.gl.GlDebug;
 import com.chyzman.object.BasicObject;
 import com.chyzman.object.CameraConfiguration;
 import com.chyzman.object.GameObject;
 import com.chyzman.object.components.CoolCube;
 import com.chyzman.object.components.EpiclyRenderedTriangle;
+import com.chyzman.registry.Frameworks;
 import com.chyzman.render.Renderer;
 import com.chyzman.systems.CameraControl;
 import com.chyzman.world.World;
@@ -94,11 +94,11 @@ public class Game {
 
         renderer = new Renderer(window, dominion);
 
-        dominion.createEntity("cube", new Position(), new CoolCube(), new Floatly());
+        Frameworks.POSITIONED_ENTITY.addToWith(dominion, new Named("cube"), new CoolCube(), new Floatly());
 
         addGameObject(new EpiclyRenderedTriangle());
 
-        dominion.createEntity("test_grass", new Position(0), new Velocity(), new Gravity(0.00001), new BasicObject());
+        Frameworks.UNIQUE_ENTITY.addToWith(dominion, new Named("test_grass"), new BasicObject());
 
         clientScheduler.schedule(CameraControl.create(dominion, clientScheduler::deltaTime));
 
