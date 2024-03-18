@@ -48,6 +48,10 @@ public class GlProgram {
         }
     }
 
+    public void uniform1i(String uniform, int value) {
+        glUniform1i(this.uniformLocation(uniform), value);
+    }
+
     public void uniform1f(String uniform, float value) {
         glUniform1f(this.uniformLocation(uniform), value);
     }

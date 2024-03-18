@@ -35,7 +35,7 @@ public final class VertexDescriptors {
             }
     );
 
-    public static final VertexDescriptor<PosColorTexNormalVertexFunction> POSITION_COLOR_TEX_NORMAL = new VertexDescriptor<>(
+    public static final VertexDescriptor<PosColorTexNormalVertexFunction> POSITION_COLOR_TEXTURE_NORMAL = new VertexDescriptor<>(
             attributeConsumer -> {
                 attributeConsumer.attribute("aPos", VertexElementType.FLOAT, 3);
                 attributeConsumer.attribute("aColor", VertexElementType.FLOAT, 4);
@@ -80,8 +80,8 @@ public final class VertexDescriptors {
 
     public interface PosColorTexNormalVertexFunction {
         void vertex(float x, float y, float z, float a, float r, float g, float b, float u, float v, float normalX, float normalY, float normalZ);
-        default void vertex(Vector3fc vertex, float a, float r, float g, float b, float u, float v, Vector4fc normal) {
-            this.vertex(vertex.x(), vertex.y(), vertex.z(), a, r, g, b, u, v, normal.x(), normal.y(), normal.z());
+        default void vertex(Vector3fc vertex, Color color, float u, float v, Vector3fc normal) {
+            this.vertex(vertex.x(), vertex.y(), vertex.z(), color.alpha(), color.red(), color.green(), color.blue(), u, v, normal.x(), normal.y(), normal.z());
         }
     }
 

@@ -1,35 +1,33 @@
 package com.chyzman.util;
 
 import io.wispforest.endec.Endec;
+import org.joml.Vector3f;
+import org.joml.Vector3fc;
 
 public enum Direction {
-    DOWN(1, new Vec3i(0, -1, 0)),
-    UP(0, new Vec3i(0, 1, 0)),
-    NORTH(3, new Vec3i(0, 0, -1)),
-    SOUTH(2, new Vec3i(0, 0, 1)),
-    WEST(5, new Vec3i(-1, 0, 0)),
-    EAST(4, new Vec3i(1, 0, 0));
+    DOWN(1, new Vector3f(0, -1, 0)),
+    UP(0, new Vector3f(0, 1, 0)),
+    NORTH(3, new Vector3f(0, 0, -1)),
+    SOUTH(2, new Vector3f(0, 0, 1)),
+    WEST(5, new Vector3f(-1, 0, 0)),
+    EAST(4, new Vector3f(1, 0, 0));
 
     public static final Direction[] DIRECTIONS = values();
     public static final Endec<Direction> ENDEC = Endec.forEnum(Direction.class);
 
     private final int idOpposite;
-    private final Vec3i normal;
+    private final Vector3fc normal;
 
-    Direction(int idOpposite, Vec3i normal) {
+    Direction(int idOpposite, Vector3fc normal) {
         this.idOpposite = idOpposite;
         this.normal = normal;
-    }
-
-    public int id() {
-        return ordinal();
     }
 
     public int idOpposite() {
         return idOpposite;
     }
 
-    public Vec3i normal() {
+    public Vector3fc normal() {
         return normal;
     }
 }

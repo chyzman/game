@@ -41,7 +41,7 @@ public class EpiclyRenderedTriangle extends GameObject {
         var window = Game.window;
 
         mesh.program.use();
-        mesh.program.uniformMat4("projection", new Matrix4f().setOrtho(0, window.width, window.height, 0, 0, 1000));
+        mesh.program.uniformMat4("uProjection", new Matrix4f().setOrtho(0, window.width, window.height, 0, 0, 1000));
         mesh.draw();
     }
 }

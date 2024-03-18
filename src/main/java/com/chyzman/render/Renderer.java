@@ -26,8 +26,9 @@ import java.util.List;
 import static org.lwjgl.opengl.GL45.*;
 
 public class Renderer {
+    public static final GlProgram POS_COLOR_PROGRAM;
     public static final GlProgram POS_COLOR_TEXTURE_PROGRAM;
-    public static final GlProgram POS_COLOR_TEXTURE_NORMAL_PROGRAM = null;
+    public static final GlProgram POS_COLOR_TEXTURE_NORMAL_PROGRAM;
     public static final GlProgram FONT_PROGRAM;
     private final List<RenderChunk> chunks = new ArrayList<>();
     private final MatrixStack projectionMatrix = new MatrixStack();
@@ -76,10 +77,10 @@ public class Renderer {
             GL11.glEnable(GL11.GL_DEPTH_TEST);
             GL11.glBindTexture(GL11.GL_TEXTURE_2D, cube.chyz);
             cube.mesh.program.use();
-            cube.mesh.program.uniformMat4("projection", getProjectionMatrix().peek());
-            cube.mesh.program.uniformMat4("view", getViewMatrix().peek());
+            cube.mesh.program.uniformMat4("uProjection", getProjectionMatrix().peek());
+            cube.mesh.program.uniformMat4("uView", getViewMatrix().peek());
 
-            cube.mesh.program.uniformMat4("model", new Matrix4f(getModelMatrix().peek()).translate((float) pos.x, (float) pos.y, (float) pos.z));
+            cube.mesh.program.uniformMat4("uModel", new Matrix4f(getModelMatrix().peek()).translate((float) pos.x, (float) pos.y, (float) pos.z));
             cube.mesh.draw();
             GL11.glDisable(GL11.GL_DEPTH_TEST);
         }
@@ -114,24 +115,21 @@ public class Renderer {
 
     static {
         try {
-            try {
-                POS_COLOR_TEXTURE_PROGRAM = new GlProgram(
-                        "position",
-                        GlShader.vertex(Files.newInputStream(Path.of("src/main/resources/shaders/Textured.vert"))),
-                        GlShader.fragment(Files.newInputStream(Path.of("src/main/resources/shaders/Textured.frag")))
-                );
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-//            try {
-//                POS_COLOR_TEXTURE_NORMAL_PROGRAM = new GlProgram(
-//                        "position",
-//                        GlShader.vertex(Files.newInputStream(Path.of("src/main/resources/shaders/Textured.vert"))),
-//                        GlShader.fragment(Files.newInputStream(Path.of("src/main/resources/shaders/Textured.frag")))
-//                );
-//            } catch (IOException e) {
-//                throw new RuntimeException(e);
-//            }
+            POS_COLOR_PROGRAM = new GlProgram(
+                    "position_color",
+                    GlShader.vertex(Files.newInputStream(Path.of("src/main/resources/shaders/pos_color.vert"))),
+                    GlShader.fragment(Files.newInputStream(Path.of("src/main/resources/shaders/pos_color.frag")))
+            );
+            POS_COLOR_TEXTURE_PROGRAM = new GlProgram(
+                    "position",
+                    GlShader.vertex(Files.newInputStream(Path.of("src/main/resources/shaders/Textured.vert"))),
+                    GlShader.fragment(Files.newInputStream(Path.of("src/main/resources/shaders/Textured.frag")))
+            );
+            POS_COLOR_TEXTURE_NORMAL_PROGRAM = new GlProgram(
+                    "position_color_tex_normal",
+                    GlShader.vertex(Files.newInputStream(Path.of("src/main/resources/shaders/pos_color_texture_normal.vert"))),
+                    GlShader.fragment(Files.newInputStream(Path.of("src/main/resources/shaders/pos_color_texture_normal.frag")))
+            );
             FONT_PROGRAM = new GlProgram(
                     "font",
                     GlShader.vertex("font.vert"),

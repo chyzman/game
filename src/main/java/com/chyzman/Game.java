@@ -66,20 +66,20 @@ public class Game {
 
         world = new World();
 
-        for (int xRad = 0; xRad < 8; xRad++) {
-            for (int yRad = 0; yRad < 8; yRad++) {
-                for (int zRad = 0; zRad < 8; zRad++) {
+//        for (int xRad = 0; xRad < 8; xRad++) {
+//            for (int yRad = 0; yRad < 8; yRad++) {
+//                for (int zRad = 0; zRad < 8; zRad++) {
                     for (int x = 0; x < Chunk.CHUNK_SIZE; x++) {
                         for (int y = 0; y < Chunk.CHUNK_SIZE; y++) {
                             for (int z = 0; z < Chunk.CHUNK_SIZE; z++) {
-                                if (noise.evaluateNoise(xRad * Chunk.CHUNK_SIZE + x, yRad * Chunk.CHUNK_SIZE + y, zRad * Chunk.CHUNK_SIZE + z) > .5)
-                                    world.setBlock(xRad * Chunk.CHUNK_SIZE + x, yRad * Chunk.CHUNK_SIZE + y, zRad * Chunk.CHUNK_SIZE + z, Blocks.GRASS);
+                                if (noise.evaluateNoise(x, y, z) > .5)
+                                    world.setBlock(x, y, z, Blocks.GREEN);
                             }
                         }
                     }
-                }
-            }
-        }
+//                }
+//            }
+//        }
 
 
         renderer = new Renderer(window, dominion);

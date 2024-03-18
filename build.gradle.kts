@@ -30,6 +30,7 @@ dependencies {
     compileOnly ("org.jetbrains:annotations:24.1.0")
 
     implementation("it.unimi.dsi:fastutil:8.5.12")
+    implementation("de.javagl:obj:0.4.0")
 
     implementation (platform("org.lwjgl:lwjgl-bom:${project.property("lwjglVersion")}"))
 

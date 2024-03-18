@@ -34,11 +34,11 @@ public class BasicObject {
         GL11.glEnable(GL11.GL_DEPTH_TEST);
         GL11.glBindTexture(GL11.GL_TEXTURE_2D, chyz);
         mesh.program.use();
-        mesh.program.uniformMat4("projection", renderer.getProjectionMatrix().peek());
-        mesh.program.uniformMat4("view", renderer.getViewMatrix().peek());
+        mesh.program.uniformMat4("uProjection", renderer.getProjectionMatrix().peek());
+        mesh.program.uniformMat4("uView", renderer.getViewMatrix().peek());
 
 
-        mesh.program.uniformMat4("model", new Matrix4f(renderer.getModelMatrix().peek()).translate((float) pos.x, (float) pos.y, (float) pos.z));
+        mesh.program.uniformMat4("uModel", new Matrix4f(renderer.getModelMatrix().peek()).translate((float) pos.x, (float) pos.y, (float) pos.z));
         mesh.draw();
         GL11.glDisable(GL11.GL_DEPTH_TEST);
     }

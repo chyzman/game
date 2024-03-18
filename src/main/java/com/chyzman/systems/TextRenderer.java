@@ -26,8 +26,8 @@ public class TextRenderer {
         GL11.glEnable(GL11.GL_BLEND);
         GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
         program.use();
-        program.uniformMat4("projection", new Matrix4f().setOrtho2D(0.0f, 800.0f, 0.0f, 600.0f));
-        program.uniform3f("textColor", color.x, color.y, color.z);
+        program.uniformMat4("uProjection", new Matrix4f().setOrtho2D(0.0f, 800.0f, 0.0f, 600.0f));
+        program.uniform3f("uTextColor", color.x, color.y, color.z);
         GL30.glActiveTexture(GL30.GL_TEXTURE0);
 
         // iterate through all characters
