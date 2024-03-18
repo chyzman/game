@@ -1,5 +1,6 @@
 package com.chyzman;
 
+import com.chyzman.component.Named;
 import com.chyzman.component.position.Floatly;
 import com.chyzman.component.position.Gravity;
 import com.chyzman.component.position.Position;
@@ -10,18 +11,21 @@ import com.chyzman.object.CameraConfiguration;
 import com.chyzman.object.GameObject;
 import com.chyzman.object.components.CoolCube;
 import com.chyzman.object.components.EpiclyRenderedTriangle;
+import com.chyzman.registry.Frameworks;
 import com.chyzman.render.Renderer;
 import com.chyzman.systems.CameraControl;
-import com.chyzman.world.World;
-import com.chyzman.world.chunk.Chunk;
 import com.chyzman.systems.DomSystem;
 import com.chyzman.systems.Physics;
+import com.chyzman.world.World;
 import com.chyzman.world.block.Blocks;
+import com.chyzman.world.chunk.Chunk;
 import de.articdive.jnoise.core.api.functions.Interpolation;
 import de.articdive.jnoise.generators.noise_parameters.fade_functions.FadeFunction;
 import de.articdive.jnoise.pipeline.JNoise;
 import dev.dominion.ecs.api.Dominion;
+import dev.dominion.ecs.api.Results;
 import dev.dominion.ecs.api.Scheduler;
+import org.joml.Vector3f;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL45;
 
@@ -81,14 +85,23 @@ public class Game {
 //            }
 //        }
 
+        var comp = dominion.composition();
+        var cow = comp.of(
+                Position.class,
+                Velocity.class,
+                Gravity.class,
+                BasicObject.class);
+
+        dominion.createPreparedEntity(cow.withValue(new Position(), new Velocity(), new Gravity(), new BasicObject()));
+
 
         renderer = new Renderer(window, dominion);
 
-        dominion.createEntity("cube", new Position(), new CoolCube(), new Floatly());
+        Frameworks.POSITIONED_ENTITY.addToWith(dominion, new Named("cube"), new CoolCube(), new Floatly());
 
         addGameObject(new EpiclyRenderedTriangle());
 
-        dominion.createEntity("test_grass", new Position(0), new Velocity(), new Gravity(0.00001), new BasicObject());
+        Frameworks.UNIQUE_ENTITY.addToWith(dominion, new Named("test_grass"), new BasicObject());
 
         clientScheduler.schedule(CameraControl.create(dominion, clientScheduler::deltaTime));
 

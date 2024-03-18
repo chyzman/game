@@ -1,8 +1,7 @@
 package com.chyzman.systems;
 
-import com.chyzman.component.Rotation.AngularVelocity;
-import com.chyzman.component.Rotation.Rotation;
-import com.chyzman.component.position.Floatly;
+import com.chyzman.component.rotation.AngularVelocity;
+import com.chyzman.component.rotation.Rotation;
 import com.chyzman.component.position.Gravity;
 import com.chyzman.component.position.Position;
 import com.chyzman.component.position.Velocity;

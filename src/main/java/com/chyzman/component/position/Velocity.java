@@ -3,7 +3,10 @@ package com.chyzman.component.position;
 import org.joml.Vector3d;
 
 public class Velocity extends Vector3d{
-    public Velocity() {
+    public Velocity() {}
+
+    public static Velocity zeroVel() {
+        return new Velocity(0);
     }
 
     public Velocity(Number n) {

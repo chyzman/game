@@ -1,4 +1,4 @@
-package com.chyzman.component.Rotation;
+package com.chyzman.component.rotation;
 
 import org.joml.Quaterniond;
 
