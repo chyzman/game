@@ -36,6 +36,7 @@ public class Texture {
             height = h.get();
 
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
             int id = glGenTextures();
             idToTexture.put(textureId, id);
             glBindTexture(GL_TEXTURE_2D, id);
