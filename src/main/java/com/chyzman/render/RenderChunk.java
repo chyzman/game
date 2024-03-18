@@ -35,13 +35,13 @@ public class RenderChunk {
         }
     }
 
-    private final ElementMeshBuffer<VertexDescriptors.PosColorTexVertexFunction> mesh;
+    private final ElementMeshBuffer<VertexDescriptors.PosColorTexNormalVertexFunction> mesh;
     private final int texture;
     private final Chunk chunk;
     private boolean compiled = false;
 
     public RenderChunk(Chunk chunk) {
-        this.mesh = new ElementMeshBuffer<>(VertexDescriptors.POSITION_COLOR_TEXTURE, Renderer.POS_COLOR_TEXTURE_PROGRAM);
+        this.mesh = new ElementMeshBuffer<>(VertexDescriptors.POSITION_COLOR_TEXTURE_NORMAL, Renderer.POS_COLOR_TEXTURE_NORMAL_PROGRAM);
         this.chunk = chunk;
         this.texture = Texture.load(new Id("game", "test.png"));
     }
@@ -49,6 +49,7 @@ public class RenderChunk {
     public void compile() {
         mesh.clear();
         MatrixStack modelMatrix = Game.renderer.getModelMatrix();
+        int cubes = 0;
         for (int x = 0; x < Chunk.CHUNK_SIZE; x++) {
             for (int y = 0; y < Chunk.CHUNK_SIZE; y++) {
                 for (int z = 0; z < Chunk.CHUNK_SIZE; z++) {
@@ -75,16 +76,14 @@ public class RenderChunk {
                         float[] texCoords = ObjData.getTexCoordsArray(CUBE, 2);
                         float[] normals = ObjData.getNormalsArray(CUBE);
 
-                        int uvOffset = 0;
                         for (int i = 0; i < vertices.length; i += 3) {
-                            mesh.builder.vertex(transform(modelMatrix, vertices[i], vertices[i + 1], vertices[i + 2]), block.color, texCoords[uvOffset], texCoords[uvOffset + 1]/*, new Vector3f(normals[i], normals[i + 1], normals[i + 2])*/);
-                            uvOffset += 2;
+                            mesh.builder.vertex(transform(modelMatrix, vertices[i], vertices[i + 1], vertices[i + 2]), block.color, texCoords[i / 3], texCoords[i / 3 + 1], new Vector3f(normals[i], normals[i + 1], normals[i + 2]));
                         }
 
                         BufferWriter in = mesh.getIndicesBuffer();
 
                         for (int i = 0; i < indices.length; i += 3) {
-                            in.int3(indices[i], indices[i + 1], indices[i + 2]);
+                            in.int3((cubes * vertices.length) + indices[i], (cubes * vertices.length) + indices[i + 1], (cubes * vertices.length) + indices[i + 2]);
                         }
 
 //                        quad(modelMatrix, Direction.WEST, block.color, -1.0f,-1.0f,-1.0f, -1.0f,-1.0f, 1.0f, -1.0f, 1.0f, 1.0f);  // Left Side
@@ -138,6 +137,7 @@ public class RenderChunk {
 //                        mesh.builder.vertex(this.transform(modelMatrix, 0.0f, 1.0f, 1.0f), block.color, 0.0f, 1.0f, Direction.EAST.normal());
 //                        mesh.builder.vertex(this.transform(modelMatrix, 1.0f,0.0f, 1.0f), block.color, 0.0f, 0.0f, Direction.EAST.normal());
                         modelMatrix.pop();
+                        cubes++;
                     }
                 }
             }
@@ -172,7 +172,6 @@ public class RenderChunk {
     public void draw() {
         var renderer = Game.renderer;
         mesh.program.use();
-        GL11.glBindTexture(GL11.GL_TEXTURE_2D, texture);
         if (!compiled || GLFW.glfwGetKey(Game.window.handle, GLFW.GLFW_KEY_R) == GLFW.GLFW_PRESS) {
             System.out.println("Recompiling chunk");
             compile();
@@ -183,6 +182,7 @@ public class RenderChunk {
         mesh.program.uniformMat4("uProjection", renderer.getProjectionMatrix().peek());
         mesh.program.uniformMat4("uView", renderer.getViewMatrix().peek());
         mesh.program.uniformMat4("uModel", modelMatrix.peek());
+        mesh.program.uniformSampler("uTexture", texture, 0);
         modelMatrix.pop();
         GL11.glEnable(GL11.GL_DEPTH_TEST);
         mesh.draw();
