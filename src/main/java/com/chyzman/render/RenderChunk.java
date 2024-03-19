@@ -29,7 +29,7 @@ public class RenderChunk {
 
     static {
         try {
-            CUBE = ObjUtils.convertToRenderable(ObjReader.read(Files.newInputStream(Path.of("src/main/resources/models/moneky.obj"))));
+            CUBE = ObjUtils.convertToRenderable(ObjReader.read(Files.newInputStream(Path.of("src/main/resources/models/cube.obj"))));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -41,7 +41,7 @@ public class RenderChunk {
     private boolean compiled = false;
 
     public RenderChunk(Chunk chunk) {
-        this.mesh = new ElementMeshBuffer<>(VertexDescriptors.POSITION_COLOR_TEXTURE_NORMAL, Renderer.POS_COLOR_TEXTURE_NORMAL_PROGRAM);
+        this.mesh = new ElementMeshBuffer<>(VertexDescriptors.POSITION_COLOR_TEXTURE_NORMAL, Renderer.POS_COLOR_TEXTURE_NORMAL_PROGRAM, 16384);
         this.chunk = chunk;
         this.texture = Texture.load(new Id("game", "test.png"));
     }

@@ -6,6 +6,7 @@ import com.chyzman.world.block.Blocks;
 
 public class Chunk {
     public static final int CHUNK_SIZE = 16;
+    public static final int CHUNK_MASK = CHUNK_SIZE - 1;
     public final int x, y, z;
     private final NibbleArray blocks = new NibbleArray(8, CHUNK_SIZE * CHUNK_SIZE * CHUNK_SIZE); // TODO: use nibble array for now
 
