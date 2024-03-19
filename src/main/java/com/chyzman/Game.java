@@ -28,6 +28,7 @@ import dev.dominion.ecs.api.Dominion;
 import dev.dominion.ecs.api.Scheduler;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL45;
+import org.ode4j.ode.internal.DxWorld;
 import org.slf4j.Logger;
 
 import java.util.ArrayList;
@@ -48,6 +49,7 @@ public class Game {
     public Scheduler logicScheduler;
     public final List<GameObject> gameObjects = new ArrayList<>();
     public World world;
+    public DxWorld physicsWorld;
     public final Chunk chunk = new Chunk(0, 0, 0);
 
     public static void main(String[] args) {
@@ -73,6 +75,7 @@ public class Game {
 
         world = new World(dominion);
 
+        physicsWorld = DxWorld.dWorldCreate();
 //        for (int xRad = 0; xRad < 1; xRad++) {
 //            for (int yRad = 0; yRad < 1; yRad++) {
 //                for (int zRad = 0; zRad < 1; zRad++) {
@@ -99,7 +102,8 @@ public class Game {
                 Position.class,
                 Velocity.class,
                 Gravity.class,
-                BasicObject.class);
+                BasicObject.class
+        );
 
         dominion.createPreparedEntity(cow.withValue(new Position(), new Velocity(), new Gravity(), new BasicObject()));
 
@@ -125,11 +129,15 @@ public class Game {
 
         logicScheduler.schedule(Physics.create(dominion, logicScheduler::deltaTime));
 
+        logicScheduler.schedule(DomSystem.create(dominion, "physics", dom -> {
+            physicsWorld.step(1.0);
+        }));
+
         logicScheduler.schedule(DomSystem.create(dominion, "test_grav", dom -> {
             for (var result : dom.findEntitiesWith(Named.class, Gravity.class)) {
                 var named = result.comp1();
 
-                if(!named.hasName() || !named.name().equals("test_grass")) return;
+                if (!named.hasName() || !named.name().equals("test_grass")) return;
 
                 var gravity = result.comp2();
 
@@ -155,7 +163,7 @@ public class Game {
     }
 
     private void loop(Dominion dom) {
-        while(!window.shouldClose()) {
+        while (!window.shouldClose()) {
             renderer.clear();
             clientScheduler.tick();
             renderer.update(dom);
