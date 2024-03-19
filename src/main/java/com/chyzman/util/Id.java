@@ -1,6 +1,7 @@
 package com.chyzman.util;
 
 import io.wispforest.endec.Endec;
+import org.jetbrains.annotations.Nullable;
 
 import java.nio.file.Path;
 
@@ -18,6 +19,15 @@ public class Id implements Comparable<Id> {
     public Id(String namespace, String path) {
         this.namespace = namespace;
         this.path = path;
+    }
+
+    @Nullable
+    public static Id tryAndParse(String id) {
+        var array = id.split(":");
+
+        if(array.length < 2) return null;
+
+        return new Id(array[0], array[1]);
     }
 
     public String namespace() {
