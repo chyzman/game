@@ -2,6 +2,7 @@ package com.chyzman.render;
 
 import com.chyzman.Game;
 import com.chyzman.Window;
+import com.chyzman.component.fisics.PhysicsObject;
 import com.chyzman.component.position.Position;
 import com.chyzman.gl.GlProgram;
 import com.chyzman.gl.GlShader;
@@ -16,6 +17,7 @@ import org.joml.Vector3d;
 import org.joml.Vector3f;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL11;
+import org.ode4j.ode.internal.DxBody;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -87,6 +89,11 @@ public class Renderer {
 
         for (var resultEntity : dominion.findEntitiesWith(Position.class, BasicObject.class)) {
             resultEntity.comp2().draw(resultEntity.comp1());
+        }
+
+        for (var resultEntity : dominion.findEntitiesWith(PhysicsObject.class)) {
+            DxBody body = resultEntity.comp();
+            //TODO alpha help me idk what im doing
         }
 
         ++framesPerSecond;
