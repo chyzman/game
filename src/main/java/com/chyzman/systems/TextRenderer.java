@@ -12,7 +12,7 @@ import org.lwjgl.opengl.GL30;
 
 public class TextRenderer {
     private final MeshBuffer<VertexDescriptors.TextVertexFunction> mesh;
-    private final Font font = new Font("arial.ttf");
+    private final Font font = new Font("FiraCode-VariableFont_wght.ttf");
 
     public TextRenderer() {
         mesh = new MeshBuffer<>(VertexDescriptors.FONT, Renderer.FONT_PROGRAM);
