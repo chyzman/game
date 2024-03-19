@@ -34,6 +34,14 @@ dependencies {
 
     implementation (platform("org.lwjgl:lwjgl-bom:${project.property("lwjglVersion")}"))
 
+    implementation("com.google.guava:guava:33.1.0-jre")
+
+    implementation("net.minecrell:terminalconsoleappender:1.3.0")
+    implementation("org.slf4j:slf4j-api:1.7.30")
+    implementation("org.apache.logging.log4j:log4j-api:2.23.1")
+    implementation("org.apache.logging.log4j:log4j-core:2.23.1")
+    implementation("org.apache.logging.log4j:log4j-slf4j-impl:2.23.1")
+
     implementation("org.lwjgl:lwjgl")
     implementation("org.lwjgl:lwjgl-assimp")
     implementation("org.lwjgl:lwjgl-bgfx")
@@ -139,6 +147,14 @@ idea.project.settings {
             mainClass = "com.chyzman.Game"
             moduleName = "game.main"
             includeProvidedDependencies = true
+
+            this.jvmArgs = "-Dchyzman.game.disableAnsi=false -Dlog4j2.formatMsgNoLookups=true -Dchyzman.game.log.level=debug"
+
+            this.envs = HashMap<String, String>();
+
+            this.envs.set("chyzman.game.disableAnsi", false.toString())
+            this.envs.set("log4j2.formatMsgNoLookups", true.toString())
+            this.envs.set("chyzman.game.log.level", "debug")
         }
     }
 }

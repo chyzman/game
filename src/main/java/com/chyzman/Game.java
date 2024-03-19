@@ -16,6 +16,7 @@ import com.chyzman.render.Renderer;
 import com.chyzman.systems.CameraControl;
 import com.chyzman.systems.DomSystem;
 import com.chyzman.systems.Physics;
+import com.chyzman.util.LogUtils;
 import com.chyzman.world.World;
 import com.chyzman.world.block.Blocks;
 import com.chyzman.world.chunk.Chunk;
@@ -23,17 +24,18 @@ import de.articdive.jnoise.core.api.functions.Interpolation;
 import de.articdive.jnoise.generators.noise_parameters.fade_functions.FadeFunction;
 import de.articdive.jnoise.pipeline.JNoise;
 import dev.dominion.ecs.api.Dominion;
-import dev.dominion.ecs.api.Results;
 import dev.dominion.ecs.api.Scheduler;
-import org.joml.Vector3f;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL45;
+import org.slf4j.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
 public class Game {
+    public static final Logger LOGGER = LogUtils.getLogger();
+
     public static final int LOGIC_TICK_RATE = 64;
 
     public static final Game GAME = new Game();
@@ -93,7 +95,6 @@ public class Game {
                 BasicObject.class);
 
         dominion.createPreparedEntity(cow.withValue(new Position(), new Velocity(), new Gravity(), new BasicObject()));
-
 
         renderer = new Renderer(window, dominion);
 
