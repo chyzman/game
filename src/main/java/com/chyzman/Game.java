@@ -1,10 +1,12 @@
 package com.chyzman;
 
 import com.chyzman.component.Named;
+import com.chyzman.component.fisics.PhysicsObject;
 import com.chyzman.component.position.Floatly;
 import com.chyzman.component.position.Gravity;
 import com.chyzman.component.position.Position;
 import com.chyzman.component.position.Velocity;
+import com.chyzman.component.rotation.Rotation;
 import com.chyzman.gl.GlDebug;
 import com.chyzman.object.BasicObject;
 import com.chyzman.object.CameraConfiguration;
@@ -26,6 +28,7 @@ import de.articdive.jnoise.generators.noise_parameters.fade_functions.FadeFuncti
 import de.articdive.jnoise.pipeline.JNoise;
 import dev.dominion.ecs.api.Dominion;
 import dev.dominion.ecs.api.Scheduler;
+import org.joml.Quaterniond;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL45;
 import org.ode4j.ode.internal.DxWorld;
@@ -131,6 +134,18 @@ public class Game {
 
         logicScheduler.schedule(DomSystem.create(dominion, "physics", dom -> {
             physicsWorld.step(1.0);
+            for (var result : dom.findEntitiesWith(PhysicsObject.class, Position.class)) {
+                var dxBody = result.comp1();
+                var pos = result.comp2();
+                var p = dxBody.getPosition();
+                pos.set(p.get0(), p.get1(), p.get2());
+            }
+            for (var result : dom.findEntitiesWith(PhysicsObject.class, Rotation.class)) {
+                var dxBody = result.comp1();
+                var rotation = result.comp2();
+                var q = dxBody.getQuaternion();
+                rotation.set(new Quaterniond(q.get0(), q.get1(), q.get2(), q.get3()));
+            }
         }));
 
         logicScheduler.schedule(DomSystem.create(dominion, "test_grav", dom -> {
