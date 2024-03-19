@@ -135,6 +135,9 @@ dependencies {
     implementation("io.wispforest.endec:netty:0.1.0-pre.1")
 
     implementation("de.articdive:jnoise-pipeline:4.1.0")
+
+    implementation("org.ode4j:core:${project.property("ode4jVersion")}")
+
 }
 
 tasks.test {
@@ -158,4 +161,3 @@ idea.project.settings {
         }
     }
 }
-
