@@ -17,6 +17,7 @@ import com.chyzman.systems.CameraControl;
 import com.chyzman.systems.DomSystem;
 import com.chyzman.systems.Physics;
 import com.chyzman.util.LogUtils;
+import com.chyzman.ui.core.Color;
 import com.chyzman.world.World;
 import com.chyzman.world.block.Blocks;
 import com.chyzman.world.chunk.Chunk;
@@ -70,22 +71,28 @@ public class Game {
                 .clamp(0.0, 1.0)
                 .build();
 
-        world = new World();
+        world = new World(dominion);
 
-//        for (int xRad = 0; xRad < 8; xRad++) {
-//            for (int yRad = 0; yRad < 8; yRad++) {
-//                for (int zRad = 0; zRad < 8; zRad++) {
-                    for (int x = 0; x < Chunk.CHUNK_SIZE; x++) {
-                        for (int y = 0; y < Chunk.CHUNK_SIZE; y++) {
-                            for (int z = 0; z < Chunk.CHUNK_SIZE; z++) {
-                                if (noise.evaluateNoise(x, y, z) > .5)
-                                    world.setBlock(x, y, z, Blocks.GREEN);
-                            }
-                        }
-                    }
+//        for (int xRad = 0; xRad < 1; xRad++) {
+//            for (int yRad = 0; yRad < 1; yRad++) {
+//                for (int zRad = 0; zRad < 1; zRad++) {
+//                    for (int x = 0; x < Chunk.CHUNK_SIZE; x++) {
+//                        for (int y = 0; y < Chunk.CHUNK_SIZE; y++) {
+//                            for (int z = 0; z < Chunk.CHUNK_SIZE; z++) {
+//                                if (noise.evaluateNoise(x, y, z) > .5)
+//                                    world.setBlock(x, y, z, Blocks.GREEN);
+//                            }
+//                        }
+//                    }
 //                }
 //            }
 //        }
+
+        world.setBlock(0, 0, 0, Blocks.GREEN);
+        world.setBlock(2, 0, 0, Blocks.GREEN);
+        world.setBlock(1, 1, 0, Blocks.GREEN);
+        world.setBlock(1, 2, 0, Blocks.GREEN);
+        world.setBlock(1, 3, 0, Blocks.GREEN);
 
         var comp = dominion.composition();
         var cow = comp.of(
