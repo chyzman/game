@@ -103,12 +103,12 @@ public class Game {
         var comp = dominion.composition();
         var cow = comp.of(
                 Position.class,
-                Velocity.class,
-                Gravity.class,
+                Rotation.class,
+                PhysicsObject.class,
                 BasicObject.class
         );
 
-        dominion.createPreparedEntity(cow.withValue(new Position(), new Velocity(), new Gravity(), new BasicObject()));
+        dominion.createPreparedEntity(cow.withValue(new Position(10,0,0), new Rotation(), new PhysicsObject(physicsWorld), new BasicObject()));
 
         renderer = new Renderer(window, dominion);
 
