@@ -18,6 +18,7 @@ package net.fabricmc.fabric.impl.base.event;
 
 import java.lang.reflect.Array;
 import java.util.Arrays;
+import java.util.List;
 
 import com.chyzman.util.Id;
 
@@ -28,18 +29,20 @@ import net.fabricmc.fabric.impl.base.toposort.SortableNode;
  */
 class EventPhaseData<T> extends SortableNode<EventPhaseData<T>> {
 	final Id id;
-	T[] listeners;
+	List<T> listeners;
 
 	@SuppressWarnings("unchecked")
 	EventPhaseData(Id id, Class<?> listenerClass) {
 		this.id = id;
-		this.listeners = (T[]) Array.newInstance(listenerClass, 0);
+		this.listeners = List.of((T[]) Array.newInstance(listenerClass, 0));
 	}
 
 	void addListener(T listener) {
-		int oldLength = listeners.length;
-		listeners = Arrays.copyOf(listeners, oldLength + 1);
-		listeners[oldLength] = listener;
+		listeners.add(listener);
+	}
+
+	void removeListener(T listener) {
+		listeners.remove(listener);
 	}
 
 	@Override

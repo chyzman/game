@@ -17,7 +17,6 @@
 package net.fabricmc.fabric.api.event;
 
 import com.chyzman.util.Id;
-import org.intellij.lang.annotations.Identifier;
 import org.jetbrains.annotations.ApiStatus;
 
 /**
@@ -54,7 +53,7 @@ public abstract class Event<T> {
 	 *
 	 * @param listener The desired listener.
 	 */
-	public abstract void register(T listener);
+	public abstract Subscription<T> register(T listener);
 
 	/**
 	 * The identifier of the default phase.
@@ -69,10 +68,12 @@ public abstract class Event<T> {
 	 * @param phase Identifier of the phase this listener should be registered for. It will be created if it didn't exist yet.
 	 * @param listener The desired listener.
 	 */
-	public void register(Id phase, T listener) {
+	public Subscription<T> register(Id phase, T listener) {
 		// This is done to keep compatibility with existing Event subclasses, but they should really not be subclassing Event.
-		register(listener);
+		return register(listener);
 	}
+
+	public abstract Event<T> unregister(Id phaseId, T listener);
 
 	/**
 	 * Request that listeners registered for one phase be executed before listeners registered for another phase.

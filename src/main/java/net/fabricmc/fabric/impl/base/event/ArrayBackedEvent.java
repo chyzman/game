@@ -28,6 +28,7 @@ import java.util.function.Function;
 import com.chyzman.util.Id;
 
 import net.fabricmc.fabric.api.event.Event;
+import net.fabricmc.fabric.api.event.Subscription;
 import net.fabricmc.fabric.impl.base.toposort.NodeSorting;
 
 class ArrayBackedEvent<T> extends Event<T> {
@@ -55,12 +56,12 @@ class ArrayBackedEvent<T> extends Event<T> {
 	}
 
 	@Override
-	public void register(T listener) {
-		register(DEFAULT_PHASE, listener);
+	public Subscription<T> register(T listener) {
+		return register(DEFAULT_PHASE, listener);
 	}
 
 	@Override
-	public void register(Id phaseId, T listener) {
+	public Subscription<T> register(Id phaseId, T listener) {
 		Objects.requireNonNull(phaseId, "Tried to register a listener for a null phase!");
 		Objects.requireNonNull(listener, "Tried to register a null listener!");
 
@@ -68,6 +69,18 @@ class ArrayBackedEvent<T> extends Event<T> {
 			getOrCreatePhase(phaseId, true).addListener(listener);
 			rebuildInvoker(handlers.length + 1);
 		}
+
+		return new Subscription<>(this, phaseId, listener);
+	}
+
+	@Override
+	public Event<T> unregister(Id phaseId, T listener) {
+		synchronized (lock) {
+			getOrCreatePhase(phaseId, true).removeListener(listener);
+			rebuildInvoker(handlers.length + 1);
+		}
+
+		return this;
 	}
 
 	private EventPhaseData<T> getOrCreatePhase(Id id, boolean sortIfCreate) {
@@ -87,18 +100,21 @@ class ArrayBackedEvent<T> extends Event<T> {
 	}
 
 	private void rebuildInvoker(int newLength) {
+		var listenerClass = handlers.getClass().getComponentType();
+
 		// Rebuild handlers.
 		if (sortedPhases.size() == 1) {
 			// Special case with a single phase: use the array of the phase directly.
-			handlers = sortedPhases.get(0).listeners;
+			handlers = sortedPhases.get(0).listeners.toArray((T[]) Array.newInstance(listenerClass, 0));
 		} else {
 			@SuppressWarnings("unchecked")
 			T[] newHandlers = (T[]) Array.newInstance(handlers.getClass().getComponentType(), newLength);
 			int newHandlersIndex = 0;
 
 			for (EventPhaseData<T> existingPhase : sortedPhases) {
-				int length = existingPhase.listeners.length;
-				System.arraycopy(existingPhase.listeners, 0, newHandlers, newHandlersIndex, length);
+				int length = existingPhase.listeners.size();
+				var array = existingPhase.listeners.toArray((T[]) Array.newInstance(listenerClass, 0));
+				System.arraycopy(array, 0, newHandlers, newHandlersIndex, length);
 				newHandlersIndex += length;
 			}
 
