@@ -33,12 +33,14 @@ import dev.dominion.ecs.api.Scheduler;
 import org.joml.Quaterniond;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL45;
+import org.ode4j.ode.internal.DxBody;
 import org.ode4j.ode.internal.DxWorld;
 import org.slf4j.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class Game {
     public static final Logger LOGGER = LogUtils.getLogger();
@@ -81,6 +83,10 @@ public class Game {
         world = new World(dominion);
 
         physicsWorld = DxWorld.dWorldCreate();
+
+        physicsWorld.setQuickStepNumIterations(LOGIC_TICK_RATE);
+
+        physicsWorld.setGravity(0,-0.00001,0);
 //        for (int xRad = 0; xRad < 1; xRad++) {
 //            for (int yRad = 0; yRad < 1; yRad++) {
 //                for (int zRad = 0; zRad < 1; zRad++) {
@@ -102,23 +108,15 @@ public class Game {
         world.setBlock(1, 2, 0, Blocks.GREEN);
         world.setBlock(1, 3, 0, Blocks.GREEN);
 
-        var comp = dominion.composition();
-        var cow = comp.of(
-                Position.class,
-                Rotation.class,
-                PhysicsObject.class,
-                BasicObject.class
-        );
-
-        dominion.createPreparedEntity(cow.withValue(new Position(10,0,0), new Rotation(), new PhysicsObject(physicsWorld), new BasicObject()));
+        dominion.createEntity(Frameworks.PHYSICS_ENTITY, new Named("cow"), new Position(10,0,10), DxBody.dBodyCreate(physicsWorld), new BasicObject());
 
         renderer = new Renderer(window, dominion);
 
-        Frameworks.POSITIONED_ENTITY.addToWith(dominion, new Named("cube"), new CoolCube(), new Floatly());
+        dominion.createEntity(Frameworks.POSITIONED_ENTITY, new Named("cube"), new CoolCube(), new Floatly());
 
         addGameObject(new EpiclyRenderedTriangle());
 
-        Frameworks.UNIQUE_ENTITY.addToWith(dominion, new Named("test_grass"), new BasicObject());
+        dominion.createEntity(Frameworks.UNIQUE_ENTITY, new Named("test_grass"), new BasicObject());
 
         clientScheduler.schedule(CameraControl.create(dominion, clientScheduler::deltaTime));
 
@@ -134,20 +132,22 @@ public class Game {
 
         logicScheduler.schedule(Physics.create(dominion, logicScheduler::deltaTime));
 
-        logicScheduler.schedule(DomSystem.create(dominion, "physics", dom -> {
-            physicsWorld.step(1.0);
-            for (var result : dom.findEntitiesWith(PhysicsObject.class, Position.class)) {
+        logicScheduler.schedule(IdentifiedSystem.of(new Id("game", "physics"), dominion, dom -> {
+            physicsWorld.quickStep(1);
+            for (var result : dom.findEntitiesWith(DxBody.class, Position.class)) {
                 var dxBody = result.comp1();
                 var pos = result.comp2();
                 var p = dxBody.getPosition();
                 pos.set(p.get0(), p.get1(), p.get2());
             }
-            for (var result : dom.findEntitiesWith(PhysicsObject.class, Rotation.class)) {
+            for (var result : dom.findEntitiesWith(DxBody.class, Rotation.class)) {
                 var dxBody = result.comp1();
                 var rotation = result.comp2();
                 var q = dxBody.getQuaternion();
                 rotation.set(new Quaterniond(q.get0(), q.get1(), q.get2(), q.get3()));
             }
+        }).safe(64, (framedDominion, id, e) -> {
+            LOGGER.error("Error occured with the given system! [Id: " + id + "]", e);
         }));
 
         logicScheduler.schedule(IdentifiedSystem.of(new Id("game", "test_grav"), dominion, dom -> {
@@ -168,6 +168,40 @@ public class Game {
                     gravity.y -= 0.00001;
                 }
             }
+        }));
+
+        var lockOut = new AtomicInteger();
+
+        logicScheduler.schedule(IdentifiedSystem.of(new Id("game", "test_grav"), dominion, dom -> {
+            if(lockOut.decrementAndGet() > 0) return;
+
+            dom.findEntitiesWith(Named.class, DxBody.class).forAll((entity, named, dxBody) -> {
+                if (!named.hasName() || !named.name().equals("cow")) return;
+
+                long window = Game.window.handle;
+
+                var pos = dxBody.getPosition();
+
+                if (GLFW.glfwGetKey(window, GLFW.GLFW_KEY_UP) == GLFW.GLFW_PRESS) {
+                    dxBody.setPosition(pos.get0(), pos.get1() + 1, pos.get2());
+                    lockOut.set(LOGIC_TICK_RATE / 4);
+                }
+
+                if (GLFW.glfwGetKey(window, GLFW.GLFW_KEY_DOWN) == GLFW.GLFW_PRESS) {
+                    dxBody.setPosition(pos.get0(), pos.get1() - 1, pos.get2());
+                    lockOut.set(LOGIC_TICK_RATE / 4);
+                }
+
+                if (GLFW.glfwGetKey(window, GLFW.GLFW_KEY_LEFT) == GLFW.GLFW_PRESS) {
+                    dxBody.setPosition(pos.get0() + 1, pos.get1(), pos.get2());
+                    lockOut.set(LOGIC_TICK_RATE / 4);
+                }
+
+                if (GLFW.glfwGetKey(window, GLFW.GLFW_KEY_RIGHT) == GLFW.GLFW_PRESS) {
+                    dxBody.setPosition(pos.get0() - 1, pos.get1(), pos.get2());
+                    lockOut.set(LOGIC_TICK_RATE / 4);
+                }
+            });
         }));
 
         logicScheduler.tickAtFixedRate(LOGIC_TICK_RATE);

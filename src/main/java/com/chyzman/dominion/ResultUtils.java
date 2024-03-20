@@ -4,8 +4,6 @@ import dev.dominion.ecs.api.Entity;
 import dev.dominion.ecs.api.Results;
 import io.wispforest.endec.functions.QuadConsumer;
 import io.wispforest.endec.util.TriConsumer;
-import org.checkerframework.checker.units.qual.C;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.Iterator;
 import java.util.function.BiConsumer;
