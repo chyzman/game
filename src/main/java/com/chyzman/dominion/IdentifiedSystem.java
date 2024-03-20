@@ -56,9 +56,11 @@ public interface IdentifiedSystem<D> extends Runnable {
 
             @Override
             public void run() {
-                this.tickCount++;
+                if(this.tickCount != -1) {
+                    this.tickCount--;
 
-                if(this.tickCount != -1 && this.tickCount < timeoutInTicks) return;
+                    if(this.tickCount < timeoutInTicks) return;
+                }
 
                 try {
                     IdentifiedSystem.this.run();
