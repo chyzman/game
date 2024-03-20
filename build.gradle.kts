@@ -37,10 +37,10 @@ dependencies {
     implementation("com.google.guava:guava:33.1.0-jre")
 
     implementation("net.minecrell:terminalconsoleappender:1.3.0")
-    implementation("org.slf4j:slf4j-api:1.7.30")
+    implementation("org.slf4j:slf4j-api:2.0.9")
     implementation("org.apache.logging.log4j:log4j-api:2.23.1")
     implementation("org.apache.logging.log4j:log4j-core:2.23.1")
-    implementation("org.apache.logging.log4j:log4j-slf4j-impl:2.23.1")
+    implementation("org.apache.logging.log4j:log4j-slf4j2-impl:2.23.1")
 
     implementation("org.lwjgl:lwjgl")
     implementation("org.lwjgl:lwjgl-assimp")
