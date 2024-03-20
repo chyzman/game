@@ -1,4 +1,4 @@
-package com.chyzman.registry;
+package com.chyzman.dominion;
 
 import com.chyzman.util.Id;
 

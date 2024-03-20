@@ -1,7 +1,9 @@
-package com.chyzman.registry;
+package com.chyzman.dominion;
 
 import com.chyzman.util.Id;
 import dev.dominion.ecs.api.Dominion;
+import dev.dominion.ecs.api.Entity;
+import dev.dominion.ecs.api.Results;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -23,10 +25,7 @@ public class Framework {
     }
 
     public void addTo(Dominion dominion) {
-        var array = Stream.concat(
-                    Stream.of(this.name),
-                    this.componentConstructors.values().stream().map(Supplier::get)
-                )
+        var array = Stream.concat(Stream.of(this.name), this.componentConstructors.values().stream().map(Supplier::get))
                 .toArray();
 
         dominion.createEntity(array);
@@ -44,5 +43,17 @@ public class Framework {
         });
 
         dominion.createEntity(mainMap.values().toArray());
+    }
+
+    public Results<? extends Entity> find(FramedDominion dominion) {
+        var stream = Stream.concat(this.componentConstructors.keySet().stream(), Stream.of((Class<?>) Id.class));
+
+        return dominion.findEntitiesWith(stream.toArray(Class[]::new));
+    }
+
+    public Results<? extends Entity> findWith(FramedDominion dominion, Class<?>... components) {
+        var stream = Stream.concat(Stream.concat(this.componentConstructors.keySet().stream(), Stream.of((Class<?>) Id.class)), Stream.of(components));
+
+        return dominion.findEntitiesWith(stream.toArray(Class[]::new));
     }
 }

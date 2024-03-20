@@ -7,17 +7,19 @@ import com.chyzman.component.position.Gravity;
 import com.chyzman.component.position.Position;
 import com.chyzman.component.position.Velocity;
 import com.chyzman.component.rotation.Rotation;
+import com.chyzman.dominion.FramedDominion;
+import com.chyzman.dominion.Frameworks;
+import com.chyzman.dominion.IdentifiedSystem;
 import com.chyzman.gl.GlDebug;
 import com.chyzman.object.BasicObject;
 import com.chyzman.object.CameraConfiguration;
 import com.chyzman.object.GameObject;
 import com.chyzman.object.components.CoolCube;
 import com.chyzman.object.components.EpiclyRenderedTriangle;
-import com.chyzman.registry.Frameworks;
 import com.chyzman.render.Renderer;
 import com.chyzman.systems.CameraControl;
-import com.chyzman.systems.DomSystem;
 import com.chyzman.systems.Physics;
+import com.chyzman.util.Id;
 import com.chyzman.util.LogUtils;
 import com.chyzman.ui.core.Color;
 import com.chyzman.world.World;
@@ -47,7 +49,7 @@ public class Game {
     public static Window window;
     public static Renderer renderer;
 
-    public Dominion dominion;
+    public FramedDominion dominion;
     public Scheduler clientScheduler;
     public Scheduler logicScheduler;
     public final List<GameObject> gameObjects = new ArrayList<>();
@@ -61,7 +63,7 @@ public class Game {
 
     public void run() {
         System.setProperty("dominion.show-banner", "false");
-        dominion = Dominion.create();
+        dominion = new FramedDominion(Dominion.create());
         clientScheduler = dominion.createScheduler();
         logicScheduler = dominion.createScheduler();
         dominion.createEntity("camera", new Position(), new CameraConfiguration());
@@ -120,7 +122,7 @@ public class Game {
 
         clientScheduler.schedule(CameraControl.create(dominion, clientScheduler::deltaTime));
 
-        logicScheduler.schedule(DomSystem.create(dominion, "float", (dominion) -> {
+        logicScheduler.schedule(IdentifiedSystem.of(new Id("game", "float"), dominion, (dominion) -> {
             dominion.findEntitiesWith(Position.class, Floatly.class).forEach(result -> {
                 Position pos = result.comp1();
                 Floatly floatly = result.comp2();
@@ -148,7 +150,7 @@ public class Game {
             }
         }));
 
-        logicScheduler.schedule(DomSystem.create(dominion, "test_grav", dom -> {
+        logicScheduler.schedule(IdentifiedSystem.of(new Id("game", "test_grav"), dominion, dom -> {
             for (var result : dom.findEntitiesWith(Named.class, Gravity.class)) {
                 var named = result.comp1();
 

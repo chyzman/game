@@ -1,4 +1,4 @@
-package com.chyzman.registry;
+package com.chyzman.dominion;
 
 import com.chyzman.component.Named;
 import com.chyzman.component.position.Gravity;

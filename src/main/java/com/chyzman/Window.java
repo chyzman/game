@@ -1,6 +1,7 @@
 package com.chyzman;
 
 import com.chyzman.component.position.Position;
+import com.chyzman.dominion.FramedDominion;
 import com.chyzman.gl.MatrixStack;
 import com.chyzman.object.CameraConfiguration;
 import dev.dominion.ecs.api.Dominion;
@@ -24,9 +25,9 @@ public class Window {
 
     private GLFWWindowSizeCallback windowSize;
 
-    private final Dominion dominion;
+    private final FramedDominion dominion;
 
-    public Window(Dominion dominion, int width, int height) {
+    public Window(FramedDominion dominion, int width, int height) {
         this.dominion = dominion;
 
         init(width, height);
@@ -99,9 +100,8 @@ public class Window {
 
         GLFW.glfwSetScrollCallback(handle, (win, xOffset, yOffset) -> {
             if (handle == win) {
-                for (var entityResult : dominion.findEntitiesWith(Position.class, CameraConfiguration.class)) {
-                    CameraConfiguration camera = entityResult.comp2();
 
+                for (var camera : dominion.findEntitiesWith(Position.class, CameraConfiguration.class).comp2Iterable()) {
                     camera.cameraSpeed *= 1 + (yOffset / 10);
                 }
             }
@@ -112,9 +112,7 @@ public class Window {
         GLFW.glfwSetWindowSizeCallback(handle, windowSize = new GLFWWindowSizeCallback() {
             @Override
             public void invoke(long window, int width, int height) {
-                for (var entityResult : dominion.findEntitiesWith(Position.class, CameraConfiguration.class)) {
-                    CameraConfiguration camera = entityResult.comp2();
-
+                for (var camera : dominion.findEntitiesWith(Position.class, CameraConfiguration.class).comp2Iterable()) {
                     Game.window.height = height;
                     Game.window.width = width;
                     Game.window.aspectRatio = width / height;

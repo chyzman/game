@@ -1,6 +1,7 @@
 package com.chyzman;
 
 import com.chyzman.component.position.Position;
+import com.chyzman.dominion.FramedDominion;
 import com.chyzman.object.CameraConfiguration;
 import dev.dominion.ecs.api.Dominion;
 import dev.dominion.ecs.api.Results;
@@ -12,18 +13,16 @@ public class MouseManager {
 
     private double lastX, lastY;
 
-    public void setCursorPos(Dominion dominion, double mouseX, double mouseY) {
-        if (!grabbed)
-            return;
+    public void setCursorPos(FramedDominion dominion, double mouseX, double mouseY) {
+        if (!grabbed) return;
+
         if (firstMouse) {
             lastX = mouseX;
             lastY = mouseY;
             firstMouse = false;
         }
 
-        for (var entityResult : dominion.findEntitiesWith(Position.class, CameraConfiguration.class)) {
-            CameraConfiguration camera = entityResult.comp2();
-
+        for (var camera : dominion.findEntitiesWith(Position.class, CameraConfiguration.class).comp2Iterable()) {
             double xOffset = mouseX - lastX;
             double yOffset = lastY - mouseY;
             lastX = mouseX;
@@ -36,10 +35,8 @@ public class MouseManager {
             camera.yaw += xOffset;
             camera.pitch += yOffset;
 
-            if (camera.pitch >= 89F)
-                camera.pitch = 89F;
-            if (camera.pitch <= -89F)
-                camera.pitch = -89F;
+            if (camera.pitch >= 89F) camera.pitch = 89F;
+            if (camera.pitch <= -89F) camera.pitch = -89F;
         }
     }
 
@@ -53,6 +50,5 @@ public class MouseManager {
             GLFW.glfwSetCursorPos(Game.window.handle, (double) Game.window.width / 2, (double) Game.window.height / 2);
             GLFW.glfwSetInputMode(Game.window.handle, GLFW.GLFW_CURSOR, GLFW.GLFW_CURSOR_NORMAL);
         }
-
     }
 }

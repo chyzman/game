@@ -2,8 +2,11 @@ package com.chyzman.systems;
 
 import com.chyzman.Game;
 import com.chyzman.component.position.Position;
+import com.chyzman.dominion.FramedDominion;
+import com.chyzman.dominion.IdentifiedSystem;
 import com.chyzman.object.CameraConfiguration;
 import com.chyzman.render.Renderer;
+import com.chyzman.util.Id;
 import dev.dominion.ecs.api.Dominion;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
@@ -13,8 +16,8 @@ import java.util.function.Supplier;
 
 public class CameraControl {
 
-    public static DomSystem create(Dominion dominion, Supplier<Double> deltaTime){
-        return DomSystem.create(dominion, "camera_control", deltaTime, CameraControl::update);
+    public static IdentifiedSystem<FramedDominion> create(FramedDominion dominion, Supplier<Double> deltaTime){
+        return IdentifiedSystem.of(new Id("game", "camera_control"), dominion, deltaTime, CameraControl::update);
     }
 
     private static void update(Dominion dominion, double deltaTime){
