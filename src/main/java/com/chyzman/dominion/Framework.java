@@ -24,14 +24,14 @@ public class Framework {
         return new Frame(name).fromFramework(this);
     }
 
-    public void addTo(Dominion dominion) {
+    public Entity addTo(Dominion dominion) {
         var array = Stream.concat(Stream.of(this.name), this.componentConstructors.values().stream().map(Supplier::get))
                 .toArray();
 
-        dominion.createEntity(array);
+        return dominion.createEntity(array);
     }
 
-    public void addToWith(Dominion dominion, Object... components) {
+    public Entity addToWith(Dominion dominion, Object... components) {
         var mainMap = new HashMap<>();
 
         mainMap.put(Id.class, this.name);
@@ -42,7 +42,7 @@ public class Framework {
             if(!mainMap.containsKey(aClass)) mainMap.put(aClass, supplier.get());
         });
 
-        dominion.createEntity(mainMap.values().toArray());
+        return dominion.createEntity(mainMap.values().toArray());
     }
 
     public Results<? extends Entity> find(FramedDominion dominion) {

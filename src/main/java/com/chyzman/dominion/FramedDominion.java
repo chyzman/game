@@ -31,6 +31,10 @@ public class FramedDominion implements Dominion {
         return this.dominion.createPreparedEntity(withValues);
     }
 
+    public Entity createEntity(Framework framework, Object... components) {
+        return framework.addToWith(this, components);
+    }
+
     @Override
     public Entity createEntityAs(Entity prefab, Object... components) {
         return this.dominion.createEntityAs(prefab, components);
