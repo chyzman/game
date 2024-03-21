@@ -30,4 +30,13 @@ public enum Direction {
     public Vector3fc normal() {
         return normal;
     }
+
+    public static Direction fromYaw(int yaw) {
+        if (yaw == 3) return Direction.NORTH;
+        if (yaw == 1) return Direction.SOUTH;
+        if (yaw == 0) return Direction.EAST;
+        if (yaw == 2) return Direction.WEST;
+
+        return null;
+    }
 }

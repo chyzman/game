@@ -2,6 +2,11 @@ package com.chyzman.util;
 
 public class Mth {
 
+    public static int floor(double value) {
+        int casted = (int) value;
+        return value < (double) casted ? casted - 1 : casted;
+    }
+
     public static int clamp(int value, int min, int max) {
         return Math.min(Math.max(value, min), max);
     }
@@ -19,7 +24,7 @@ public class Mth {
     }
 
     public static int lerp(float delta, int start, int end) {
-        return start + (int) Math.floor(delta * (float)(end - start));
+        return start + (int) Math.floor(delta * (float) (end - start));
     }
 
     public static float lerp(float delta, float start, float end) {
@@ -31,13 +36,13 @@ public class Mth {
     }
 
     public static int hsvToRgb(float hue, float saturation, float value) {
-        int i = (int)(hue * 6.0F) % 6;
-        float f = hue * 6.0F - (float)i;
+        int i = (int) (hue * 6.0F) % 6;
+        float f = hue * 6.0F - (float) i;
         float g = value * (1.0F - saturation);
         float h = value * (1.0F - f * saturation);
         float j = value * (1.0F - (1.0F - f) * saturation);
         float red, green, blue;
-        switch(i) {
+        switch (i) {
             case 0:
                 red = value;
                 green = j;
@@ -72,6 +77,6 @@ public class Mth {
                 throw new RuntimeException("Something went wrong when converting from HSV to RGB. Input was " + hue + ", " + saturation + ", " + value);
         }
 
-        return clamp((int)(red * 255f), 0, 255) << 16 | clamp((int)(green * 255f), 0, 255) << 8 | clamp((int)(blue * 255f), 0, 255);
+        return clamp((int) (red * 255f), 0, 255) << 16 | clamp((int) (green * 255f), 0, 255) << 8 | clamp((int) (blue * 255f), 0, 255);
     }
 }

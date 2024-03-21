@@ -25,6 +25,7 @@ import de.articdive.jnoise.core.api.functions.Interpolation;
 import de.articdive.jnoise.generators.noise_parameters.fade_functions.FadeFunction;
 import de.articdive.jnoise.pipeline.JNoise;
 import dev.dominion.ecs.api.Dominion;
+import dev.dominion.ecs.api.Entity;
 import dev.dominion.ecs.api.Scheduler;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL45;
@@ -42,6 +43,7 @@ public class Game {
     public static final Game GAME = new Game();
     public static Window window;
     public static Renderer renderer;
+    public static Entity camera;
 
     public Dominion dominion;
     public Scheduler clientScheduler;
@@ -59,7 +61,7 @@ public class Game {
         dominion = Dominion.create();
         clientScheduler = dominion.createScheduler();
         logicScheduler = dominion.createScheduler();
-        dominion.createEntity("camera", new Position(), new CameraConfiguration());
+        camera = dominion.createEntity("camera", new Position(), new CameraConfiguration());
         window = new Window(dominion, 640, 480);
         GlDebug.attachDebugCallback();
         GlDebug.minSeverity(GL45.GL_DEBUG_SEVERITY_LOW);
@@ -73,26 +75,26 @@ public class Game {
 
         world = new World(dominion);
 
-//        for (int xRad = 0; xRad < 1; xRad++) {
-//            for (int yRad = 0; yRad < 1; yRad++) {
-//                for (int zRad = 0; zRad < 1; zRad++) {
-//                    for (int x = 0; x < Chunk.CHUNK_SIZE; x++) {
-//                        for (int y = 0; y < Chunk.CHUNK_SIZE; y++) {
-//                            for (int z = 0; z < Chunk.CHUNK_SIZE; z++) {
-//                                if (noise.evaluateNoise(x, y, z) > .5)
-//                                    world.setBlock(x, y, z, Blocks.GREEN);
-//                            }
-//                        }
-//                    }
-//                }
-//            }
-//        }
+        for (int xRad = 0; xRad < 16; xRad++) {
+            for (int yRad = 0; yRad < 16; yRad++) {
+                for (int zRad = 0; zRad < 16; zRad++) {
+                    for (int x = 0; x < Chunk.CHUNK_SIZE; x++) {
+                        for (int y = 0; y < Chunk.CHUNK_SIZE; y++) {
+                            for (int z = 0; z < Chunk.CHUNK_SIZE; z++) {
+                                if (noise.evaluateNoise(xRad * Chunk.CHUNK_SIZE + x, yRad * Chunk.CHUNK_SIZE + y, zRad * Chunk.CHUNK_SIZE + z) > .5)
+                                    world.setBlock(xRad * Chunk.CHUNK_SIZE + x, yRad * Chunk.CHUNK_SIZE + y, zRad * Chunk.CHUNK_SIZE + z, Blocks.WHITE);
+                            }
+                        }
+                    }
+                }
+            }
+        }
 
-        world.setBlock(0, 0, 0, Blocks.GREEN);
-        world.setBlock(2, 0, 0, Blocks.GREEN);
-        world.setBlock(1, 1, 0, Blocks.GREEN);
-        world.setBlock(1, 2, 0, Blocks.GREEN);
-        world.setBlock(1, 3, 0, Blocks.GREEN);
+//        world.setBlock(0, 0, 0, Blocks.WHITE);
+//        world.setBlock(2, 0, 0, Blocks.WHITE);
+//        world.setBlock(1, 1, 0, Blocks.WHITE);
+//        world.setBlock(1, 2, 0, Blocks.WHITE);
+//        world.setBlock(1, 3, 0, Blocks.WHITE);
 
         var comp = dominion.composition();
         var cow = comp.of(

@@ -10,6 +10,8 @@ import com.chyzman.object.CameraConfiguration;
 import com.chyzman.object.components.CoolCube;
 import com.chyzman.object.BasicObject;
 import com.chyzman.systems.TextRenderer;
+import com.chyzman.util.Direction;
+import com.chyzman.util.Mth;
 import dev.dominion.ecs.api.Dominion;
 import org.joml.Matrix4f;
 import org.joml.Vector3d;
@@ -66,28 +68,28 @@ public class Renderer {
         for (RenderChunk chunk : chunks)
             chunk.draw();
 
-        for(var gameObject : Game.GAME.gameObjects) {
-            gameObject.update();
-        }
+//        for(var gameObject : Game.GAME.gameObjects) {
+//            gameObject.update();
+//        }
 
-        for (var entity : dominion.findEntitiesWith(CoolCube.class, Position.class)) {
-            var cube = entity.comp1();
-            var pos = entity.comp2();
-            var window = Game.window;
-            GL11.glEnable(GL11.GL_DEPTH_TEST);
-            GL11.glBindTexture(GL11.GL_TEXTURE_2D, cube.chyz);
-            cube.mesh.program.use();
-            cube.mesh.program.uniformMat4("uProjection", getProjectionMatrix().peek());
-            cube.mesh.program.uniformMat4("uView", getViewMatrix().peek());
+//        for (var entity : dominion.findEntitiesWith(CoolCube.class, Position.class)) {
+//            var cube = entity.comp1();
+//            var pos = entity.comp2();
+//            var window = Game.window;
+//            GL11.glEnable(GL11.GL_DEPTH_TEST);
+//            GL11.glBindTexture(GL11.GL_TEXTURE_2D, cube.chyz);
+//            cube.mesh.program.use();
+//            cube.mesh.program.uniformMat4("uProjection", getProjectionMatrix().peek());
+//            cube.mesh.program.uniformMat4("uView", getViewMatrix().peek());
+//
+//            cube.mesh.program.uniformMat4("uModel", new Matrix4f(getModelMatrix().peek()).translate((float) pos.x, (float) pos.y, (float) pos.z));
+//            cube.mesh.draw();
+//            GL11.glDisable(GL11.GL_DEPTH_TEST);
+//        }
 
-            cube.mesh.program.uniformMat4("uModel", new Matrix4f(getModelMatrix().peek()).translate((float) pos.x, (float) pos.y, (float) pos.z));
-            cube.mesh.draw();
-            GL11.glDisable(GL11.GL_DEPTH_TEST);
-        }
-
-        for (var resultEntity : dominion.findEntitiesWith(Position.class, BasicObject.class)) {
-            resultEntity.comp2().draw(resultEntity.comp1());
-        }
+//        for (var resultEntity : dominion.findEntitiesWith(Position.class, BasicObject.class)) {
+//            resultEntity.comp2().draw(resultEntity.comp1());
+//        }
 
         ++framesPerSecond;
         if (currentFrame - lastTime > 1.0f) {
@@ -108,6 +110,7 @@ public class Renderer {
         textRenderer.renderText("FPS: " + fps, 2.0f, 3.0f, 0.25f, new Vector3f(1f, 1f, 1f));
         textRenderer.renderText("Pos: (" + cameraPosition.x + ", " + cameraPosition.y + ", " + cameraPosition.z + ")", 2.0f, 26.0f, 0.25f, new Vector3f(1f, 1f, 1f));
         textRenderer.renderText("Loaded Chunks: " + Game.GAME.world.getChunkManager().getLoadedChunks(), 2.0f, 49.0f, 0.25f, new Vector3f(1f, 1f, 1f));
+        textRenderer.renderText("Facing: " + Direction.fromYaw((Mth.floor((double)(Game.camera.get(CameraConfiguration.class).yaw * 4.0F / 360.0F) + 0.5) & 3)), 2.0f, 72.0f, 0.25f, new Vector3f(1f, 1f, 1f));
         if (polygonMode == GL_LINE) {
             glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
         }
