@@ -6,7 +6,8 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.ToIntFunction;
 
-import static org.lwjgl.opengl.GL45.*;
+import static org.lwjgl.opengl.GL45.glEnableVertexAttribArray;
+import static org.lwjgl.opengl.GL45.glVertexAttribPointer;
 
 public class VertexDescriptor<VertexFunction> {
 

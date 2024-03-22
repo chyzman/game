@@ -1,11 +1,9 @@
 package com.chyzman.world;
 
 import com.chyzman.world.block.Block;
-import com.chyzman.world.block.Blocks;
 import com.chyzman.world.chunk.Chunk;
 import com.chyzman.world.chunk.ChunkManager;
 import dev.dominion.ecs.api.Dominion;
-import dev.dominion.ecs.api.Entity;
 
 public class World {
     private final ChunkManager chunkManager;

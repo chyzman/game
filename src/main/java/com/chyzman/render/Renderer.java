@@ -7,9 +7,9 @@ import com.chyzman.component.position.Position;
 import com.chyzman.gl.GlProgram;
 import com.chyzman.gl.GlShader;
 import com.chyzman.gl.MatrixStack;
+import com.chyzman.object.BasicObject;
 import com.chyzman.object.CameraConfiguration;
 import com.chyzman.object.components.CoolCube;
-import com.chyzman.object.BasicObject;
 import com.chyzman.systems.TextRenderer;
 import dev.dominion.ecs.api.Dominion;
 import org.joml.Matrix4f;
@@ -20,8 +20,6 @@ import org.lwjgl.opengl.GL11;
 import org.ode4j.ode.internal.DxBody;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 

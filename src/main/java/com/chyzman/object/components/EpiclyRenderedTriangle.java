@@ -1,13 +1,12 @@
 package com.chyzman.object.components;
 
+import com.chyzman.Game;
 import com.chyzman.gl.GlProgram;
 import com.chyzman.gl.GlShader;
 import com.chyzman.gl.MeshBuffer;
 import com.chyzman.gl.VertexDescriptors;
-import com.chyzman.Game;
 import com.chyzman.object.GameObject;
 import org.joml.Matrix4f;
-import org.lwjgl.system.Library;
 
 import java.io.IOException;
 import java.nio.file.Files;

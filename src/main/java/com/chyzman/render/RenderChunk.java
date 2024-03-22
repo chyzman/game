@@ -1,14 +1,14 @@
 package com.chyzman.render;
 
 import com.chyzman.Game;
-import com.chyzman.gl.*;
-import com.chyzman.util.Direction;
-import com.chyzman.util.Vec3i;
-import com.chyzman.world.block.Block;
-import com.chyzman.world.block.Blocks;
-import com.chyzman.world.chunk.Chunk;
+import com.chyzman.gl.ElementMeshBuffer;
+import com.chyzman.gl.MatrixStack;
+import com.chyzman.gl.VertexDescriptors;
 import com.chyzman.ui.core.Color;
+import com.chyzman.util.Direction;
 import com.chyzman.util.Id;
+import com.chyzman.world.block.Block;
+import com.chyzman.world.chunk.Chunk;
 import de.javagl.obj.Obj;
 import de.javagl.obj.ObjData;
 import de.javagl.obj.ObjReader;

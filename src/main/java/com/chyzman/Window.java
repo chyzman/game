@@ -2,12 +2,10 @@ package com.chyzman;
 
 import com.chyzman.component.position.Position;
 import com.chyzman.dominion.FramedDominion;
-import com.chyzman.gl.MatrixStack;
 import com.chyzman.object.CameraConfiguration;
-import dev.dominion.ecs.api.Dominion;
-import org.joml.Matrix4f;
 import org.lwjgl.glfw.*;
-import org.lwjgl.opengl.*;
+import org.lwjgl.opengl.GL;
+import org.lwjgl.opengl.GL11;
 import org.lwjgl.system.MemoryStack;
 
 import java.nio.IntBuffer;

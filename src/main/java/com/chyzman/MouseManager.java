@@ -3,8 +3,6 @@ package com.chyzman;
 import com.chyzman.component.position.Position;
 import com.chyzman.dominion.FramedDominion;
 import com.chyzman.object.CameraConfiguration;
-import dev.dominion.ecs.api.Dominion;
-import dev.dominion.ecs.api.Results;
 import org.lwjgl.glfw.GLFW;
 
 public class MouseManager {

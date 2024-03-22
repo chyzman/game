@@ -1,11 +1,9 @@
 package com.chyzman;
 
 import com.chyzman.component.Named;
-import com.chyzman.component.fisics.PhysicsObject;
 import com.chyzman.component.position.Floatly;
 import com.chyzman.component.position.Gravity;
 import com.chyzman.component.position.Position;
-import com.chyzman.component.position.Velocity;
 import com.chyzman.component.rotation.Rotation;
 import com.chyzman.dominion.FramedDominion;
 import com.chyzman.dominion.Frameworks;
@@ -21,7 +19,6 @@ import com.chyzman.systems.CameraControl;
 import com.chyzman.systems.Physics;
 import com.chyzman.util.Id;
 import com.chyzman.util.LogUtils;
-import com.chyzman.ui.core.Color;
 import com.chyzman.world.World;
 import com.chyzman.world.block.Blocks;
 import com.chyzman.world.chunk.Chunk;

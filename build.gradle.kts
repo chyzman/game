@@ -24,6 +24,7 @@ fun getPlatform(): String {
 }
 
 dependencies {
+    //TODO someone organize this
     testImplementation (platform("org.junit:junit-bom:5.9.1"))
     testImplementation ("org.junit.jupiter:junit-jupiter")
 
@@ -42,6 +43,19 @@ dependencies {
     implementation("org.apache.logging.log4j:log4j-core:2.23.1")
     implementation("org.apache.logging.log4j:log4j-slf4j2-impl:2.23.1")
 
+    implementation("org.joml:joml:${project.property("jomlVersion")}")
+
+    implementation("dev.dominion.ecs:dominion-ecs-engine:${project.property("dominionVersion")}")
+
+    implementation("io.wispforest:endec:${project.property("endecVersion")}")
+    implementation("io.wispforest.endec:gson:${project.property("endecGsonVersion")}")
+    implementation("io.wispforest.endec:netty:${project.property("endecGsonVersion")}")
+
+    implementation("de.articdive:jnoise-pipeline:${project.property("jnoiseVersion")}")
+
+    implementation("org.ode4j:core:${project.property("ode4jVersion")}")
+
+    //region LWJGL
     implementation("org.lwjgl:lwjgl")
     implementation("org.lwjgl:lwjgl-assimp")
     implementation("org.lwjgl:lwjgl-bgfx")
@@ -125,19 +139,7 @@ dependencies {
     runtimeOnly("org.lwjgl:lwjgl-xxhash::${getPlatform()}")
     runtimeOnly("org.lwjgl:lwjgl-yoga::${getPlatform()}")
     runtimeOnly("org.lwjgl:lwjgl-zstd::${getPlatform()}")
-
-    implementation("org.joml:joml:${project.property("jomlVersion")}")
-
-    implementation("dev.dominion.ecs:dominion-ecs-engine:${project.property("dominionVersion")}")
-
-    implementation("io.wispforest:endec:0.1.0-pre.1")
-    implementation("io.wispforest.endec:gson:0.1.0-pre.1")
-    implementation("io.wispforest.endec:netty:0.1.0-pre.1")
-
-    implementation("de.articdive:jnoise-pipeline:4.1.0")
-
-    implementation("org.ode4j:core:${project.property("ode4jVersion")}")
-
+    //endregion
 }
 
 tasks.test {
