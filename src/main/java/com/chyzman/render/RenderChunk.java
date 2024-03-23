@@ -40,8 +40,8 @@ public class RenderChunk {
     private final Chunk chunk;
     private boolean compiled = false;
 
-    public RenderChunk(Chunk chunk) {
-        this.mesh = new MeshBuffer<>(VertexDescriptors.POSITION_COLOR_TEXTURE_NORMAL, Renderer.POS_COLOR_TEXTURE_NORMAL_PROGRAM, 16384);
+    public RenderChunk(Chunk chunk, RenderContext context) {
+        this.mesh = new MeshBuffer<>(VertexDescriptors.POSITION_COLOR_TEXTURE_NORMAL, context.findProgram("pos_color_tex_normal"), 16384);
         this.chunk = chunk;
         this.texture = Texture.load(new Id("game", "test.png"));
     }

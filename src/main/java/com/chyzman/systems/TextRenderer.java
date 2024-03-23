@@ -3,6 +3,7 @@ package com.chyzman.systems;
 import com.chyzman.Game;
 import com.chyzman.gl.GlProgram;
 import com.chyzman.gl.MeshBuffer;
+import com.chyzman.gl.RenderContext;
 import com.chyzman.gl.VertexDescriptors;
 import com.chyzman.render.Renderer;
 import org.joml.Matrix4f;
@@ -14,21 +15,17 @@ public class TextRenderer {
     private final MeshBuffer<VertexDescriptors.TextVertexFunction> mesh;
     private final Font font = new Font("FiraCode-VariableFont_wght.ttf");
 
-    public TextRenderer() {
-        mesh = new MeshBuffer<>(VertexDescriptors.FONT, Renderer.FONT_PROGRAM);
+    public TextRenderer(RenderContext context) {
+        mesh = new MeshBuffer<>(VertexDescriptors.FONT, context.findProgram("font"));
     }
 
     public void renderText(String text, float x, float y, float scale, Vector3f color) {
-        renderText(Renderer.FONT_PROGRAM, text, x, y, scale, color);
-    }
-
-    void renderText(GlProgram program, String text, float x, float y, float scale, Vector3f color) {
         // activate corresponding render state
         GL11.glEnable(GL11.GL_BLEND);
         GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-        program.use();
-        program.uniformMat4("uProjection", new Matrix4f().setOrtho2D(0.0f, Game.window.width, 0.0f, Game.window.height));
-        program.uniform3f("uTextColor", color.x, color.y, color.z);
+        mesh.program.use();
+        mesh.program.uniformMat4("uProjection", new Matrix4f().setOrtho2D(0.0f, Game.window.width, 0.0f, Game.window.height));
+        mesh.program.uniform3f("uTextColor", color.x, color.y, color.z);
         GL30.glActiveTexture(GL30.GL_TEXTURE0);
 
         // iterate through all characters
