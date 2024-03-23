@@ -4,18 +4,17 @@ import com.chyzman.Game;
 import com.chyzman.Window;
 import com.chyzman.component.fisics.PhysicsObject;
 import com.chyzman.component.position.Position;
+import com.chyzman.dominion.FramedDominion;
 import com.chyzman.gl.GlProgram;
 import com.chyzman.gl.GlShader;
 import com.chyzman.gl.MatrixStack;
 import com.chyzman.gl.RenderContext;
-import com.chyzman.object.BasicObject;
 import com.chyzman.object.CameraConfiguration;
-import com.chyzman.object.components.CoolCube;
+import com.chyzman.object.components.MeshComponent;
 import com.chyzman.systems.TextRenderer;
 import com.chyzman.util.Direction;
 import com.chyzman.util.Mth;
 import dev.dominion.ecs.api.Dominion;
-import org.joml.Matrix4f;
 import org.joml.Vector3d;
 import org.joml.Vector3f;
 import org.lwjgl.glfw.GLFW;
@@ -64,7 +63,7 @@ public class Renderer {
         GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
     }
 
-    public void update(Dominion dominion) {
+    public void update(FramedDominion dominion) {
         double currentFrame = GLFW.glfwGetTime();
         deltaTime = currentFrame - lastFrame;
         lastFrame = currentFrame;
@@ -72,9 +71,17 @@ public class Renderer {
         for (RenderChunk chunk : chunks)
             chunk.draw();
 
-//        for(var gameObject : Game.GAME.gameObjects) {
-//            gameObject.update();
-//        }
+        for(var gameObject : Game.GAME.gameObjects) {
+            gameObject.update();
+        }
+
+        dominion.findEntitiesWith(MeshComponent.class, Position.class).forAll((entity, meshComponent, position) -> {
+            MatrixStack transform = Game.renderer.getModelMatrix();
+            transform.push();
+            transform.translate((float) position.x, (float) position.y, (float) position.z);
+            meshComponent.render();
+            transform.pop();
+        });
 
 //        for (var entity : dominion.findEntitiesWith(CoolCube.class, Position.class)) {
 //            var cube = entity.comp1();

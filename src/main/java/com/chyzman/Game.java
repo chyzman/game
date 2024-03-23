@@ -12,10 +12,11 @@ import com.chyzman.gl.GlDebug;
 import com.chyzman.object.BasicObject;
 import com.chyzman.object.CameraConfiguration;
 import com.chyzman.object.GameObject;
-import com.chyzman.object.components.CoolCube;
+import com.chyzman.object.components.MeshComponent;
 import com.chyzman.object.components.EpiclyRenderedTriangle;
 import com.chyzman.render.Renderer;
 import com.chyzman.systems.CameraControl;
+import com.chyzman.systems.MeshRenderer;
 import com.chyzman.systems.Physics;
 import com.chyzman.util.Id;
 import com.chyzman.util.LogUtils;
@@ -111,13 +112,14 @@ public class Game {
 
         renderer = new Renderer(window, dominion);
 
-        dominion.createEntity(Frameworks.POSITIONED_ENTITY, new Named("cube"), new CoolCube(), new Floatly());
+        dominion.createEntity(Frameworks.POSITIONED_ENTITY, new Named("cube"), new MeshComponent("chyzman", new Id("game", "chyzman.png")), new Floatly());
 
         addGameObject(new EpiclyRenderedTriangle());
 
         dominion.createEntity(Frameworks.UNIQUE_ENTITY, new Named("test_grass"), new BasicObject());
 
         clientScheduler.schedule(CameraControl.create(dominion, clientScheduler::deltaTime));
+        clientScheduler.schedule(MeshRenderer.create(dominion, clientScheduler::deltaTime));
 
         logicScheduler.schedule(IdentifiedSystem.of(new Id("game", "float"), dominion, (dominion) -> {
             dominion.findEntitiesWith(Position.class, Floatly.class).forEach(result -> {
@@ -212,7 +214,7 @@ public class Game {
         window.terminate();
     }
 
-    private void loop(Dominion dom) {
+    private void loop(FramedDominion dom) {
         while (!window.shouldClose()) {
             renderer.clear();
             clientScheduler.tick();

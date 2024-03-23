@@ -83,6 +83,9 @@ public final class VertexDescriptors {
         default void vertex(Vector3fc vertex, Color color, float u, float v, Vector3fc normal) {
             this.vertex(vertex.x(), vertex.y(), vertex.z(), color.alpha(), color.red(), color.green(), color.blue(), u, v, normal.x(), normal.y(), normal.z());
         }
+        default void vertex(float x, float y, float z, Color color, float u, float v, float normalX, float normalY, float normalZ) {
+            this.vertex(x, y, z, color.alpha(), color.red(), color.green(), color.blue(), u, v, normalX, normalY, normalZ);
+        }
     }
 
     @FunctionalInterface
