@@ -25,13 +25,18 @@ public class MatrixStack {
         return this;
     }
 
+    public MatrixStack translate(Vector3fc vec3) {
+        this.peek().translate(vec3.x(), vec3.y(), vec3.z());
+        return this;
+    }
+
     public MatrixStack scale(float x, float y, float z) {
         this.peek().scale(x, y, z);
         return this;
     }
 
     public MatrixStack rotate(float angle, Vector3fc axis) {
-        this.peek().rotate(angle, axis);
+        this.peek().rotate((float) Math.toRadians(angle), axis);
         return this;
     }
 

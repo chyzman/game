@@ -7,10 +7,13 @@ import com.chyzman.component.position.Position;
 import com.chyzman.gl.GlProgram;
 import com.chyzman.gl.GlShader;
 import com.chyzman.gl.MatrixStack;
+import com.chyzman.gl.RenderContext;
 import com.chyzman.object.BasicObject;
 import com.chyzman.object.CameraConfiguration;
 import com.chyzman.object.components.CoolCube;
 import com.chyzman.systems.TextRenderer;
+import com.chyzman.util.Direction;
+import com.chyzman.util.Mth;
 import dev.dominion.ecs.api.Dominion;
 import org.joml.Matrix4f;
 import org.joml.Vector3d;
@@ -30,6 +33,7 @@ public class Renderer {
     public static final GlProgram POS_COLOR_TEXTURE_PROGRAM;
     public static final GlProgram POS_COLOR_TEXTURE_NORMAL_PROGRAM;
     public static final GlProgram FONT_PROGRAM;
+    private final RenderContext context;
     private final List<RenderChunk> chunks = new ArrayList<>();
     private final MatrixStack projectionMatrix = new MatrixStack();
     private final MatrixStack transformMatrix = new MatrixStack();
@@ -40,9 +44,11 @@ public class Renderer {
     private double framesPerSecond = 0.0f;
     public int fps;
     public static Vector3d cameraPosition = new Vector3d(0.0f, 0.0f, 0.0f);
-    public TextRenderer textRenderer = new TextRenderer();
+    public TextRenderer textRenderer;
 
     public Renderer(Window window, Dominion dominion) {
+        this.context = new RenderContext(window, POS_COLOR_PROGRAM, POS_COLOR_TEXTURE_PROGRAM, POS_COLOR_TEXTURE_NORMAL_PROGRAM, FONT_PROGRAM);
+        this.textRenderer = new TextRenderer(context);
         for (var entityResult : dominion.findEntitiesWith(Position.class, CameraConfiguration.class)) {
             CameraConfiguration camera = entityResult.comp2();
 
@@ -50,7 +56,7 @@ public class Renderer {
             getProjectionMatrix().peek().perspective((float) Math.toRadians(camera.fov), (float) window.width / (float) window.height, 0.1f, 1000f);
         }
         Game.GAME.world.getChunkManager().getChunks().forEach((chunkPos, chunk) -> {
-            chunks.add(new RenderChunk(chunk));
+            chunks.add(new RenderChunk(chunk, context));
         });
     }
 
@@ -66,28 +72,28 @@ public class Renderer {
         for (RenderChunk chunk : chunks)
             chunk.draw();
 
-        for(var gameObject : Game.GAME.gameObjects) {
-            gameObject.update();
-        }
+//        for(var gameObject : Game.GAME.gameObjects) {
+//            gameObject.update();
+//        }
 
-        for (var entity : dominion.findEntitiesWith(CoolCube.class, Position.class)) {
-            var cube = entity.comp1();
-            var pos = entity.comp2();
-            var window = Game.window;
-            GL11.glEnable(GL11.GL_DEPTH_TEST);
-            GL11.glBindTexture(GL11.GL_TEXTURE_2D, cube.chyz);
-            cube.mesh.program.use();
-            cube.mesh.program.uniformMat4("uProjection", getProjectionMatrix().peek());
-            cube.mesh.program.uniformMat4("uView", getViewMatrix().peek());
+//        for (var entity : dominion.findEntitiesWith(CoolCube.class, Position.class)) {
+//            var cube = entity.comp1();
+//            var pos = entity.comp2();
+//            var window = Game.window;
+//            GL11.glEnable(GL11.GL_DEPTH_TEST);
+//            GL11.glBindTexture(GL11.GL_TEXTURE_2D, cube.chyz);
+//            cube.mesh.program.use();
+//            cube.mesh.program.uniformMat4("uProjection", getProjectionMatrix().peek());
+//            cube.mesh.program.uniformMat4("uView", getViewMatrix().peek());
+//
+//            cube.mesh.program.uniformMat4("uModel", new Matrix4f(getModelMatrix().peek()).translate((float) pos.x, (float) pos.y, (float) pos.z));
+//            cube.mesh.draw();
+//            GL11.glDisable(GL11.GL_DEPTH_TEST);
+//        }
 
-            cube.mesh.program.uniformMat4("uModel", new Matrix4f(getModelMatrix().peek()).translate((float) pos.x, (float) pos.y, (float) pos.z));
-            cube.mesh.draw();
-            GL11.glDisable(GL11.GL_DEPTH_TEST);
-        }
-
-        for (var resultEntity : dominion.findEntitiesWith(Position.class, BasicObject.class)) {
-            resultEntity.comp2().draw(resultEntity.comp1());
-        }
+//        for (var resultEntity : dominion.findEntitiesWith(Position.class, BasicObject.class)) {
+//            resultEntity.comp2().draw(resultEntity.comp1());
+//        }
 
         for (var resultEntity : dominion.findEntitiesWith(PhysicsObject.class)) {
             DxBody body = resultEntity.comp();
@@ -113,6 +119,7 @@ public class Renderer {
         textRenderer.renderText("FPS: " + fps, 2.0f, 3.0f, 0.25f, new Vector3f(1f, 1f, 1f));
         textRenderer.renderText("Pos: (" + cameraPosition.x + ", " + cameraPosition.y + ", " + cameraPosition.z + ")", 2.0f, 26.0f, 0.25f, new Vector3f(1f, 1f, 1f));
         textRenderer.renderText("Loaded Chunks: " + Game.GAME.world.getChunkManager().getLoadedChunks(), 2.0f, 49.0f, 0.25f, new Vector3f(1f, 1f, 1f));
+        textRenderer.renderText("Facing: " + Direction.fromYaw((Mth.floor((double)(Game.camera.get(CameraConfiguration.class).yaw * 4.0F / 360.0F) + 0.5) & 3)), 2.0f, 72.0f, 0.25f, new Vector3f(1f, 1f, 1f));
         if (polygonMode == GL_LINE) {
             glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
         }
@@ -126,14 +133,14 @@ public class Renderer {
                     GlShader.fragment("pos_color.frag")
             );
             POS_COLOR_TEXTURE_PROGRAM = new GlProgram(
-                    "position",
-                    GlShader.vertex("Textured.vert"),
-                    GlShader.fragment("Textured.frag")
+                    "pos_color_tex",
+                    GlShader.vertex("pos_color_tex.vert"),
+                    GlShader.fragment("pos_color_tex.frag")
             );
             POS_COLOR_TEXTURE_NORMAL_PROGRAM = new GlProgram(
-                    "pos_color_texture_normal",
-                    GlShader.vertex("pos_color_texture_normal.vert"),
-                    GlShader.fragment("pos_color_texture_normal.frag")
+                    "pos_color_tex_normal",
+                    GlShader.vertex("pos_color_tex_normal.vert"),
+                    GlShader.fragment("pos_color_tex_normal.frag")
             );
             FONT_PROGRAM = new GlProgram(
                     "font",
@@ -155,5 +162,9 @@ public class Renderer {
 
     public MatrixStack getModelMatrix() {
         return modelMatrix;
+    }
+
+    public RenderContext getContext() {
+        return context;
     }
 }
