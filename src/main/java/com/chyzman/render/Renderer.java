@@ -69,10 +69,6 @@ public class Renderer {
         for (RenderChunk chunk : chunks)
             chunk.draw();
 
-        for(var gameObject : Game.GAME.gameObjects) {
-            gameObject.update();
-        }
-
         dominion.findEntitiesWith(MeshComponent.class, Position.class).forAll((entity, meshComponent, position) -> {
             MatrixStack transform = Game.renderer.getModelMatrix();
             transform.push();
