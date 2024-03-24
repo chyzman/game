@@ -25,9 +25,11 @@ import com.chyzman.world.block.Blocks;
 import com.chyzman.world.chunk.Chunk;
 import com.jme3.bullet.PhysicsSpace;
 import com.jme3.bullet.collision.shapes.BoxCollisionShape;
+import com.jme3.bullet.collision.shapes.CapsuleCollisionShape;
 import com.jme3.bullet.collision.shapes.PlaneCollisionShape;
 import com.jme3.bullet.objects.PhysicsBody;
 import com.jme3.bullet.objects.PhysicsRigidBody;
+import com.jme3.math.Matrix3f;
 import com.jme3.math.Plane;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
@@ -66,6 +68,7 @@ public class Game {
     public final List<GameObject> gameObjects = new ArrayList<>();
     public World world;
     public PhysicsSpace physicsSpace;
+    public Entity chyz;
     public final Chunk chunk = new Chunk(0, 0, 0);
 
     public static void main(String[] args) {
@@ -97,6 +100,7 @@ public class Game {
 
         var plane = new Plane(Vector3f.UNIT_Y, -10);
         var planeCollision = new PlaneCollisionShape(plane);
+
         var floor = new PhysicsRigidBody(planeCollision, PhysicsBody.massForStatic);
         physicsSpace.addCollisionObject(floor);
 
@@ -123,14 +127,14 @@ public class Game {
         world.setBlock(1, 2, 0, Blocks.WHITE);
         world.setBlock(1, 3, 0, Blocks.WHITE);
 
-        var cowCollision = new BoxCollisionShape(0.5f, 0.5f, 0.5f);
+        var cowCollision = new CapsuleCollisionShape(0.5f, 2, 0);
         var cowBox = new PhysicsRigidBody(cowCollision, 1);
         physicsSpace.addCollisionObject(cowBox);
-        dominion.createEntity(Frameworks.PHYSICS_ENTITY, new Named("cow"), new Position(10, 0, 10), cowBox, new BasicObject(), new MeshComponent("chyzman", new Id("game", "chyzman.png")));
+        dominion.createEntity(Frameworks.PHYSICS_ENTITY, new Named("cow"), new Position(10, 0, 10), cowBox, new BasicObject(), new Rotation(), new MeshComponent("chyzman", new Id("game", "chyzman.png")));
 
         renderer = new Renderer(window, dominion);
 
-        dominion.createEntity(Frameworks.POSITIONED_ENTITY, new Named("cube"), new MeshComponent("chyzman", new Id("game", "chyzman.png")), new Floatly());
+        chyz = dominion.createEntity(Frameworks.POSITIONED_ENTITY, new Named("cube"), new MeshComponent("chyzman", new Id("game", "chyzman.png")), new Floatly());
 
         addGameObject(new EpiclyRenderedTriangle());
 
@@ -163,7 +167,7 @@ public class Game {
                 var body = result.comp1();
                 var rotation = result.comp2();
                 var q = body.getPhysicsRotation(new Quaternion());
-                rotation.set(new Quaterniond(q.getX(), q.getY(), q.getZ(), q.getW()));
+                rotation.set(q.getX(), q.getY(), q.getZ(), q.getW());
             }
         }).safe(64, (framedDominion, id, e) -> {
             LOGGER.error("Error occured with the given system! [Id: " + id + "]", e);

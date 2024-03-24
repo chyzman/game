@@ -3,6 +3,7 @@ package com.chyzman.render;
 import com.chyzman.Game;
 import com.chyzman.Window;
 import com.chyzman.component.position.Position;
+import com.chyzman.component.rotation.Rotation;
 import com.chyzman.dominion.FramedDominion;
 import com.chyzman.gl.GlProgram;
 import com.chyzman.gl.GlShader;
@@ -14,6 +15,7 @@ import com.chyzman.systems.TextRenderer;
 import com.chyzman.util.Direction;
 import com.chyzman.util.Mth;
 import dev.dominion.ecs.api.Dominion;
+import org.joml.Quaternionfc;
 import org.joml.Vector3d;
 import org.joml.Vector3f;
 import org.lwjgl.glfw.GLFW;
@@ -73,10 +75,11 @@ public class Renderer {
             gameObject.update();
         }
 
-        dominion.findEntitiesWith(MeshComponent.class, Position.class).forAll((entity, meshComponent, position) -> {
+        dominion.findEntitiesWith(MeshComponent.class, Position.class, Rotation.class).forAll((entity, meshComponent, position, rotation) -> {
             MatrixStack transform = Game.renderer.getModelMatrix();
             transform.push();
             transform.translate((float) position.x, (float) position.y, (float) position.z);
+            transform.peek().rotate(rotation);
             meshComponent.render();
             transform.pop();
         });

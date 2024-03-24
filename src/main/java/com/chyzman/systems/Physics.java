@@ -32,7 +32,7 @@ public class Physics {
 
         // update rotation of entities with angular velocity
         dom.findEntitiesWith(Rotation.class, AngularVelocity.class).forAll((entity, rotation, angularVelocity) -> {
-            rotation.add(angularVelocity);
+//            rotation.add(angularVelocity);
         });
 
         // update position of entities with velocity
