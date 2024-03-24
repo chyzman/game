@@ -152,6 +152,7 @@ public class Game {
         logicScheduler.schedule(Physics.create(dominion, logicScheduler::deltaTime));
 
         logicScheduler.schedule(IdentifiedSystem.of(new Id("game", "physics"), dominion, dom -> {
+            physicsSpace.update(1f/LOGIC_TICK_RATE);
             for (var result : dom.findEntitiesWith(PhysicsRigidBody.class, Position.class)) {
                 var body = result.comp1();
                 var pos = result.comp2();
@@ -224,7 +225,6 @@ public class Game {
     private void loop(FramedDominion dom) {
         while (!window.shouldClose()) {
             renderer.clear();
-            physicsSpace.update(1f/LOGIC_TICK_RATE);
             clientScheduler.tick();
             renderer.update(dom);
 
