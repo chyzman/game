@@ -140,4 +140,8 @@ public class Window {
         GLFW.glfwTerminate();
         GLFW.glfwSetErrorCallback(null).free();
     }
+
+    public boolean mouseGrabbed() {
+        return mouseManager.isGrabbed();
+    }
 }

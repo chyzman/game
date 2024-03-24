@@ -49,4 +49,8 @@ public class MouseManager {
             GLFW.glfwSetInputMode(Game.window.handle, GLFW.GLFW_CURSOR, GLFW.GLFW_CURSOR_NORMAL);
         }
     }
+
+    public boolean isGrabbed() {
+        return grabbed;
+    }
 }

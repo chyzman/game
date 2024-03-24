@@ -14,14 +14,17 @@ import com.chyzman.object.components.MeshComponent;
 import com.chyzman.systems.TextRenderer;
 import com.chyzman.util.Direction;
 import com.chyzman.util.Mth;
+import com.chyzman.util.UtilUtil;
+import com.jme3.bullet.objects.PhysicsBody;
+import com.jme3.bullet.objects.PhysicsRigidBody;
+import com.jme3.math.Quaternion;
 import dev.dominion.ecs.api.Dominion;
-import org.joml.Quaternionfc;
-import org.joml.Vector3d;
-import org.joml.Vector3f;
+import org.joml.*;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL11;
 
 import java.io.IOException;
+import java.lang.Math;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,7 +40,7 @@ public class Renderer {
     private final MatrixStack projectionMatrix = new MatrixStack();
     private final MatrixStack transformMatrix = new MatrixStack();
     private final MatrixStack modelMatrix = new MatrixStack();
-    public double deltaTime = 0.0f;	// Time between current frame and last frame
+    public double deltaTime = 0.0f;    // Time between current frame and last frame
     public double lastFrame = 0.0f; // Time of last frame
     public double lastTime = 0.0f;
     private double framesPerSecond = 0.0f;
@@ -71,11 +74,34 @@ public class Renderer {
         for (RenderChunk chunk : chunks)
             chunk.draw();
 
-        dominion.findEntitiesWith(MeshComponent.class, Position.class, Rotation.class).forAll((entity, meshComponent, position, rotation) -> {
+        dominion.findEntitiesWith(
+                MeshComponent.class
+        ).forAll((entity, meshComponent) -> {
+            Vector3d pos;
+            Quaternionf rotation;
+            if (entity.has(PhysicsRigidBody.class)) {
+                var body = entity.get(PhysicsRigidBody.class);
+                var transform = body.getTransform(null);
+                pos = new Vector3d(
+                        transform.getTranslation().x,
+                        transform.getTranslation().y,
+                        transform.getTranslation().z
+                );
+                rotation = new Quaternionf(
+                        transform.getRotation().getX(),
+                        transform.getRotation().getY(),
+                        transform.getRotation().getZ(),
+                        transform.getRotation().getW()
+                );
+            } else {
+                pos = UtilUtil.thisOr(entity.get(Position.class), new Vector3d());
+                rotation = UtilUtil.thisOr(entity.get(Rotation.class), new Quaternionf());
+            }
             MatrixStack transform = Game.renderer.getModelMatrix();
             transform.push();
-            transform.translate((float) position.x, (float) position.y, (float) position.z);
-            transform.peek().rotate((float) rotation.x, (float) rotation.y, (float) rotation.z, (float) rotation.w);
+            transform.translate((float) pos.x, (float) pos.y, (float) pos.z);
+            transform.peek().rotate(rotation);
+            transform.translate(0, -1f, 0);
             meshComponent.render();
             transform.pop();
         });
@@ -118,7 +144,7 @@ public class Renderer {
         textRenderer.renderText("FPS: " + fps, 2.0f, 3.0f, 0.25f, new Vector3f(1f, 1f, 1f));
         textRenderer.renderText("Pos: (" + cameraPosition.x + ", " + cameraPosition.y + ", " + cameraPosition.z + ")", 2.0f, 26.0f, 0.25f, new Vector3f(1f, 1f, 1f));
         textRenderer.renderText("Loaded Chunks: " + Game.GAME.world.getChunkManager().getLoadedChunks(), 2.0f, 49.0f, 0.25f, new Vector3f(1f, 1f, 1f));
-        textRenderer.renderText("Facing: " + Direction.fromYaw((Mth.floor((double)(Game.camera.get(CameraConfiguration.class).yaw * 4.0F / 360.0F) + 0.5) & 3)), 2.0f, 72.0f, 0.25f, new Vector3f(1f, 1f, 1f));
+        textRenderer.renderText("Facing: " + Direction.fromYaw((Mth.floor((double) (Game.camera.get(CameraConfiguration.class).yaw * 4.0F / 360.0F) + 0.5) & 3)), 2.0f, 72.0f, 0.25f, new Vector3f(1f, 1f, 1f));
         if (polygonMode == GL_LINE) {
             glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
         }

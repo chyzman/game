@@ -3,6 +3,7 @@ package com.chyzman;
 import com.chyzman.component.Named;
 import com.chyzman.component.position.Floatly;
 import com.chyzman.component.position.Position;
+import com.chyzman.component.rotation.Rotation;
 import com.chyzman.dominion.FramedDominion;
 import com.chyzman.dominion.Frameworks;
 import com.chyzman.gl.GlDebug;
@@ -31,6 +32,7 @@ import de.articdive.jnoise.pipeline.JNoise;
 import dev.dominion.ecs.api.Dominion;
 import dev.dominion.ecs.api.Entity;
 import dev.dominion.ecs.api.Scheduler;
+import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL45;
 import org.slf4j.Logger;
 import com.chyzman.systems.Physics.*;
@@ -78,22 +80,25 @@ public class Game {
 
         world = new World(dominion);
 
-        renderer = new Renderer(window, dominion);
-
         clientScheduler.schedule(CameraControl.create(dominion, clientScheduler::deltaTime));
         clientScheduler.schedule(MeshRenderer.create(dominion, clientScheduler::deltaTime));
 
         logicScheduler.schedule(Physics.create(dominion, logicScheduler::deltaTime));
 
-        var plane = new Plane(Vector3f.UNIT_Y, -10);
+        var plane = new Plane(Vector3f.UNIT_Y, 0);
         var planeCollision = new PlaneCollisionShape(plane);
         var floor = new PhysicsRigidBody(planeCollision, PhysicsBody.massForStatic);
         physicsSpace.addCollisionObject(floor);
 
-        var playerCollision = new CapsuleCollisionShape(0.3f, 1.8f);
+        var playerCollision = new CapsuleCollisionShape(0.15f, 1.5f);
         var playerBox = new PhysicsRigidBody(playerCollision, 1);
         physicsSpace.addCollisionObject(playerBox);
-        dominion.createEntity(Frameworks.PHYSICS_ENTITY, new Named("player"), playerBox, new Position(), new MeshComponent("chyzman", new Id("game", "chyzman.png")));
+        dominion.createEntity(
+                Frameworks.PHYSICS_ENTITY,
+                new Named("player"),
+                playerBox,
+                new MeshComponent("chyzman", new Id("game", "chyzman.png"))
+        );
 
         int chunksSize = 2;
         for (int xRad = 0; xRad < chunksSize; xRad++) {
@@ -117,6 +122,8 @@ public class Game {
         world.setBlock(1, 2, 0, Blocks.WHITE);
         world.setBlock(1, 3, 0, Blocks.WHITE);
 
+        renderer = new Renderer(window, dominion);
+
 //        dominion.createEntity(Frameworks.POSITIONED_ENTITY, new Named("cube"), new MeshComponent("chyzman", new Id("game", "chyzman.png")), new Floatly());
 
         //TODO make this into a component for glisco
@@ -132,31 +139,6 @@ public class Game {
         // *insert sad music here*
 
         dominion.createEntity(Frameworks.UNIQUE_ENTITY, new Named("test_grass"), new BasicObject());
-
-        //TODO move to physics and make it less shit
-//        var lockOut = new AtomicInteger();
-//
-//        logicScheduler.schedule(IdentifiedSystem.of(new Id("game", "test_grav"), dominion, dom -> {
-//            if (lockOut.decrementAndGet() > 0) return;
-//
-//            dom.findEntitiesWith(Named.class, PhysicsRigidBody.class).forAll((entity, named, body) -> {
-//                if (!named.hasName() || !named.name().equals("cow")) return;
-//
-//                long window = Game.window.handle;
-//
-//                if (GLFW.glfwGetKey(window, GLFW.GLFW_KEY_UP) == GLFW.GLFW_PRESS) {
-//                    body.applyCentralForce(new Vector3f(0, -0.1f, 0));
-//                    lockOut.set(LOGIC_TICK_RATE / 4);
-//                }
-//
-//                if (GLFW.glfwGetKey(window, GLFW.GLFW_KEY_R) == GLFW.GLFW_PRESS) {
-//                    body.setPhysicsLocation(new Vector3f(0, 0, 0));
-//                    body.setLinearVelocity(new Vector3f(0, 0, 0));
-//                    body.setEnableSleep(false);
-//                    lockOut.set(LOGIC_TICK_RATE / 4);
-//                }
-//            });
-//        }));
 
         logicScheduler.tickAtFixedRate(LOGIC_TICK_RATE);
 
