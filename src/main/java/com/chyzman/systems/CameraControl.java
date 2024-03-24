@@ -56,7 +56,7 @@ public class CameraControl {
             if (GLFW.glfwGetKey(window, GLFW.GLFW_KEY_SPACE) == GLFW.GLFW_PRESS) {
                 pos.add(0, localCameraSpeed, 0);
             }
-            if (GLFW.glfwGetKey(window, GLFW.GLFW_KEY_LEFT_SHIFT) == GLFW.GLFW_PRESS) {
+            if (GLFW.glfwGetKey(window, GLFW.GLFW_KEY_LEFT_CONTROL) == GLFW.GLFW_PRESS) {
                 pos.add(0, -localCameraSpeed, 0);
             }
         }

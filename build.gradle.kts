@@ -53,7 +53,7 @@ dependencies {
 
     implementation("de.articdive:jnoise-pipeline:${project.property("jnoiseVersion")}")
 
-    implementation("org.ode4j:core:${project.property("ode4jVersion")}")
+    implementation("com.github.stephengold:Libbulletjme:${project.property("lbjVersion")}")
 
     //region LWJGL
     implementation("org.lwjgl:lwjgl")

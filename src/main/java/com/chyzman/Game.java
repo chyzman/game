@@ -12,8 +12,8 @@ import com.chyzman.gl.GlDebug;
 import com.chyzman.object.BasicObject;
 import com.chyzman.object.CameraConfiguration;
 import com.chyzman.object.GameObject;
-import com.chyzman.object.components.MeshComponent;
 import com.chyzman.object.components.EpiclyRenderedTriangle;
+import com.chyzman.object.components.MeshComponent;
 import com.chyzman.render.Renderer;
 import com.chyzman.systems.CameraControl;
 import com.chyzman.systems.MeshRenderer;
@@ -23,6 +23,15 @@ import com.chyzman.util.LogUtils;
 import com.chyzman.world.World;
 import com.chyzman.world.block.Blocks;
 import com.chyzman.world.chunk.Chunk;
+import com.jme3.bullet.PhysicsSpace;
+import com.jme3.bullet.collision.shapes.BoxCollisionShape;
+import com.jme3.bullet.collision.shapes.PlaneCollisionShape;
+import com.jme3.bullet.objects.PhysicsBody;
+import com.jme3.bullet.objects.PhysicsRigidBody;
+import com.jme3.math.Plane;
+import com.jme3.math.Quaternion;
+import com.jme3.math.Vector3f;
+import com.jme3.system.NativeLibraryLoader;
 import de.articdive.jnoise.core.api.functions.Interpolation;
 import de.articdive.jnoise.generators.noise_parameters.fade_functions.FadeFunction;
 import de.articdive.jnoise.pipeline.JNoise;
@@ -32,10 +41,10 @@ import dev.dominion.ecs.api.Scheduler;
 import org.joml.Quaterniond;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL45;
-import org.ode4j.ode.internal.DxBody;
-import org.ode4j.ode.internal.DxWorld;
 import org.slf4j.Logger;
 
+import java.io.File;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -56,7 +65,7 @@ public class Game {
     public Scheduler logicScheduler;
     public final List<GameObject> gameObjects = new ArrayList<>();
     public World world;
-    public DxWorld physicsWorld;
+    public PhysicsSpace physicsSpace;
     public final Chunk chunk = new Chunk(0, 0, 0);
 
     public static void main(String[] args) {
@@ -82,33 +91,42 @@ public class Game {
 
         world = new World(dominion);
 
-        physicsWorld = DxWorld.dWorldCreate();
+        NativeLibraryLoader.loadLibbulletjme(true, Path.of("src/main/resources/native").toFile(), "Debug", "Sp");
 
-        physicsWorld.setQuickStepNumIterations(LOGIC_TICK_RATE);
+        physicsSpace = new PhysicsSpace(PhysicsSpace.BroadphaseType.DBVT);
 
-        physicsWorld.setGravity(0,-0.00001,0);
-        for (int xRad = 0; xRad < 16; xRad++) {
-            for (int yRad = 0; yRad < 16; yRad++) {
-                for (int zRad = 0; zRad < 16; zRad++) {
-                    for (int x = 0; x < Chunk.CHUNK_SIZE; x++) {
-                        for (int y = 0; y < Chunk.CHUNK_SIZE; y++) {
-                            for (int z = 0; z < Chunk.CHUNK_SIZE; z++) {
-                                if (noise.evaluateNoise(xRad * Chunk.CHUNK_SIZE + x, yRad * Chunk.CHUNK_SIZE + y, zRad * Chunk.CHUNK_SIZE + z) > .5)
-                                    world.setBlock(xRad * Chunk.CHUNK_SIZE + x, yRad * Chunk.CHUNK_SIZE + y, zRad * Chunk.CHUNK_SIZE + z, Blocks.WHITE);
-                            }
-                        }
-                    }
-                }
-            }
-        }
+        var plane = new Plane(Vector3f.UNIT_Y, -10);
+        var planeCollision = new PlaneCollisionShape(plane);
+        var floor = new PhysicsRigidBody(planeCollision, PhysicsBody.massForStatic);
+        physicsSpace.addCollisionObject(floor);
 
-//        world.setBlock(0, 0, 0, Blocks.WHITE);
-//        world.setBlock(2, 0, 0, Blocks.WHITE);
-//        world.setBlock(1, 1, 0, Blocks.WHITE);
-//        world.setBlock(1, 2, 0, Blocks.WHITE);
-//        world.setBlock(1, 3, 0, Blocks.WHITE);
+//        physicsSpace.setGravity(new Vector3f(0, -0.1f, 0));
 
-        dominion.createEntity(Frameworks.PHYSICS_ENTITY, new Named("cow"), new Position(10,0,10), DxBody.dBodyCreate(physicsWorld), new BasicObject());
+//        for (int xRad = 0; xRad < 16; xRad++) {
+//            for (int yRad = 0; yRad < 16; yRad++) {
+//                for (int zRad = 0; zRad < 16; zRad++) {
+//                    for (int x = 0; x < Chunk.CHUNK_SIZE; x++) {
+//                        for (int y = 0; y < Chunk.CHUNK_SIZE; y++) {
+//                            for (int z = 0; z < Chunk.CHUNK_SIZE; z++) {
+//                                if (noise.evaluateNoise(xRad * Chunk.CHUNK_SIZE + x, yRad * Chunk.CHUNK_SIZE + y, zRad * Chunk.CHUNK_SIZE + z) > .5)
+//                                    world.setBlock(xRad * Chunk.CHUNK_SIZE + x, yRad * Chunk.CHUNK_SIZE + y, zRad * Chunk.CHUNK_SIZE + z, Blocks.WHITE);
+//                            }
+//                        }
+//                    }
+//                }
+//            }
+//        }
+
+        world.setBlock(0, 0, 0, Blocks.WHITE);
+        world.setBlock(2, 0, 0, Blocks.WHITE);
+        world.setBlock(1, 1, 0, Blocks.WHITE);
+        world.setBlock(1, 2, 0, Blocks.WHITE);
+        world.setBlock(1, 3, 0, Blocks.WHITE);
+
+        var cowCollision = new BoxCollisionShape(0.5f, 0.5f, 0.5f);
+        var cowBox = new PhysicsRigidBody(cowCollision, 1);
+        physicsSpace.addCollisionObject(cowBox);
+        dominion.createEntity(Frameworks.PHYSICS_ENTITY, new Named("cow"), new Position(10, 0, 10), cowBox, new BasicObject(), new MeshComponent("chyzman", new Id("game", "chyzman.png")));
 
         renderer = new Renderer(window, dominion);
 
@@ -134,72 +152,61 @@ public class Game {
         logicScheduler.schedule(Physics.create(dominion, logicScheduler::deltaTime));
 
         logicScheduler.schedule(IdentifiedSystem.of(new Id("game", "physics"), dominion, dom -> {
-            physicsWorld.quickStep(1);
-            for (var result : dom.findEntitiesWith(DxBody.class, Position.class)) {
-                var dxBody = result.comp1();
+            for (var result : dom.findEntitiesWith(PhysicsRigidBody.class, Position.class)) {
+                var body = result.comp1();
                 var pos = result.comp2();
-                var p = dxBody.getPosition();
-                pos.set(p.get0(), p.get1(), p.get2());
+                var p = body.getPhysicsLocation(new Vector3f());
+                pos.set(p.x, p.y, p.z);
             }
-            for (var result : dom.findEntitiesWith(DxBody.class, Rotation.class)) {
-                var dxBody = result.comp1();
+            for (var result : dom.findEntitiesWith(PhysicsRigidBody.class, Rotation.class)) {
+                var body = result.comp1();
                 var rotation = result.comp2();
-                var q = dxBody.getQuaternion();
-                rotation.set(new Quaterniond(q.get0(), q.get1(), q.get2(), q.get3()));
+                var q = body.getPhysicsRotation(new Quaternion());
+                rotation.set(new Quaterniond(q.getX(), q.getY(), q.getZ(), q.getW()));
             }
         }).safe(64, (framedDominion, id, e) -> {
             LOGGER.error("Error occured with the given system! [Id: " + id + "]", e);
         }));
 
-        logicScheduler.schedule(IdentifiedSystem.of(new Id("game", "test_grav"), dominion, dom -> {
-            for (var result : dom.findEntitiesWith(Named.class, Gravity.class)) {
-                var named = result.comp1();
-
-                if (!named.hasName() || !named.name().equals("test_grass")) return;
-
-                var gravity = result.comp2();
-
-                long window = Game.window.handle;
-
-                if (GLFW.glfwGetKey(window, GLFW.GLFW_KEY_UP) == GLFW.GLFW_PRESS) {
-                    gravity.y += 0.00001;
-                }
-
-                if (GLFW.glfwGetKey(window, GLFW.GLFW_KEY_DOWN) == GLFW.GLFW_PRESS) {
-                    gravity.y -= 0.00001;
-                }
-            }
-        }));
+//        logicScheduler.schedule(IdentifiedSystem.of(new Id("game", "test_grav"), dominion, dom -> {
+//            for (var result : dom.findEntitiesWith(Named.class, Gravity.class)) {
+//                var named = result.comp1();
+//
+//                if (!named.hasName() || !named.name().equals("test_grass")) return;
+//
+//                var gravity = result.comp2();
+//
+//                long window = Game.window.handle;
+//
+//                if (GLFW.glfwGetKey(window, GLFW.GLFW_KEY_UP) == GLFW.GLFW_PRESS) {
+//                    gravity.y += 0.00001;
+//                }
+//
+//                if (GLFW.glfwGetKey(window, GLFW.GLFW_KEY_DOWN) == GLFW.GLFW_PRESS) {
+//                    gravity.y -= 0.00001;
+//                }
+//            }
+//        }));
 
         var lockOut = new AtomicInteger();
 
         logicScheduler.schedule(IdentifiedSystem.of(new Id("game", "test_grav"), dominion, dom -> {
-            if(lockOut.decrementAndGet() > 0) return;
+            if (lockOut.decrementAndGet() > 0) return;
 
-            dom.findEntitiesWith(Named.class, DxBody.class).forAll((entity, named, dxBody) -> {
+            dom.findEntitiesWith(Named.class, PhysicsRigidBody.class).forAll((entity, named, body) -> {
                 if (!named.hasName() || !named.name().equals("cow")) return;
 
                 long window = Game.window.handle;
 
-                var pos = dxBody.getPosition();
-
                 if (GLFW.glfwGetKey(window, GLFW.GLFW_KEY_UP) == GLFW.GLFW_PRESS) {
-                    dxBody.setPosition(pos.get0(), pos.get1() + 1, pos.get2());
+                    body.applyCentralForce(new Vector3f(0, -0.1f, 0));
                     lockOut.set(LOGIC_TICK_RATE / 4);
                 }
 
-                if (GLFW.glfwGetKey(window, GLFW.GLFW_KEY_DOWN) == GLFW.GLFW_PRESS) {
-                    dxBody.setPosition(pos.get0(), pos.get1() - 1, pos.get2());
-                    lockOut.set(LOGIC_TICK_RATE / 4);
-                }
-
-                if (GLFW.glfwGetKey(window, GLFW.GLFW_KEY_LEFT) == GLFW.GLFW_PRESS) {
-                    dxBody.setPosition(pos.get0() + 1, pos.get1(), pos.get2());
-                    lockOut.set(LOGIC_TICK_RATE / 4);
-                }
-
-                if (GLFW.glfwGetKey(window, GLFW.GLFW_KEY_RIGHT) == GLFW.GLFW_PRESS) {
-                    dxBody.setPosition(pos.get0() - 1, pos.get1(), pos.get2());
+                if (GLFW.glfwGetKey(window, GLFW.GLFW_KEY_R) == GLFW.GLFW_PRESS) {
+                    body.setPhysicsLocation(new Vector3f(0, 0, 0));
+                    body.setLinearVelocity(new Vector3f(0, 0, 0));
+                    body.setEnableSleep(false);
                     lockOut.set(LOGIC_TICK_RATE / 4);
                 }
             });
@@ -217,6 +224,7 @@ public class Game {
     private void loop(FramedDominion dom) {
         while (!window.shouldClose()) {
             renderer.clear();
+            physicsSpace.update(1f/LOGIC_TICK_RATE);
             clientScheduler.tick();
             renderer.update(dom);
 
