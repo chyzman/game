@@ -1,46 +1,37 @@
 package com.chyzman;
 
 import com.chyzman.component.position.Position;
+import com.chyzman.component.rotation.Rotation;
 import com.chyzman.dominion.FramedDominion;
 import com.chyzman.object.CameraConfiguration;
+import com.chyzman.util.Vec3i;
+import org.joml.Vector3i;
 import org.lwjgl.glfw.GLFW;
 
 public class MouseManager {
-    private boolean firstMouse = true;
     private boolean grabbed = false;
 
-    private double lastX, lastY;
+    private Vector3i last = new Vector3i(0,0, 0);
 
     public void setCursorPos(FramedDominion dominion, double mouseX, double mouseY) {
         if (!grabbed) return;
 
-        if (firstMouse) {
-            lastX = mouseX;
-            lastY = mouseY;
-            firstMouse = false;
-        }
+        dominion.findEntitiesWith(Rotation.class, CameraConfiguration.class).forAll((entity, rotation, cameraConfiguration) -> {
+            double xOffset = mouseX - last.x;
+            double yOffset = last.y - mouseY;
+            last.set((int) mouseX, (int) mouseY, 0);
 
-        for (var camera : dominion.findEntitiesWith(Position.class, CameraConfiguration.class).comp2Iterable()) {
-            double xOffset = mouseX - lastX;
-            double yOffset = lastY - mouseY;
-            lastX = mouseX;
-            lastY = mouseY;
+            xOffset *= cameraConfiguration.sensitivity;
+            yOffset *= cameraConfiguration.sensitivity;
 
-            float sensitivity = 0.1f;
-            xOffset *= sensitivity;
-            yOffset *= sensitivity;
-
-            camera.yaw += xOffset;
-            camera.pitch += yOffset;
-
-            if (camera.pitch >= 89F) camera.pitch = 89F;
-            if (camera.pitch <= -89F) camera.pitch = -89F;
-        }
+            rotation.rotateLocalX((float) -yOffset);
+            rotation.rotateY((float) xOffset);
+        });
     }
 
     public void toggleGrabbed() {
         grabbed = !grabbed;
-        lastX = (double) Game.window.width / 2; lastY = (double) Game.window.height / 2;
+        last.set(Game.window.width / 2, Game.window.height / 2, 0);
         if (grabbed) {
             GLFW.glfwSetCursorPos(Game.window.handle, (double) Game.window.width / 2, (double) Game.window.height / 2);
             GLFW.glfwSetInputMode(Game.window.handle, GLFW.GLFW_CURSOR, GLFW.GLFW_CURSOR_DISABLED);

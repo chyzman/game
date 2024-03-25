@@ -23,6 +23,7 @@ import com.jme3.bullet.collision.shapes.BoxCollisionShape;
 import com.jme3.bullet.collision.shapes.CapsuleCollisionShape;
 import com.jme3.bullet.collision.shapes.PlaneCollisionShape;
 import com.jme3.bullet.objects.PhysicsBody;
+import com.jme3.bullet.objects.PhysicsCharacter;
 import com.jme3.bullet.objects.PhysicsRigidBody;
 import com.jme3.math.Plane;
 import com.jme3.math.Vector3f;
@@ -66,8 +67,10 @@ public class Game {
         dominion = new FramedDominion(Dominion.create());
         clientScheduler = dominion.createScheduler();
         logicScheduler = dominion.createScheduler();
-        camera = dominion.createEntity("camera", new Position(), new CameraConfiguration());
+        var cameraConfig = new CameraConfiguration();
+        camera = dominion.createEntity("camera", new Position(), new Rotation(), cameraConfig);
         window = new Window(dominion, 640, 480);
+
         GlDebug.attachDebugCallback();
         GlDebug.minSeverity(GL45.GL_DEBUG_SEVERITY_LOW);
 
@@ -91,12 +94,14 @@ public class Game {
         physicsSpace.addCollisionObject(floor);
 
         var playerCollision = new CapsuleCollisionShape(0.15f, 1.5f);
-        var playerBox = new PhysicsRigidBody(playerCollision, 1);
-        physicsSpace.addCollisionObject(playerBox);
-        dominion.createEntity(
+//        var playerBox = new PhysicsRigidBody(playerCollision, 1);
+        var player = new PhysicsCharacter(playerCollision, 0.1f);
+
+        physicsSpace.addCollisionObject(player);
+        cameraConfig.target = dominion.createEntity(
                 Frameworks.PHYSICS_ENTITY,
                 new Named("player"),
-                playerBox,
+                player,
                 new MeshComponent("chyzman", new Id("game", "chyzman.png"))
         );
 
@@ -140,9 +145,12 @@ public class Game {
 
         dominion.createEntity(Frameworks.UNIQUE_ENTITY, new Named("test_grass"), new BasicObject());
 
+        GLFW.glfwMaximizeWindow(window.handle);
+
         logicScheduler.tickAtFixedRate(LOGIC_TICK_RATE);
 
         loop(dominion);
+
 
         logicScheduler.shutDown();
         clientScheduler.shutDown();

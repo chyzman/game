@@ -11,11 +11,11 @@ import java.util.UUID;
 public class Frameworks {
 
     public static final Framework POSITIONED_ENTITY = new Frame(gameId("positioned"))
-            .addComponent(Position.class, Position::zeroPos)
+            .addComponent(Position.class, Position::ZERO)
             .build();
 
     public static final Framework PHYSICS_ENTITY = new Frame(gameId("physics"))
-            .addComponent(Position.class, Position::zeroPos)
+            .addComponent(Position.class, Position::ZERO)
             .addComponent(Velocity.class, Velocity::zeroVel)
             .addComponent(Gravity.class, Gravity::zeroGrav)
             .build();

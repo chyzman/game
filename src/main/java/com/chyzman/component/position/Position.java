@@ -11,8 +11,8 @@ public class Position extends Vector3d {
     public Position() {
     }
 
-    public static Position zeroPos() {
-        return new Position(0);
+    public static Position ZERO() {
+        return new Position();
     }
 
     public Position(Number n) {

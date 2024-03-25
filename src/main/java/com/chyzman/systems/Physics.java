@@ -6,8 +6,10 @@ import com.chyzman.component.position.Position;
 import com.chyzman.component.rotation.Rotation;
 import com.chyzman.dominion.FramedDominion;
 import com.chyzman.dominion.IdentifiedSystem;
+import com.chyzman.object.CameraConfiguration;
 import com.chyzman.util.Id;
 import com.jme3.bullet.PhysicsSpace;
+import com.jme3.bullet.objects.PhysicsCharacter;
 import com.jme3.bullet.objects.PhysicsRigidBody;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
@@ -36,59 +38,64 @@ public class Physics {
     public static void update(FramedDominion dom, double deltaTime) {
         physicsSpace.update(1f / LOGIC_TICK_RATE);
 
-        for (var result : dom.findEntitiesWith(PhysicsRigidBody.class, Position.class)) {
+        for (var result : dom.findEntitiesWith(PhysicsCharacter.class, Position.class)) {
             var body = result.comp1();
             var pos = result.comp2();
             var p = body.getPhysicsLocation(new Vector3f());
             pos.set(p.x, p.y, p.z);
         }
 
-        for (var result : dom.findEntitiesWith(PhysicsRigidBody.class, Rotation.class)) {
+        for (var result : dom.findEntitiesWith(PhysicsCharacter.class, Rotation.class)) {
             var body = result.comp1();
             var rotation = result.comp2();
             var q = body.getPhysicsRotation(new Quaternion());
             rotation.set(new Quaterniond(q.getX(), q.getY(), q.getZ(), q.getW()));
         }
 
+        if(!Game.window.mouseGrabbed()) {
+            var cameraConfiguration = Game.camera.get(CameraConfiguration.class);
+
+        }
 
             if (--lockOut <= 0 && !Game.window.mouseGrabbed()) {
-                dom.findEntitiesWith(Named.class, PhysicsRigidBody.class).forAll((entity, named, body) -> {
+                dom.findEntitiesWith(Named.class, PhysicsCharacter.class).forAll((entity, named, body) -> {
                     if (!named.hasName() || !named.name().equals("player")) return;
 
                     long window = Game.window.handle;
 
+                    Vector3f walkDirection = new Vector3f();
+
                     if (GLFW.glfwGetKey(window, GLFW.GLFW_KEY_W) == GLFW.GLFW_PRESS) {
-                        body.applyImpulse(new Vector3f(0f, 0, -1f), new Vector3f(0, 0, 0));
-                        lockOut = LOGIC_TICK_RATE / 4;
+                        walkDirection = walkDirection.add(new Vector3f(0, 0, -0.1f));
                     }
 
                     if (GLFW.glfwGetKey(window, GLFW.GLFW_KEY_S) == GLFW.GLFW_PRESS) {
-                        body.applyImpulse(new Vector3f(0f, 0, 1f), new Vector3f(0, 0, 0));
-                        lockOut = LOGIC_TICK_RATE / 4;
+                        walkDirection = walkDirection.add(new Vector3f(0, 0, 0.1f));
                     }
 
                     if (GLFW.glfwGetKey(window, GLFW.GLFW_KEY_A) == GLFW.GLFW_PRESS) {
-                        body.applyImpulse(new Vector3f(-1f, 0, 0), new Vector3f(0, 0, 0));
-                        lockOut = LOGIC_TICK_RATE / 4;
+                        walkDirection = walkDirection.add(new Vector3f(-0.1f, 0, 0));
                     }
 
                     if (GLFW.glfwGetKey(window, GLFW.GLFW_KEY_D) == GLFW.GLFW_PRESS) {
-                        body.applyImpulse(new Vector3f(1f, 0, 0), new Vector3f(0, 0, 0));
-                        lockOut = LOGIC_TICK_RATE / 4;
+                        walkDirection = walkDirection.add(new Vector3f(0.1f, 0, 0));
                     }
 
+                    if (walkDirection.length() > 0) {
+                        body.setWalkDirection(walkDirection);
+                    } else {
+                        body.setWalkDirection(new Vector3f());
+                    }
 
-                    if (GLFW.glfwGetKey(window, GLFW.GLFW_KEY_SPACE) == GLFW.GLFW_PRESS) {
-                        body.applyImpulse(new Vector3f(0, 8f, 0), new Vector3f(0, 0, 0));
+                    if (GLFW.glfwGetKey(window, GLFW.GLFW_KEY_SPACE) == GLFW.GLFW_PRESS && body.onGround()) {
+                        body.jump();
                         lockOut = LOGIC_TICK_RATE / 4;
                     }
 
                     if (GLFW.glfwGetKey(window, GLFW.GLFW_KEY_E) == GLFW.GLFW_PRESS) {
                         body.setPhysicsLocation(new Vector3f(0, 10, 0));
-                        body.setPhysicsRotation(new Quaternion());
                         body.setLinearVelocity(new Vector3f());
                         body.setAngularVelocity(new Vector3f());
-                        body.setEnableSleep(false);
                         lockOut = LOGIC_TICK_RATE / 4;
                     }
                 });

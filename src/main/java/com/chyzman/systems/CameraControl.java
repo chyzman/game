@@ -2,6 +2,7 @@ package com.chyzman.systems;
 
 import com.chyzman.Game;
 import com.chyzman.component.position.Position;
+import com.chyzman.component.rotation.Rotation;
 import com.chyzman.dominion.FramedDominion;
 import com.chyzman.dominion.IdentifiedSystem;
 import com.chyzman.object.CameraConfiguration;
@@ -9,6 +10,7 @@ import com.chyzman.render.Renderer;
 import com.chyzman.util.Id;
 import dev.dominion.ecs.api.Dominion;
 import org.joml.Matrix4f;
+import org.joml.Vector3d;
 import org.joml.Vector3f;
 import org.lwjgl.glfw.GLFW;
 
@@ -22,43 +24,38 @@ public class CameraControl {
 
     private static void update(Dominion dominion, double deltaTime) {
         if (Game.window.mouseGrabbed()) {
-            for (var entityResult : dominion.findEntitiesWith(Position.class, CameraConfiguration.class)) {
+            for (var entityResult : dominion.findEntitiesWith(Position.class, Rotation.class, CameraConfiguration.class)) {
                 var pos = entityResult.comp1();
                 Renderer.cameraPosition = pos;
-                var camera = entityResult.comp2();
-
-                var yaw = camera.yaw;
-                var pitch = camera.pitch;
+                var rotation = entityResult.comp2();
+                var camera = entityResult.comp3();
 
                 Matrix4f transform = Game.renderer.getViewMatrix().peek();
 
-                Vector3f front = new Vector3f();
-                front.x = (float) (Math.cos(Math.toRadians(yaw)) * Math.cos(Math.toRadians(pitch)));
-                front.y = (float) Math.sin(Math.toRadians(pitch));
-                front.z = (float) (Math.sin(Math.toRadians(yaw)) * Math.cos(Math.toRadians(pitch)));
-                camera.cameraFront = front.normalize();
-                transform.set(camera.getViewMatrix(pos));
+                var fpos = new Vector3f(new Vector3f((float) pos.x, (float) pos.y, (float) pos.z));
+                var matr = new Matrix4f().translate(fpos).rotate(rotation);
+                transform.set(matr.translate(fpos.negate()));
 
                 long window = Game.window.handle;
 
                 float localCameraSpeed = (float) (camera.cameraSpeed * deltaTime);
                 if (GLFW.glfwGetKey(window, GLFW.GLFW_KEY_W) == GLFW.GLFW_PRESS) {
-                    pos.add(new Vector3f(camera.cameraFront).mul(localCameraSpeed));
+                    transform.translateLocal(new Vector3f(0, 0, localCameraSpeed));
                 }
                 if (GLFW.glfwGetKey(window, GLFW.GLFW_KEY_S) == GLFW.GLFW_PRESS) {
-                    pos.sub(new Vector3f(camera.cameraFront).mul(localCameraSpeed));
+                    transform.translateLocal(new Vector3f(0, 0, -localCameraSpeed));
                 }
                 if (GLFW.glfwGetKey(window, GLFW.GLFW_KEY_A) == GLFW.GLFW_PRESS) {
-                    pos.sub(new Vector3f(camera.cameraFront).cross(camera.cameraUp).normalize().mul(localCameraSpeed));
+                    transform.translateLocal(new Vector3f(localCameraSpeed, 0, 0));
                 }
                 if (GLFW.glfwGetKey(window, GLFW.GLFW_KEY_D) == GLFW.GLFW_PRESS) {
-                    pos.add(new Vector3f(camera.cameraFront).cross(camera.cameraUp).normalize().mul(localCameraSpeed));
+                    transform.translateLocal(new Vector3f(-localCameraSpeed, 0, 0));
                 }
                 if (GLFW.glfwGetKey(window, GLFW.GLFW_KEY_SPACE) == GLFW.GLFW_PRESS) {
-                    pos.add(0, localCameraSpeed, 0);
+                    transform.translateLocal(new Vector3f(0, -localCameraSpeed, 0));
                 }
                 if (GLFW.glfwGetKey(window, GLFW.GLFW_KEY_LEFT_CONTROL) == GLFW.GLFW_PRESS || GLFW.glfwGetKey(window, GLFW.GLFW_KEY_LEFT_SHIFT) == GLFW.GLFW_PRESS) {
-                    pos.add(0, -localCameraSpeed, 0);
+                    transform.translateLocal(new Vector3f(0, localCameraSpeed, 0));
                 }
             }
         }

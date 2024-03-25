@@ -144,7 +144,6 @@ public class Renderer {
         textRenderer.renderText("FPS: " + fps, 2.0f, 3.0f, 0.25f, new Vector3f(1f, 1f, 1f));
         textRenderer.renderText("Pos: (" + cameraPosition.x + ", " + cameraPosition.y + ", " + cameraPosition.z + ")", 2.0f, 26.0f, 0.25f, new Vector3f(1f, 1f, 1f));
         textRenderer.renderText("Loaded Chunks: " + Game.GAME.world.getChunkManager().getLoadedChunks(), 2.0f, 49.0f, 0.25f, new Vector3f(1f, 1f, 1f));
-        textRenderer.renderText("Facing: " + Direction.fromYaw((Mth.floor((double) (Game.camera.get(CameraConfiguration.class).yaw * 4.0F / 360.0F) + 0.5) & 3)), 2.0f, 72.0f, 0.25f, new Vector3f(1f, 1f, 1f));
         if (polygonMode == GL_LINE) {
             glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
         }
