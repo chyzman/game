@@ -40,22 +40,30 @@ public class CameraControl {
 
                 float localCameraSpeed = (float) (camera.cameraSpeed * deltaTime);
                 if (GLFW.glfwGetKey(window, GLFW.GLFW_KEY_W) == GLFW.GLFW_PRESS) {
-                    pos.x += localCameraSpeed;
+                    pos.add(new Vector3d(transform.positiveZ(new Vector3f()).mul(localCameraSpeed)));
                 }
                 if (GLFW.glfwGetKey(window, GLFW.GLFW_KEY_S) == GLFW.GLFW_PRESS) {
-                    pos.x -= localCameraSpeed;
+                    pos.add(new Vector3d(transform.positiveZ(new Vector3f()).mul(-localCameraSpeed)));
                 }
                 if (GLFW.glfwGetKey(window, GLFW.GLFW_KEY_A) == GLFW.GLFW_PRESS) {
-                    pos.z += localCameraSpeed;
+                    pos.add(new Vector3d(transform.positiveX(new Vector3f()).mul(localCameraSpeed)));
                 }
                 if (GLFW.glfwGetKey(window, GLFW.GLFW_KEY_D) == GLFW.GLFW_PRESS) {
-                    pos.z -= localCameraSpeed;
+                    pos.add(new Vector3d(transform.positiveX(new Vector3f()).mul(-localCameraSpeed)));
                 }
                 if (GLFW.glfwGetKey(window, GLFW.GLFW_KEY_SPACE) == GLFW.GLFW_PRESS) {
-                    pos.y += localCameraSpeed;
+                    pos.add(new Vector3d(transform.positiveY(new Vector3f()).mul(-localCameraSpeed)));
                 }
                 if (GLFW.glfwGetKey(window, GLFW.GLFW_KEY_LEFT_CONTROL) == GLFW.GLFW_PRESS || GLFW.glfwGetKey(window, GLFW.GLFW_KEY_LEFT_SHIFT) == GLFW.GLFW_PRESS) {
-                    pos.y -= localCameraSpeed;
+                    pos.add(new Vector3d(transform.positiveY(new Vector3f()).mul(localCameraSpeed)));
+                }
+
+                if (GLFW.glfwGetKey(window, GLFW.GLFW_KEY_Q) == GLFW.GLFW_PRESS) {
+                    rotation.rotateLocalZ((float) (-camera.rotationSpeed * deltaTime));
+                }
+
+                if (GLFW.glfwGetKey(window, GLFW.GLFW_KEY_E) == GLFW.GLFW_PRESS) {
+                    rotation.rotateLocalZ((float) (camera.rotationSpeed * deltaTime));
                 }
             }
         }
