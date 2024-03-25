@@ -79,7 +79,7 @@ public class Game {
 
         logicScheduler.schedule(Physics.create(dominion, logicScheduler::deltaTime));
 
-        int chunksSize = 5;
+        int chunksSize = 2;
         for (int xRad = 0; xRad < chunksSize; xRad++) {
             for (int yRad = 0; yRad < chunksSize; yRad++) {
                 for (int zRad = 0; zRad < chunksSize; zRad++) {
