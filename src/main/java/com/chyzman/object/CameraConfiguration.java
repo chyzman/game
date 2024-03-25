@@ -1,9 +1,6 @@
 package com.chyzman.object;
 
 import dev.dominion.ecs.api.Entity;
-import org.joml.Matrix4f;
-import org.joml.Vector3d;
-import org.joml.Vector3f;
 
 public class CameraConfiguration {
     public float fov = 90;

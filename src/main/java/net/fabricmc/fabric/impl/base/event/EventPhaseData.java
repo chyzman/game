@@ -16,13 +16,11 @@
 
 package net.fabricmc.fabric.impl.base.event;
 
-import java.lang.reflect.Array;
-import java.util.Arrays;
-import java.util.List;
-
 import com.chyzman.util.Id;
-
 import net.fabricmc.fabric.impl.base.toposort.SortableNode;
+
+import java.lang.reflect.Array;
+import java.util.List;
 
 /**
  * Data of an {@link ArrayBackedEvent} phase.

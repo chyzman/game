@@ -1,11 +1,7 @@
 package com.chyzman.systems;
 
-import com.chyzman.Game;
-import com.chyzman.component.position.Position;
 import com.chyzman.dominion.FramedDominion;
 import com.chyzman.dominion.IdentifiedSystem;
-import com.chyzman.gl.MatrixStack;
-import com.chyzman.object.components.MeshComponent;
 import com.chyzman.util.Id;
 
 import java.util.function.Supplier;

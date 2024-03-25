@@ -16,20 +16,14 @@
 
 package net.fabricmc.fabric.impl.base.event;
 
-import java.lang.reflect.Array;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.function.Function;
-
 import com.chyzman.util.Id;
-
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.Subscription;
 import net.fabricmc.fabric.impl.base.toposort.NodeSorting;
+
+import java.lang.reflect.Array;
+import java.util.*;
+import java.util.function.Function;
 
 class ArrayBackedEvent<T> extends Event<T> {
 	private final Function<T[], T> invokerFactory;

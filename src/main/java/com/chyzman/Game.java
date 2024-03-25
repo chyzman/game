@@ -26,9 +26,7 @@ import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL45;
 import org.slf4j.Logger;
 
-import java.util.ArrayDeque;
 import java.util.Deque;
-import java.util.Queue;
 import java.util.Random;
 import java.util.concurrent.ConcurrentLinkedDeque;
 

@@ -12,19 +12,16 @@ import com.chyzman.gl.RenderContext;
 import com.chyzman.object.CameraConfiguration;
 import com.chyzman.object.components.MeshComponent;
 import com.chyzman.systems.TextRenderer;
-import com.chyzman.util.Direction;
-import com.chyzman.util.Mth;
 import com.chyzman.util.UtilUtil;
-import com.jme3.bullet.objects.PhysicsBody;
 import com.jme3.bullet.objects.PhysicsRigidBody;
-import com.jme3.math.Quaternion;
 import dev.dominion.ecs.api.Dominion;
-import org.joml.*;
+import org.joml.Quaternionf;
+import org.joml.Vector3d;
+import org.joml.Vector3f;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL11;
 
 import java.io.IOException;
-import java.lang.Math;
 import java.util.ArrayList;
 import java.util.List;
 

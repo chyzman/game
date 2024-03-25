@@ -1,10 +1,8 @@
 package com.chyzman;
 
-import com.chyzman.component.position.Position;
 import com.chyzman.component.rotation.Rotation;
 import com.chyzman.dominion.FramedDominion;
 import com.chyzman.object.CameraConfiguration;
-import com.chyzman.util.Vec3i;
 import org.joml.Vector3i;
 import org.lwjgl.glfw.GLFW;
 
@@ -25,7 +23,7 @@ public class MouseManager {
             yOffset *= cameraConfiguration.sensitivity;
 
             rotation.rotateLocalX((float) -yOffset);
-            rotation.rotateY((float) xOffset);
+            rotation.rotateLocalY((float) xOffset);
         });
     }
 

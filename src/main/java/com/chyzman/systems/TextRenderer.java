@@ -1,11 +1,9 @@
 package com.chyzman.systems;
 
 import com.chyzman.Game;
-import com.chyzman.gl.GlProgram;
 import com.chyzman.gl.MeshBuffer;
 import com.chyzman.gl.RenderContext;
 import com.chyzman.gl.VertexDescriptors;
-import com.chyzman.render.Renderer;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.lwjgl.opengl.GL11;

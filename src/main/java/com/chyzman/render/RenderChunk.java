@@ -1,14 +1,16 @@
 package com.chyzman.render;
 
 import com.chyzman.Game;
-import com.chyzman.gl.*;
+import com.chyzman.gl.MatrixStack;
+import com.chyzman.gl.MeshBuffer;
+import com.chyzman.gl.RenderContext;
+import com.chyzman.gl.VertexDescriptors;
 import com.chyzman.ui.core.Color;
 import com.chyzman.util.Direction;
 import com.chyzman.util.Id;
 import com.chyzman.world.block.Block;
 import com.chyzman.world.chunk.Chunk;
 import de.javagl.obj.Obj;
-import de.javagl.obj.ObjData;
 import de.javagl.obj.ObjReader;
 import de.javagl.obj.ObjUtils;
 import org.joml.Vector3d;

@@ -20,14 +20,12 @@ import com.jme3.math.Plane;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.system.NativeLibraryLoader;
-import dev.dominion.ecs.api.Dominion;
 import io.wispforest.endec.util.MutableHolder;
 import org.joml.Quaterniond;
 import org.lwjgl.glfw.GLFW;
 
 import java.nio.file.Path;
 import java.util.Objects;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Supplier;
 
 import static com.chyzman.Game.LOGGER;
