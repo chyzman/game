@@ -3,7 +3,6 @@ package com.chyzman.object.components;
 import com.chyzman.Game;
 import com.chyzman.gl.ElementMeshBuffer;
 import com.chyzman.gl.VertexDescriptors;
-import com.chyzman.object.GameObject;
 import com.chyzman.render.Renderer;
 import com.chyzman.render.Texture;
 import com.chyzman.ui.core.Color;
@@ -16,29 +15,30 @@ import org.lwjgl.opengl.GL11;
 
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Path;
 
-public class MeshComponent extends GameObject {
-    private boolean isLoaded = false;
-
+public class MeshComponent<VF> {
     public final int texture;
-    public final ElementMeshBuffer<VertexDescriptors.PosColorTexNormalVertexFunction> mesh;
+    public final ElementMeshBuffer<VF> mesh;
 
-    public MeshComponent(String obj, Id texture) {
+    public MeshComponent(ElementMeshBuffer<VF> mesh, Id texture) {
         this.texture = Texture.load(texture);
-        Obj chyzModel;
+        this.mesh = mesh;
+    }
+
+    public static MeshComponent<VertexDescriptors.PosColorTexNormalVertexFunction> obj(Id modelId, Id texture) {
+        Obj model;
 
         try {
-            chyzModel = ObjUtils.convertToRenderable(ObjReader.read(Files.newInputStream(Path.of("src/main/resources/models/" + obj + ".obj"))));
+            model = ObjUtils.convertToRenderable(ObjReader.read(Files.newInputStream(modelId.toResourcePath("models"))));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
 
-        this.mesh = new ElementMeshBuffer<>(VertexDescriptors.POSITION_COLOR_TEXTURE_NORMAL, Renderer.POS_COLOR_TEXTURE_PROGRAM);
-        int[] indices = ObjData.getFaceVertexIndicesArray(chyzModel);
-        float[] vertices = ObjData.getVerticesArray(chyzModel);
-        float[] texCoords = ObjData.getTexCoordsArray(chyzModel, 2, true);
-        float[] normals = ObjData.getNormalsArray(chyzModel);
+        var mesh = new ElementMeshBuffer<>(VertexDescriptors.POSITION_COLOR_TEXTURE_NORMAL, Renderer.POS_COLOR_TEXTURE_PROGRAM);
+        int[] indices = ObjData.getFaceVertexIndicesArray(model);
+        float[] vertices = ObjData.getVerticesArray(model);
+        float[] texCoords = ObjData.getTexCoordsArray(model, 2, true);
+        float[] normals = ObjData.getNormalsArray(model);
 
         for (int vtx = 0; vtx < vertices.length / 3; vtx++) {
             mesh.builder.vertex(
@@ -60,10 +60,8 @@ public class MeshComponent extends GameObject {
         }
 
         mesh.upload(false);
-    }
 
-    public ElementMeshBuffer<VertexDescriptors.PosColorTexNormalVertexFunction> getMesh() {
-        return mesh;
+        return new MeshComponent<>(mesh, texture);
     }
 
     public void render() {
@@ -76,10 +74,5 @@ public class MeshComponent extends GameObject {
         mesh.program.uniformSampler("textureSampler", this.texture, 0);
         mesh.draw();
         GL11.glDisable(GL11.GL_DEPTH_TEST);
-    }
-
-    @Override
-    public void update() {
-
     }
 }

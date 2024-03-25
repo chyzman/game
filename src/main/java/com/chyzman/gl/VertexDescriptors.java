@@ -66,6 +66,9 @@ public final class VertexDescriptors {
     @FunctionalInterface
     public interface PosColorVertexFunction {
         void vertex(float x, float y, float z, float a, float r, float g, float b);
+        default void vertex(float x, float y, float z) {
+            vertex(x, y, z, Color.WHITE.alpha(), Color.WHITE.red(), Color.WHITE.green(), Color.WHITE.blue());
+        }
         default void vertex(Vector3fc vertex, Color color) {
             this.vertex(vertex.x(), vertex.y(), vertex.z(), color.alpha(), color.red(), color.green(), color.blue());
         }

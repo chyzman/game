@@ -1,16 +1,14 @@
 package com.chyzman.render;
 
 import com.chyzman.Game;
-import com.chyzman.gl.MatrixStack;
-import com.chyzman.gl.MeshBuffer;
-import com.chyzman.gl.RenderContext;
-import com.chyzman.gl.VertexDescriptors;
+import com.chyzman.gl.*;
 import com.chyzman.ui.core.Color;
 import com.chyzman.util.Direction;
 import com.chyzman.util.Id;
 import com.chyzman.world.block.Block;
 import com.chyzman.world.chunk.Chunk;
 import de.javagl.obj.Obj;
+import de.javagl.obj.ObjData;
 import de.javagl.obj.ObjReader;
 import de.javagl.obj.ObjUtils;
 import org.joml.Vector3d;
@@ -29,24 +27,29 @@ public class RenderChunk {
 
     static {
         try {
-            CUBE = ObjUtils.convertToRenderable(ObjReader.read(Files.newInputStream(Path.of("src/main/resources/models/cube.obj"))));
+            CUBE = ObjUtils.convertToRenderable(ObjReader.read(Files.newInputStream(Path.of("src/main/resources/game/models/cube.obj"))));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
-    private final MeshBuffer<VertexDescriptors.PosColorTexNormalVertexFunction> mesh;
+    private final ElementMeshBuffer<VertexDescriptors.PosColorTexNormalVertexFunction> mesh;
     private final int texture;
     private final Chunk chunk;
     private boolean compiled = false;
 
     public RenderChunk(Chunk chunk, RenderContext context) {
-        this.mesh = new MeshBuffer<>(VertexDescriptors.POSITION_COLOR_TEXTURE_NORMAL, context.findProgram("pos_color_tex_normal"), 16384);
+        this.mesh = new ElementMeshBuffer<>(VertexDescriptors.POSITION_COLOR_TEXTURE_NORMAL, context.findProgram("pos_color_tex_normal"), 16384);
         this.chunk = chunk;
         this.texture = Texture.load(new Id("game", "test.png"));
     }
 
     public void compile() {
+        int[] indices = ObjData.getFaceVertexIndicesArray(CUBE);
+        float[] vertices = ObjData.getVerticesArray(CUBE);
+        float[] texCoords = ObjData.getTexCoordsArray(CUBE, 2);
+        float[] normals = ObjData.getNormalsArray(CUBE);
+        var indexBuffer = mesh.getIndicesBuffer();
         mesh.clear();
         MatrixStack modelMatrix = Game.renderer.getModelMatrix();
         int cubes = 0;
@@ -57,30 +60,30 @@ public class RenderChunk {
                     if (block != null) {
                         modelMatrix.push();
                         modelMatrix.translate(chunk.x + x, chunk.y + y, chunk.z + z);
-                        for (Direction direction : Direction.DIRECTIONS) {
-                            modelMatrix.push();
-                            switch (direction) {
-                                case DOWN -> {}
-                                case UP -> modelMatrix.translate(0, 1, 0);
-                                case EAST -> {
-                                    modelMatrix.translate(1, 0, 0);
-                                    modelMatrix.rotate(90, new Vector3f(0, 0, 1));
-                                }
-                                case WEST -> {
-                                    modelMatrix.rotate(90, new Vector3f(0, 0, 1));
-                                }
-                                case NORTH -> {
-                                    modelMatrix.rotate(-90, new Vector3f(1, 0, 0));
-                                }
-                                case SOUTH -> {
-                                    modelMatrix.translate(0, 0, 1);
-                                    modelMatrix.rotate(-90, new Vector3f(1, 0, 0));
-                                }
-                            }
-                            if (Game.GAME.world.getBlock((chunk.x * Chunk.CHUNK_SIZE + x) + (int) direction.normal().x(), (chunk.y * Chunk.CHUNK_SIZE + y) + (int) direction.normal().y(), (chunk.z * Chunk.CHUNK_SIZE + z) + (int) direction.normal().z()) == null)
-                                quad(new Vector3d(0, 0, 0), new Vector3d(1, 0, 1), modelMatrix, block.color, direction);
-                            modelMatrix.pop();
-                        }
+//                        for (Direction direction : Direction.DIRECTIONS) {
+//                            modelMatrix.push();
+//                            switch (direction) {
+//                                case DOWN -> {}
+//                                case UP -> modelMatrix.translate(0, 1, 0);
+//                                case EAST -> {
+//                                    modelMatrix.translate(1, 0, 0);
+//                                    modelMatrix.rotate(90, new Vector3f(0, 0, 1));
+//                                }
+//                                case WEST -> {
+//                                    modelMatrix.rotate(90, new Vector3f(0, 0, 1));
+//                                }
+//                                case NORTH -> {
+//                                    modelMatrix.rotate(-90, new Vector3f(1, 0, 0));
+//                                }
+//                                case SOUTH -> {
+//                                    modelMatrix.translate(0, 0, 1);
+//                                    modelMatrix.rotate(-90, new Vector3f(1, 0, 0));
+//                                }
+//                            }
+//                            if (Game.GAME.world.getBlock((chunk.x * Chunk.CHUNK_SIZE + x) + (int) direction.normal().x(), (chunk.y * Chunk.CHUNK_SIZE + y) + (int) direction.normal().y(), (chunk.z * Chunk.CHUNK_SIZE + z) + (int) direction.normal().z()) == null)
+//                                quad(new Vector3d(0, 0, 0), new Vector3d(1, 0, 1), modelMatrix, block.color, direction);
+//                            modelMatrix.pop();
+//                        }
                         //Bottom
 //                        quad(new Vector3d(0, 0, 0), new Vector3d(1, 0, 1), modelMatrix, block.color, Direction.DOWN);
 //                        //Top
@@ -94,30 +97,23 @@ public class RenderChunk {
 //                        //West
 //                        quad(new Vector3d(1, 0, 0), new Vector3d(1, 1, 1), modelMatrix, block.color, Direction.WEST);
 
+                        for (int vtx = 0; vtx < vertices.length / 3; vtx++) {
+                            mesh.builder.vertex(
+                                    transform(modelMatrix, vertices[vtx * 3], vertices[vtx * 3 + 1], vertices[vtx * 3 + 2]),
+                                    Color.WHITE,
+                                    texCoords[vtx * 2],
+                                    texCoords[vtx * 2 + 1],
+                                    new Vector3f(normals[vtx * 3], normals[vtx * 3 + 1], normals[vtx * 3 + 2])
+                            );
+                        }
 
-//                        int[] indices = ObjData.getFaceVertexIndicesArray(CUBE);
-//                        float[] vertices = ObjData.getVerticesArray(CUBE);
-//                        float[] texCoords = ObjData.getTexCoordsArray(CUBE, 2);
-//                        float[] normals = ObjData.getNormalsArray(CUBE);
-//
-//                        for (int vtx = 0; vtx < vertices.length / 3; vtx++) {
-//                            mesh.builder.vertex(
-//                                    transform(modelMatrix, vertices[vtx * 3], vertices[vtx * 3 + 1], vertices[vtx * 3 + 2]),
-//                                    Color.WHITE,
-//                                    texCoords[vtx * 2],
-//                                    texCoords[vtx * 2 + 1],
-//                                    new Vector3f(normals[vtx * 3], normals[vtx * 3 + 1], normals[vtx * 3 + 2])
-//                            );
-//                        }
-//
-//                        var indexBuffer = mesh.getIndicesBuffer();
-//                        for (int idx = 0; idx < indices.length / 3; idx++) {
-//                            indexBuffer.int3(
-//                                    (cubes * vertices.length) + indices[idx * 3],
-//                                    (cubes * vertices.length) + indices[idx * 3 + 1],
-//                                    (cubes * vertices.length) + indices[idx * 3 + 2]
-//                            );
-//                        }
+                        for (int idx = 0; idx < indices.length / 3; idx++) {
+                            indexBuffer.int3(
+                                    (cubes * vertices.length) + indices[idx * 3],
+                                    (cubes * vertices.length) + indices[idx * 3 + 1],
+                                    (cubes * vertices.length) + indices[idx * 3 + 2]
+                            );
+                        }
 
 //                        quad(modelMatrix, Direction.WEST, block.color, -1.0f,-1.0f,-1.0f, -1.0f,-1.0f, 1.0f, -1.0f, 1.0f, 1.0f);  // Left Side
 //                        quad(modelMatrix, Direction.WEST, block.color, -1.0f,-1.0f,-1.0f, -1.0f, 1.0f, 1.0f, -1.0f, 1.0f,-1.0f);  // Left Side

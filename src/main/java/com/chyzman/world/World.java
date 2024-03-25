@@ -23,11 +23,12 @@ public class World {
     }
 
     public Block getBlock(int x, int y, int z) {
-        return getChunk(x >> 4, y >> 4, z >> 4).getBlock(x & Chunk.CHUNK_MASK, y & Chunk.CHUNK_MASK, z & Chunk.CHUNK_MASK);
+        var chunk = getChunk(x >> 4, y >> 4, z >> 4);
+        return chunk == null ? null : chunk.getBlock(x & Chunk.CHUNK_MASK, y & Chunk.CHUNK_MASK, z & Chunk.CHUNK_MASK);
     }
 
     public void setBlock(int x, int y, int z, Block block) {
-        getChunk(x >> 4, y >> 4, z >> 4).setBlock(x & Chunk.CHUNK_MASK, y & Chunk.CHUNK_MASK, z & Chunk.CHUNK_MASK, block);
+        chunkManager.getOrLoadChunk(x >> 4, y >> 4, z >> 4).setBlock(x & Chunk.CHUNK_MASK, y & Chunk.CHUNK_MASK, z & Chunk.CHUNK_MASK, block);
     }
 
     public Dominion getDominion() {

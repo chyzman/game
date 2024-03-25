@@ -44,7 +44,6 @@ public class Game {
     public Scheduler clientScheduler;
     public Scheduler logicScheduler;
     public World world;
-    public final Chunk chunk = new Chunk(0, 0, 0);
 
     public static final Deque<Runnable> runnables = new ConcurrentLinkedDeque<>();
 

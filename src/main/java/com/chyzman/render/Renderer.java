@@ -109,33 +109,45 @@ public class Renderer {
             MatrixStack transform = Game.renderer.getModelMatrix();
             transform.push();
             var transformMatrix = physicsRigidBody.getTransform(null);
-            transform.translate(transformMatrix.getTranslation().x, transformMatrix.getTranslation().y, transformMatrix.getTranslation().z);
+//            transform.translate(transformMatrix.getTranslation().x, transformMatrix.getTranslation().y, transformMatrix.getTranslation().z);
             transform.peek().rotate(new Quaternionf(transformMatrix.getRotation().getX(), transformMatrix.getRotation().getY(), transformMatrix.getRotation().getZ(), transformMatrix.getRotation().getW()));
+            // TODO: convert this to a mesh component this code is very bad
             var box = physicsRigidBody.boundingBox(null);
-            var start = new Vector3f(box.getMin(null).x, box.getMin(null).y, box.getMin(null).z);
-            var end = new Vector3f(box.getMax(null).x, box.getMax(null).y, box.getMax(null).z);
-            debugBuffer.builder.vertex(start.x, start.y, start.z, 1f, 1f, 1f, 1f);
-            debugBuffer.builder.vertex(end.x, start.y, start.z, 1f, 1f, 1f, 1f);
-            debugBuffer.builder.vertex(end.x, start.y, start.z, 1f, 1f, 1f, 1f);
-            debugBuffer.builder.vertex(end.x, end.y, start.z, 1f, 1f, 1f, 1f);
-            debugBuffer.builder.vertex(end.x, end.y, start.z, 1f, 1f, 1f, 1f);
-            debugBuffer.builder.vertex(start.x, end.y, start.z, 1f, 1f, 1f, 1f);
-            debugBuffer.builder.vertex(start.x, end.y, start.z, 1f, 1f, 1f, 1f);
-            debugBuffer.builder.vertex(start.x, start.y, start.z, 1f, 1f, 1f, 1f);
-            debugBuffer.builder.vertex(start.x, start.y, end.z, 1f, 1f, 1f, 1f);
-            debugBuffer.builder.vertex(end.x, start.y, end.z, 1f, 1f, 1f, 1f);
-            debugBuffer.builder.vertex(end.x, start.y, end.z, 1f, 1f, 1f, 1f);
-            debugBuffer.builder.vertex(end.x, end.y, end.z, 1f, 1f, 1f, 1f);
-            debugBuffer.builder.vertex(end.x, end.y, end.z, 1f, 1f, 1f, 1f);
-            debugBuffer.builder.vertex(start.x, end.y, end.z, 1f, 1f, 1f, 1f);
-            debugBuffer.builder.vertex(start.x, end.y, end.z, 1f, 1f, 1f, 1f);
-            debugBuffer.builder.vertex(start.x, start.y, end.z, 1f, 1f, 1f, 1f);
-            debugBuffer.builder.vertex(start.x, start.y, start.z, 1f, 1f, 1f, 1f);
-            debugBuffer.builder.vertex(start.x, start.y, end.z, 1f, 1f, 1f, 1f);
-            debugBuffer.builder.vertex(end.x, start.y, start.z, 1f, 1f, 1f, 1f);
-            debugBuffer.builder.vertex(end.x, start.y, end.z, 1f, 1f, 1f, 1f);
-            debugBuffer.builder.vertex(end.x, end.y, start.z, 1f, 1f, 1f, 1f);
-            debugBuffer.builder.vertex(end.x, end.y, end.z, 1f, 1f, 1f, 1f);
+            var low = new Vector3f(box.getMin(null).x, box.getMin(null).y, box.getMin(null).z);
+            var high = new Vector3f(box.getMax(null).x, box.getMax(null).y, box.getMax(null).z);
+            debugBuffer.builder.vertex(low.x,    low.y,  low.z); // 0
+            debugBuffer.builder.vertex(high.x,   low.y,  low.z); // 1
+            debugBuffer.builder.vertex(low.x,    high.y, low.z); // 2
+            debugBuffer.builder.vertex(low.x,    low.y,  high.z); // 3
+
+            debugBuffer.builder.vertex(high.x,   high.y, low.z); // 4
+            debugBuffer.builder.vertex(high.x,   low.y,  high.z); // 5
+            debugBuffer.builder.vertex(low.x,    high.y, high.z); // 6
+            debugBuffer.builder.vertex(high.x,   high.y, high.z); // 7
+
+            var indices = debugBuffer.getIndicesBuffer();
+            // Bottom
+            indices.int3(0, 1, 3);
+            indices.int3(3, 1, 5);
+
+            // Top
+            indices.int3(7, 6, 4);
+            indices.int3(4, 6, 2);
+
+            // East
+            indices.int3(0, 2, 3);
+            indices.int3(3, 2, 6);
+
+            // West
+            indices.int3(7, 5, 4);
+            indices.int3(4, 5, 1);
+
+            // South
+            indices.int3(0, 1, 2);
+            indices.int3(2, 1, 4);
+
+            indices.int3(7, 5, 6);
+            indices.int3(6, 5, 3);
             debugBuffer.upload(false);
             debugBuffer.program.use();
             debugBuffer.program.uniformMat4("uProjection", getProjectionMatrix().peek());

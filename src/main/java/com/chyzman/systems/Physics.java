@@ -69,7 +69,7 @@ public class Physics {
         );
 
         Game.GAME.runOnReaderThread(() -> {
-            entity.add(new MeshComponent("chyzman", new Id("game", "chyzman.png")));
+            entity.add(MeshComponent.obj(new Id("game", "chyzman.obj"), new Id("game", "chyzman.png")));
         });
 
         holder.getValue().target = entity;
