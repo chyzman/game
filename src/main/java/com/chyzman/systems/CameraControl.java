@@ -32,30 +32,30 @@ public class CameraControl {
 
                 Matrix4f transform = Game.renderer.getViewMatrix().peek();
 
-                var fpos = new Vector3f(new Vector3f((float) pos.x, (float) pos.y, (float) pos.z));
-                var matr = new Matrix4f().translate(fpos).rotate(rotation);
-                transform.set(matr.translate(fpos.negate()));
+                var fpos = new Vector3f();
+                var matr = new Matrix4f()/*.translate(fpos)*/.rotate(rotation);
+                transform.rotation(rotation).translate(new Vector3f((float) pos.x, (float) pos.y, (float) pos.z)); //.add(matr);
 
                 long window = Game.window.handle;
 
                 float localCameraSpeed = (float) (camera.cameraSpeed * deltaTime);
                 if (GLFW.glfwGetKey(window, GLFW.GLFW_KEY_W) == GLFW.GLFW_PRESS) {
-                    transform.translateLocal(new Vector3f(0, 0, localCameraSpeed));
+                    pos.x += localCameraSpeed;
                 }
                 if (GLFW.glfwGetKey(window, GLFW.GLFW_KEY_S) == GLFW.GLFW_PRESS) {
-                    transform.translateLocal(new Vector3f(0, 0, -localCameraSpeed));
+                    pos.x -= localCameraSpeed;
                 }
                 if (GLFW.glfwGetKey(window, GLFW.GLFW_KEY_A) == GLFW.GLFW_PRESS) {
-                    transform.translateLocal(new Vector3f(localCameraSpeed, 0, 0));
+                    pos.z += localCameraSpeed;
                 }
                 if (GLFW.glfwGetKey(window, GLFW.GLFW_KEY_D) == GLFW.GLFW_PRESS) {
-                    transform.translateLocal(new Vector3f(-localCameraSpeed, 0, 0));
+                    pos.z -= localCameraSpeed;
                 }
                 if (GLFW.glfwGetKey(window, GLFW.GLFW_KEY_SPACE) == GLFW.GLFW_PRESS) {
-                    transform.translateLocal(new Vector3f(0, -localCameraSpeed, 0));
+                    pos.y += localCameraSpeed;
                 }
                 if (GLFW.glfwGetKey(window, GLFW.GLFW_KEY_LEFT_CONTROL) == GLFW.GLFW_PRESS || GLFW.glfwGetKey(window, GLFW.GLFW_KEY_LEFT_SHIFT) == GLFW.GLFW_PRESS) {
-                    transform.translateLocal(new Vector3f(0, localCameraSpeed, 0));
+                    pos.y -= localCameraSpeed;
                 }
             }
         }

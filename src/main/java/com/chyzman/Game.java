@@ -1,7 +1,6 @@
 package com.chyzman;
 
 import com.chyzman.component.Named;
-import com.chyzman.component.position.Floatly;
 import com.chyzman.component.position.Position;
 import com.chyzman.component.rotation.Rotation;
 import com.chyzman.dominion.FramedDominion;
@@ -9,24 +8,14 @@ import com.chyzman.dominion.Frameworks;
 import com.chyzman.gl.GlDebug;
 import com.chyzman.object.BasicObject;
 import com.chyzman.object.CameraConfiguration;
-import com.chyzman.object.components.MeshComponent;
 import com.chyzman.render.Renderer;
 import com.chyzman.systems.CameraControl;
 import com.chyzman.systems.MeshRenderer;
 import com.chyzman.systems.Physics;
-import com.chyzman.util.Id;
 import com.chyzman.util.LogUtils;
 import com.chyzman.world.World;
 import com.chyzman.world.block.Blocks;
 import com.chyzman.world.chunk.Chunk;
-import com.jme3.bullet.collision.shapes.BoxCollisionShape;
-import com.jme3.bullet.collision.shapes.CapsuleCollisionShape;
-import com.jme3.bullet.collision.shapes.PlaneCollisionShape;
-import com.jme3.bullet.objects.PhysicsBody;
-import com.jme3.bullet.objects.PhysicsCharacter;
-import com.jme3.bullet.objects.PhysicsRigidBody;
-import com.jme3.math.Plane;
-import com.jme3.math.Vector3f;
 import de.articdive.jnoise.core.api.functions.Interpolation;
 import de.articdive.jnoise.generators.noise_parameters.fade_functions.FadeFunction;
 import de.articdive.jnoise.pipeline.JNoise;
@@ -36,11 +25,12 @@ import dev.dominion.ecs.api.Scheduler;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL45;
 import org.slf4j.Logger;
-import com.chyzman.systems.Physics.*;
 
+import java.util.ArrayDeque;
+import java.util.Deque;
+import java.util.Queue;
 import java.util.Random;
-
-import static com.chyzman.systems.Physics.physicsSpace;
+import java.util.concurrent.ConcurrentLinkedDeque;
 
 public class Game {
     public static final Logger LOGGER = LogUtils.getLogger();
@@ -58,6 +48,10 @@ public class Game {
     public World world;
     public final Chunk chunk = new Chunk(0, 0, 0);
 
+    public static final Deque<Runnable> runnables = new ConcurrentLinkedDeque<>();
+
+    public final Thread clientThread = Thread.currentThread();
+
     public static void main(String[] args) {
         GAME.run();
     }
@@ -67,8 +61,7 @@ public class Game {
         dominion = new FramedDominion(Dominion.create());
         clientScheduler = dominion.createScheduler();
         logicScheduler = dominion.createScheduler();
-        var cameraConfig = new CameraConfiguration();
-        camera = dominion.createEntity("camera", new Position(), new Rotation(), cameraConfig);
+        camera = dominion.createEntity(new Named("camera"), new Position(), new Rotation(), new CameraConfiguration());
         window = new Window(dominion, 640, 480);
 
         GlDebug.attachDebugCallback();
@@ -87,23 +80,6 @@ public class Game {
         clientScheduler.schedule(MeshRenderer.create(dominion, clientScheduler::deltaTime));
 
         logicScheduler.schedule(Physics.create(dominion, logicScheduler::deltaTime));
-
-        var plane = new Plane(Vector3f.UNIT_Y, 0);
-        var planeCollision = new PlaneCollisionShape(plane);
-        var floor = new PhysicsRigidBody(planeCollision, PhysicsBody.massForStatic);
-        physicsSpace.addCollisionObject(floor);
-
-        var playerCollision = new CapsuleCollisionShape(0.15f, 1.5f);
-//        var playerBox = new PhysicsRigidBody(playerCollision, 1);
-        var player = new PhysicsCharacter(playerCollision, 0.1f);
-
-        physicsSpace.addCollisionObject(player);
-        cameraConfig.target = dominion.createEntity(
-                Frameworks.PHYSICS_ENTITY,
-                new Named("player"),
-                player,
-                new MeshComponent("chyzman", new Id("game", "chyzman.png"))
-        );
 
         int chunksSize = 2;
         for (int xRad = 0; xRad < chunksSize; xRad++) {
@@ -151,14 +127,31 @@ public class Game {
 
         loop(dominion);
 
-
         logicScheduler.shutDown();
         clientScheduler.shutDown();
         window.terminate();
     }
 
+    public void runOnReaderThread(Runnable runnable) {
+        if(Thread.currentThread() == Game.GAME.clientThread){
+            runnable.run();
+        } else {
+            runnables.push(runnable);
+        }
+    }
+
     private void loop(FramedDominion dom) {
         while (!window.shouldClose()) {
+            var runnable = runnables.peek();
+
+            while (runnable != null) {
+                runnables.pop();
+
+                runnable.run();
+
+                runnable = runnables.peek();
+            }
+
             renderer.clear();
             clientScheduler.tick();
             renderer.update(dom);

@@ -19,6 +19,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 public class MeshComponent extends GameObject {
+    private boolean isLoaded = false;
+
     public final int texture;
     public final ElementMeshBuffer<VertexDescriptors.PosColorTexNormalVertexFunction> mesh;
 
