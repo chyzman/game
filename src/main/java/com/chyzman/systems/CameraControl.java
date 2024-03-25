@@ -57,11 +57,9 @@ public class CameraControl {
                 if (GLFW.glfwGetKey(window, GLFW.GLFW_KEY_LEFT_CONTROL) == GLFW.GLFW_PRESS || GLFW.glfwGetKey(window, GLFW.GLFW_KEY_LEFT_SHIFT) == GLFW.GLFW_PRESS) {
                     pos.add(new Vector3d(transform.positiveY(new Vector3f()).mul(localCameraSpeed)));
                 }
-
                 if (GLFW.glfwGetKey(window, GLFW.GLFW_KEY_Q) == GLFW.GLFW_PRESS) {
                     rotation.rotateLocalZ((float) (-camera.rotationSpeed * deltaTime));
                 }
-
                 if (GLFW.glfwGetKey(window, GLFW.GLFW_KEY_E) == GLFW.GLFW_PRESS) {
                     rotation.rotateLocalZ((float) (camera.rotationSpeed * deltaTime));
                 }
