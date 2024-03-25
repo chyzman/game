@@ -3,6 +3,7 @@ package com.chyzman;
 import com.chyzman.component.position.Position;
 import com.chyzman.dominion.FramedDominion;
 import com.chyzman.object.CameraConfiguration;
+import org.joml.Vector2i;
 import org.lwjgl.glfw.*;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GL11;
@@ -19,7 +20,9 @@ public class Window {
     public int height;
     public int aspectRatio;
     private boolean wireframe = false;
-    private final MouseManager mouseManager = new MouseManager();
+
+    private boolean mouseGrabbed = false;
+    private Vector2i mousePos = new Vector2i(0, 0);
 
     private GLFWWindowSizeCallback windowSize;
 
@@ -59,7 +62,10 @@ public class Window {
         GLFW.glfwSetKeyCallback(handle, (window, key, scancode, action, mods) -> {
             if (window == this.handle && (action == GLFW.GLFW_PRESS || action == GLFW.GLFW_REPEAT)) {
                 if (key == GLFW.GLFW_KEY_T) {
-                    mouseManager.toggleGrabbed();
+                    toggleMouseGrabbed();
+                }
+                if (key == GLFW.GLFW_KEY_F5) {
+                    Game.camera.get(CameraConfiguration.class).freecam = !Game.camera.get(CameraConfiguration.class).freecam;
                 }
 
                 if (key == GLFW.GLFW_KEY_B) {
@@ -73,8 +79,9 @@ public class Window {
         });
 
         GLFW.glfwSetCursorPosCallback(this.handle, (win, xpos, ypos) -> {
-            if (win == this.handle)
-                mouseManager.setCursorPos(dominion, xpos, ypos);
+            if (win == this.handle) {
+                mousePos.set((int) xpos, (int) ypos);
+            }
         });
 
         try (MemoryStack stack = stackPush()) {
@@ -141,7 +148,22 @@ public class Window {
         GLFW.glfwSetErrorCallback(null).free();
     }
 
+    public void toggleMouseGrabbed() {
+        mouseGrabbed = !mouseGrabbed;
+        if (mouseGrabbed) {
+            GLFW.glfwSetCursorPos(Game.window.handle, (double) Game.window.width / 2, (double) Game.window.height / 2);
+            GLFW.glfwSetInputMode(Game.window.handle, GLFW.GLFW_CURSOR, GLFW.GLFW_CURSOR_DISABLED);
+        } else {
+            GLFW.glfwSetCursorPos(Game.window.handle, (double) Game.window.width / 2, (double) Game.window.height / 2);
+            GLFW.glfwSetInputMode(Game.window.handle, GLFW.GLFW_CURSOR, GLFW.GLFW_CURSOR_NORMAL);
+        }
+    }
+
     public boolean mouseGrabbed() {
-        return mouseManager.isGrabbed();
+        return mouseGrabbed;
+    }
+
+    public Vector2i mousePos() {
+        return mousePos;
     }
 }

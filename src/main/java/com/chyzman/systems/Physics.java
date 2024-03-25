@@ -98,12 +98,7 @@ public class Physics {
             rotation.set(new Quaterniond(q.getX(), q.getY(), q.getZ(), q.getW()));
         }
 
-        if(!Game.window.mouseGrabbed()) {
-            var cameraConfiguration = Game.camera.get(CameraConfiguration.class);
-
-        }
-
-        if (--lockOut <= 0 && !Game.window.mouseGrabbed()) {
+        if (--lockOut <= 0 && Game.window.mouseGrabbed() && !Game.camera.get(CameraConfiguration.class).freecam) {
             dom.findEntitiesWith(Named.class, PhysicsCharacter.class).forAll((entity, named, body) -> {
                 if (!named.hasName() || !named.name().equals("player")) return;
 
