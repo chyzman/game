@@ -26,7 +26,6 @@ public class CameraControl {
         if (Game.window.mouseGrabbed()) {
             for (var entityResult : dominion.findEntitiesWith(Position.class, Rotation.class, CameraConfiguration.class)) {
                 var pos = entityResult.comp1();
-                Renderer.cameraPosition = pos;
                 var rotation = entityResult.comp2();
                 var camera = entityResult.comp3();
 

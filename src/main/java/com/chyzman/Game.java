@@ -66,7 +66,7 @@ public class Game {
         GlDebug.minSeverity(GL45.GL_DEBUG_SEVERITY_LOW);
 
         Random random = new Random();
-        var noise = JNoise.newBuilder().perlin(63610, Interpolation.LINEAR, FadeFunction.IMPROVED_PERLIN_NOISE)
+        var noise = JNoise.newBuilder().perlin(random.nextInt(), Interpolation.LINEAR, FadeFunction.IMPROVED_PERLIN_NOISE)
                 .scale(1 / 16.0)
                 .addModifier(v -> (v + 1) / 2.0)
                 .clamp(0.0, 1.0)
@@ -79,7 +79,7 @@ public class Game {
 
         logicScheduler.schedule(Physics.create(dominion, logicScheduler::deltaTime));
 
-        int chunksSize = 2;
+        int chunksSize = 5;
         for (int xRad = 0; xRad < chunksSize; xRad++) {
             for (int yRad = 0; yRad < chunksSize; yRad++) {
                 for (int zRad = 0; zRad < chunksSize; zRad++) {

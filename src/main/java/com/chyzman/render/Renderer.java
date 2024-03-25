@@ -12,6 +12,7 @@ import com.chyzman.gl.RenderContext;
 import com.chyzman.object.CameraConfiguration;
 import com.chyzman.object.components.MeshComponent;
 import com.chyzman.systems.TextRenderer;
+import com.chyzman.ui.core.Color;
 import com.chyzman.util.UtilUtil;
 import com.jme3.bullet.objects.PhysicsRigidBody;
 import dev.dominion.ecs.api.Dominion;
@@ -42,8 +43,8 @@ public class Renderer {
     public double lastTime = 0.0f;
     private double framesPerSecond = 0.0f;
     public int fps;
-    public static Vector3d cameraPosition = new Vector3d(0.0f, 0.0f, 0.0f);
     public TextRenderer textRenderer;
+    private float debugLineHeight = 0.0f;
 
     public Renderer(Window window, Dominion dominion) {
         this.context = new RenderContext(window, POS_COLOR_PROGRAM, POS_COLOR_TEXTURE_PROGRAM, POS_COLOR_TEXTURE_NORMAL_PROGRAM, FONT_PROGRAM);
@@ -135,15 +136,34 @@ public class Renderer {
 
     public void renderDebug() {
         var polygonMode = glGetInteger(GL_POLYGON_MODE);
-        if (polygonMode == GL_LINE) {
-            glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-        }
-        textRenderer.renderText("FPS: " + fps, 2.0f, 3.0f, 0.25f, new Vector3f(1f, 1f, 1f));
-        textRenderer.renderText("Pos: (" + cameraPosition.x + ", " + cameraPosition.y + ", " + cameraPosition.z + ")", 2.0f, 26.0f, 0.25f, new Vector3f(1f, 1f, 1f));
-        textRenderer.renderText("Loaded Chunks: " + Game.GAME.world.getChunkManager().getLoadedChunks(), 2.0f, 49.0f, 0.25f, new Vector3f(1f, 1f, 1f));
+        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+        renderLine("FPS: " + fps, 2.0f, Color.WHITE);
+        renderLine("", 2.0f, Color.WHITE);
+        var cameraPosition = Game.camera.get(Position.class);
+        renderLine("Pos:", 2.0f, Color.WHITE);
+        renderLine("X: " + cameraPosition.x, 2.0f, Color.RED);
+        renderLine("Y: " + cameraPosition.y, 2.0f, Color.GREEN);
+        renderLine("Z: " + cameraPosition.z, 2.0f, Color.BLUE);
+        renderLine("", 2.0f, Color.WHITE);
+        var cameraRotation = Game.camera.get(Rotation.class);
+        renderLine("Rot: (completely wrong ik)", 2.0f, Color.WHITE);
+        float pitch = (float) Math.toDegrees(Math.atan2(2.0f * (cameraRotation.y * cameraRotation.z + cameraRotation.w * cameraRotation.x), cameraRotation.w * cameraRotation.w - cameraRotation.x * cameraRotation.x - cameraRotation.y * cameraRotation.y + cameraRotation.z * cameraRotation.z));
+        renderLine("Pitch: " + pitch, 2.0f, Color.RED);
+        float yaw = (float) Math.toDegrees(Math.asin(-2.0f * (cameraRotation.x * cameraRotation.z - cameraRotation.w * cameraRotation.y)));
+        renderLine("Yaw: " + yaw, 2.0f, Color.GREEN);
+        float roll = (float) Math.toDegrees(Math.atan2(2.0f * (cameraRotation.x * cameraRotation.y + cameraRotation.w * cameraRotation.z), cameraRotation.w * cameraRotation.w + cameraRotation.x * cameraRotation.x - cameraRotation.y * cameraRotation.y - cameraRotation.z * cameraRotation.z));
+        renderLine("Roll: " + roll, 2.0f, Color.BLUE);
+
+        debugLineHeight = 0.0f;
         if (polygonMode == GL_LINE) {
             glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
         }
+    }
+
+
+    private void renderLine(String text, float x, Color color) {
+        debugLineHeight += 15;
+        textRenderer.renderText(text, x, Game.window.height - debugLineHeight, 0.4f, color);
     }
 
     static {

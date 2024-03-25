@@ -4,6 +4,7 @@ import com.chyzman.Game;
 import com.chyzman.gl.MeshBuffer;
 import com.chyzman.gl.RenderContext;
 import com.chyzman.gl.VertexDescriptors;
+import com.chyzman.ui.core.Color;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.lwjgl.opengl.GL11;
@@ -17,13 +18,14 @@ public class TextRenderer {
         mesh = new MeshBuffer<>(VertexDescriptors.FONT, context.findProgram("font"));
     }
 
-    public void renderText(String text, float x, float y, float scale, Vector3f color) {
+    public void renderText(String text, float x, float y, float scale, Color color) {
         // activate corresponding render state
         GL11.glEnable(GL11.GL_BLEND);
         GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
         mesh.program.use();
         mesh.program.uniformMat4("uProjection", new Matrix4f().setOrtho2D(0.0f, Game.window.width, 0.0f, Game.window.height));
-        mesh.program.uniform3f("uTextColor", color.x, color.y, color.z);
+        //TODO add alpha
+        mesh.program.uniform3f("uTextColor", color.red(), color.green(), color.blue());
         GL30.glActiveTexture(GL30.GL_TEXTURE0);
 
         // iterate through all characters
