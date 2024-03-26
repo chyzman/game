@@ -3,6 +3,7 @@ package com.chyzman;
 import com.chyzman.component.position.Position;
 import com.chyzman.dominion.FramedDominion;
 import com.chyzman.object.CameraConfiguration;
+import com.chyzman.systems.CameraControl;
 import org.joml.Vector2i;
 import org.lwjgl.glfw.*;
 import org.lwjgl.opengl.GL;
@@ -151,9 +152,11 @@ public class Window {
     public void toggleMouseGrabbed() {
         mouseGrabbed = !mouseGrabbed;
         if (mouseGrabbed) {
+            CameraControl.first = true;
             GLFW.glfwSetCursorPos(Game.window.handle, (double) Game.window.width / 2, (double) Game.window.height / 2);
             GLFW.glfwSetInputMode(Game.window.handle, GLFW.GLFW_CURSOR, GLFW.GLFW_CURSOR_DISABLED);
         } else {
+            CameraControl.first = true;
             GLFW.glfwSetCursorPos(Game.window.handle, (double) Game.window.width / 2, (double) Game.window.height / 2);
             GLFW.glfwSetInputMode(Game.window.handle, GLFW.GLFW_CURSOR, GLFW.GLFW_CURSOR_NORMAL);
         }

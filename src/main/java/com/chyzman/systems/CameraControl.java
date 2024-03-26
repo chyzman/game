@@ -16,6 +16,7 @@ import org.lwjgl.glfw.GLFW;
 import java.util.function.Supplier;
 
 public class CameraControl {
+    public static boolean first = true;
     private static Vector2i lastMousePos = new Vector2i(0,0);
 
     public static IdentifiedSystem<FramedDominion> create(FramedDominion dominion, Supplier<Double> deltaTime) {
@@ -34,6 +35,10 @@ public class CameraControl {
 
                     if (rotation != null) {
                         var offset = new Vector2d(lastMousePos).sub(new Vector2f(window.mousePos()));
+                        if (first) {
+                            offset.set(0, 0);
+                            first = false;
+                        }
                         lastMousePos.set(window.mousePos());
                         offset.mul(cameraConfig.sensitivity);
 

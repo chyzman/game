@@ -48,7 +48,7 @@ public class Physics {
         var floor = new PhysicsRigidBody(planeCollision, PhysicsBody.massForStatic);
         physicsSpace.addCollisionObject(floor);
 
-        var playerCollision = new CapsuleCollisionShape(0.15f, 1.5f);
+        var playerCollision = new CapsuleCollisionShape(0.15f, 1.7f);
 //        var playerBox = new PhysicsRigidBody(playerCollision, 1);
         var player = new PhysicsCharacter(playerCollision, 0.1f);
 
