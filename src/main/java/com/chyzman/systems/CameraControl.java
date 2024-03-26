@@ -8,6 +8,8 @@ import com.chyzman.dominion.IdentifiedSystem;
 import com.chyzman.object.CameraConfiguration;
 import com.chyzman.render.Renderer;
 import com.chyzman.util.Id;
+import com.chyzman.util.UtilUtil;
+import com.jme3.bullet.objects.PhysicsRigidBody;
 import dev.dominion.ecs.api.Dominion;
 import dev.dominion.ecs.api.Entity;
 import org.joml.*;
@@ -27,12 +29,10 @@ public class CameraControl {
         var window = Game.window;
         if (window.mouseGrabbed()) {
             dominion.findEntitiesWith(CameraConfiguration.class).forAll((entity, cameraConfig) -> {
+                var pos = entity.get(Position.class);
+                var rotation = entity.get(Rotation.class);
+                Matrix4f transform = Game.renderer.getViewMatrix().peek();
                 if (cameraConfig.freecam) {
-                    var pos = entity.get(Position.class);
-                    var rotation = entity.get(Rotation.class);
-
-                    Matrix4f transform = Game.renderer.getViewMatrix().peek();
-
                     if (rotation != null) {
                         var offset = new Vector2d(lastMousePos).sub(new Vector2f(window.mousePos()));
                         if (first) {
@@ -44,10 +44,8 @@ public class CameraControl {
 
                         rotation.rotateY((float) -offset.x);
                         rotation.rotateLocalX((float) -offset.y);
-                        transform.rotation(rotation);
                     }
                     if (pos != null) {
-                        transform.translate(new Vector3f((float) pos.x, (float) pos.y, (float) pos.z));
 
                         var handle = window.handle;
 
@@ -77,7 +75,33 @@ public class CameraControl {
                             rotation.rotateLocalZ((float) (cameraConfig.rotationSpeed * deltaTime));
                         }
                     }
+                } else if (cameraConfig.target != null) {
+                    var target = cameraConfig.target;
+                    Vector3d targetPos;
+                    Quaternionf targetRotation;
+                    if (target.has(PhysicsRigidBody.class)) {
+                        var body = target.get(PhysicsRigidBody.class);
+                        var bodyTransform = body.getTransform(null);
+                        targetPos = new Vector3d(
+                                bodyTransform.getTranslation().x,
+                                bodyTransform.getTranslation().y,
+                                bodyTransform.getTranslation().z
+                        );
+                        targetRotation = new Quaternionf(
+                                bodyTransform.getRotation().getX(),
+                                bodyTransform.getRotation().getY(),
+                                bodyTransform.getRotation().getZ(),
+                                bodyTransform.getRotation().getW()
+                        );
+                    } else {
+                        targetPos = UtilUtil.thisOr(target.get(Position.class), new Vector3d());
+                        targetRotation = UtilUtil.thisOr(target.get(Rotation.class), new Quaternionf());
+                    }
+                    pos.set(targetPos).negate().add(new Vector3d(transform.positiveY(new Vector3f()).mul(-2).sub(0,0,4)));
+                    rotation.set(targetRotation);
                 }
+                if (rotation != null) transform.rotation(rotation);
+                if (pos != null) transform.translate(new Vector3f((float) pos.x, (float) pos.y, (float) pos.z));
             });
         }
     }
